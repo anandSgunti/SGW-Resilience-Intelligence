@@ -141,17 +141,47 @@ Every layer is read straight from the API. The client never assembles a trigger,
 never evaluates a threshold, and never writes narrated text back into a
 decision. Both are asserted in the test suite.
 
+## Implemented in 6D — Leadership view (`/leadership`)
+
+- 6D.1 headline KPIs: Critical, High, residents exposed, mitigation coverage
+- 6D.2 response readiness over the Critical set, with deep links into `/respond`
+- 6D.3 grounded executive brief: draft, regenerate, and named-human approval
+- 6D.4 event trajectory across every advisory, with before/after deltas
+
+### Advisory stage tokens
+
+The backend publishes `T-72`, `T-48`, `T-24`, `T-12` and `Landfall`. The final
+advisory's canonical token is `Landfall`; a screen may label it `T-0` but must
+send `Landfall`. The trajectory strip loads stages with `Promise.allSettled`, so
+one unreachable advisory blanks a single tile instead of the whole strip.
+
+## Implemented in 6E — Workflow continuity
+
+- `WorkflowNav` carries advisory, asset and filter selection across all routes
+- `IncidentContext` centralises advisory refresh so one fetch serves every panel
+- advisory and asset selection are seeded from the URL during render, so the
+  server and client agree and no effect writes that state back on mount
+
 ## Testing
 
 ```powershell
 npm test
 ```
 
-This builds the app and runs the rendered-HTML and source-contract assertions
-in `tests/rendered-html.test.mjs` (16 tests).
+This runs four gates in order and fails on the first one that breaks:
 
-Known gaps: `npm run lint` reports 11 pre-existing errors (unused map helpers in
-`app/page.tsx`, `setState`-in-effect for query parsing, and internal `<a>` links
-that should be `next/link`), and `npx tsc --noEmit` reports 4 pre-existing
-errors (a `Layer` typo in `app/page.tsx` and missing Cloudflare Worker types).
-None are in the 6C.3 code and neither gate is wired into `npm test`.
+1. `tsc --noEmit` — currently clean
+2. `eslint` — currently 0 errors, 3 warnings (capped at 5 via `--max-warnings`)
+3. `vinext build`
+4. `node --test tests/rendered-html.test.mjs` — 20 tests
+
+Use `npm run test:render` to skip the type and lint gates while iterating.
+
+### What this suite cannot catch
+
+The assertions here are rendered-HTML and source-string checks. Server-side
+rendering never runs the client effects that issue requests, so this suite
+cannot detect a value the client sends that the backend rejects — that is how
+the 6D.4 `T-0` stage bug shipped. Cross-boundary contract checks therefore live
+in the backend suite, in `tests/test_frontend_contract.py`, which reads these
+sources and exercises the literals against a running API.

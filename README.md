@@ -309,11 +309,38 @@ The action stays `recommended`, unmodified, and no new recommendation appears.
 
 ## Frontend progress
 
+Four screens, all reading backend-owned state. No screen recalculates risk,
+consequence or confidence.
+
+| Screen | Route | Steps |
+| --- | --- | --- |
+| Risk Overview | `/` | 6A.1–6A.4 |
+| Asset Risk | `/asset-risk` | 6B.1–6B.3 |
+| Response Board | `/respond` | 6C.1–6C.4 |
+| Leadership | `/leadership` | 6D.1–6D.4 |
+
 Steps 6A.1 and 6A.2 implement the operational risk map and priority rail:
 advisory timeline, backend-owned hurricane footprint, infrastructure layers,
 hover details, selected dependency preview, biggest-change focus, Priority and
 Change sorting, asset filters, and expandable likelihood-versus-consequence
 evidence for every ranked asset.
+
+Step 6D gives leadership a preparedness view rather than a workflow view:
+headline risk KPIs (6D.1), response readiness and mitigation coverage over the
+Critical set (6D.2), a grounded executive brief that a named human drafts,
+regenerates and approves (6D.3), and an event trajectory across every advisory
+with structured before/after deltas (6D.4).
+
+Step 6E preserves workflow context across all four screens. `WorkflowNav`
+carries the advisory, asset and filter selection between routes, and
+`IncidentContext` centralises advisory refresh so one fetch serves every panel.
+
+### Advisory stage tokens
+
+The backend publishes five stages: `T-72`, `T-48`, `T-24`, `T-12` and
+`Landfall`. `Landfall` is the canonical token for the final advisory; screens
+may display it as `T-0` but must send `Landfall`. `tests/test_frontend_contract.py`
+fails the build if any screen hard-codes a stage the API does not resolve.
 
 Run the backend first, then the frontend:
 
@@ -327,3 +354,20 @@ npm run dev
 ```
 
 Open `http://localhost:3000`. See `frontend/README.md` for the exact scope.
+
+## Quality gates
+
+Both suites must be green before a step is considered complete.
+
+```powershell
+python -m pytest
+cd frontend; npm test
+```
+
+`npm test` runs `tsc --noEmit`, then `eslint`, then the build, then the
+rendered-HTML and source-contract assertions. Type and lint failures break the
+build rather than accumulating silently.
+
+`python -m pytest` needs no `--basetemp` flag: `pyproject.toml` points pytest
+at a git-ignored `.pytest_tmp/` because the system temp directory denies
+`scandir` on some Windows profiles. Scratch from passing runs is discarded.
