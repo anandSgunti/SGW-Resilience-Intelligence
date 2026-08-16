@@ -1,0 +1,23 @@
+[project]
+name = "sgw-resilience-platform"
+version = "0.1.0"
+description = "Synthetic-first foundation for SGW Resilience Intelligence"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.135.1",
+    "pydantic==2.12.5",
+    "python-dotenv==1.1.0",
+]
+
+[project.optional-dependencies]
+llm = ["openai==2.45.0"]
+api = ["uvicorn==0.41.0"]
+dev = ["httpx==0.28.1", "pytest==9.0.3"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+# The system temp directory denies pytest's scandir on this Windows profile, so
+# keep scratch inside the (git-ignored) repo and drop it for passing runs.
+addopts = ["--basetemp=.pytest_tmp"]
+tmp_path_retention_policy = "failed"

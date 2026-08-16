@@ -1,0 +1,4448 @@
+{
+  "metadata": {
+    "dataset": "SGW synthetic network",
+    "seed": 42,
+    "schema_version": "1.2"
+  },
+  "source_data": {
+    "gis": [
+      {
+        "source_id": "GIS/S17",
+        "canonical_sgw_id": "SGW-S17"
+      },
+      {
+        "source_id": "GIS/S31",
+        "canonical_sgw_id": "SGW-S31"
+      },
+      {
+        "source_id": "GIS/S08",
+        "canonical_sgw_id": "SGW-S08"
+      },
+      {
+        "source_id": "GIS/S12",
+        "canonical_sgw_id": "SGW-S12"
+      },
+      {
+        "source_id": "GIS/S01",
+        "canonical_sgw_id": "SGW-S01"
+      },
+      {
+        "source_id": "GIS/S02",
+        "canonical_sgw_id": "SGW-S02"
+      },
+      {
+        "source_id": "GIS/S03",
+        "canonical_sgw_id": "SGW-S03"
+      },
+      {
+        "source_id": "GIS/S04",
+        "canonical_sgw_id": "SGW-S04"
+      },
+      {
+        "source_id": "GIS/S05",
+        "canonical_sgw_id": "SGW-S05"
+      },
+      {
+        "source_id": "GIS/S06",
+        "canonical_sgw_id": "SGW-S06"
+      },
+      {
+        "source_id": "GIS/S07",
+        "canonical_sgw_id": "SGW-S07"
+      },
+      {
+        "source_id": "GIS/S09",
+        "canonical_sgw_id": "SGW-S09"
+      },
+      {
+        "source_id": "GIS/S10",
+        "canonical_sgw_id": "SGW-S10"
+      },
+      {
+        "source_id": "GIS/S11",
+        "canonical_sgw_id": "SGW-S11"
+      },
+      {
+        "source_id": "GIS/S13",
+        "canonical_sgw_id": "SGW-S13"
+      },
+      {
+        "source_id": "GIS/S14",
+        "canonical_sgw_id": "SGW-S14"
+      },
+      {
+        "source_id": "GIS/S15",
+        "canonical_sgw_id": "SGW-S15"
+      },
+      {
+        "source_id": "GIS/S16",
+        "canonical_sgw_id": "SGW-S16"
+      },
+      {
+        "source_id": "GIS/P4",
+        "canonical_sgw_id": "SGW-P4"
+      },
+      {
+        "source_id": "GIS/P9",
+        "canonical_sgw_id": "SGW-P9"
+      },
+      {
+        "source_id": "GIS/P7",
+        "canonical_sgw_id": "SGW-P7"
+      },
+      {
+        "source_id": "GIS/P11",
+        "canonical_sgw_id": "SGW-P11"
+      },
+      {
+        "source_id": "GIS/P1",
+        "canonical_sgw_id": "SGW-P1"
+      },
+      {
+        "source_id": "GIS/P2",
+        "canonical_sgw_id": "SGW-P2"
+      },
+      {
+        "source_id": "GIS/P3",
+        "canonical_sgw_id": "SGW-P3"
+      },
+      {
+        "source_id": "GIS/P5",
+        "canonical_sgw_id": "SGW-P5"
+      },
+      {
+        "source_id": "GIS/P6",
+        "canonical_sgw_id": "SGW-P6"
+      },
+      {
+        "source_id": "GIS/P8",
+        "canonical_sgw_id": "SGW-P8"
+      },
+      {
+        "source_id": "GIS/P10",
+        "canonical_sgw_id": "SGW-P10"
+      },
+      {
+        "source_id": "GIS/P12",
+        "canonical_sgw_id": "SGW-P12"
+      },
+      {
+        "source_id": "GIS/W12",
+        "canonical_sgw_id": "SGW-W12"
+      },
+      {
+        "source_id": "GIS/W07",
+        "canonical_sgw_id": "SGW-W07"
+      },
+      {
+        "source_id": "GIS/W09",
+        "canonical_sgw_id": "SGW-W09"
+      },
+      {
+        "source_id": "GIS/W03",
+        "canonical_sgw_id": "SGW-W03"
+      },
+      {
+        "source_id": "GIS/W15",
+        "canonical_sgw_id": "SGW-W15"
+      },
+      {
+        "source_id": "GIS/H3",
+        "canonical_sgw_id": "SGW-H3"
+      },
+      {
+        "source_id": "GIS/F2",
+        "canonical_sgw_id": "SGW-F2"
+      },
+      {
+        "source_id": "GIS/E1",
+        "canonical_sgw_id": "SGW-E1"
+      },
+      {
+        "source_id": "GIS/D1",
+        "canonical_sgw_id": "SGW-D1"
+      },
+      {
+        "source_id": "GIS/PS1",
+        "canonical_sgw_id": "SGW-PS1"
+      }
+    ],
+    "maintenance": [
+      {
+        "source_id": "SU-1000",
+        "canonical_sgw_id": "SGW-S17"
+      },
+      {
+        "source_id": "SU-1001",
+        "canonical_sgw_id": "SGW-S31"
+      },
+      {
+        "source_id": "SU-1002",
+        "canonical_sgw_id": "SGW-S08"
+      },
+      {
+        "source_id": "SU-1003",
+        "canonical_sgw_id": "SGW-S12"
+      },
+      {
+        "source_id": "SU-1004",
+        "canonical_sgw_id": "SGW-S01"
+      },
+      {
+        "source_id": "SU-1005",
+        "canonical_sgw_id": "SGW-S02"
+      },
+      {
+        "source_id": "SU-1006",
+        "canonical_sgw_id": "SGW-S03"
+      },
+      {
+        "source_id": "SU-1007",
+        "canonical_sgw_id": "SGW-S04"
+      },
+      {
+        "source_id": "SU-1008",
+        "canonical_sgw_id": "SGW-S05"
+      },
+      {
+        "source_id": "SU-1009",
+        "canonical_sgw_id": "SGW-S06"
+      },
+      {
+        "source_id": "SU-1010",
+        "canonical_sgw_id": "SGW-S07"
+      },
+      {
+        "source_id": "SU-1011",
+        "canonical_sgw_id": "SGW-S09"
+      },
+      {
+        "source_id": "SU-1012",
+        "canonical_sgw_id": "SGW-S10"
+      },
+      {
+        "source_id": "SU-1013",
+        "canonical_sgw_id": "SGW-S11"
+      },
+      {
+        "source_id": "SU-1014",
+        "canonical_sgw_id": "SGW-S13"
+      },
+      {
+        "source_id": "SU-1015",
+        "canonical_sgw_id": "SGW-S14"
+      },
+      {
+        "source_id": "SU-1016",
+        "canonical_sgw_id": "SGW-S15"
+      },
+      {
+        "source_id": "SU-1017",
+        "canonical_sgw_id": "SGW-S16"
+      },
+      {
+        "source_id": "PU-1018",
+        "canonical_sgw_id": "SGW-P4"
+      },
+      {
+        "source_id": "PU-1019",
+        "canonical_sgw_id": "SGW-P9"
+      },
+      {
+        "source_id": "PU-1020",
+        "canonical_sgw_id": "SGW-P7"
+      },
+      {
+        "source_id": "PU-1021",
+        "canonical_sgw_id": "SGW-P11"
+      },
+      {
+        "source_id": "PU-1022",
+        "canonical_sgw_id": "SGW-P1"
+      },
+      {
+        "source_id": "PU-1023",
+        "canonical_sgw_id": "SGW-P2"
+      },
+      {
+        "source_id": "PU-1024",
+        "canonical_sgw_id": "SGW-P3"
+      },
+      {
+        "source_id": "PU-1025",
+        "canonical_sgw_id": "SGW-P5"
+      },
+      {
+        "source_id": "PU-1026",
+        "canonical_sgw_id": "SGW-P6"
+      },
+      {
+        "source_id": "PU-1027",
+        "canonical_sgw_id": "SGW-P8"
+      },
+      {
+        "source_id": "PU-1028",
+        "canonical_sgw_id": "SGW-P10"
+      },
+      {
+        "source_id": "PU-1029",
+        "canonical_sgw_id": "SGW-P12"
+      },
+      {
+        "source_id": "WA-1030",
+        "canonical_sgw_id": "SGW-W12"
+      },
+      {
+        "source_id": "WA-1031",
+        "canonical_sgw_id": "SGW-W07"
+      },
+      {
+        "source_id": "WA-1032",
+        "canonical_sgw_id": "SGW-W09"
+      },
+      {
+        "source_id": "WA-1033",
+        "canonical_sgw_id": "SGW-W03"
+      },
+      {
+        "source_id": "WA-1034",
+        "canonical_sgw_id": "SGW-W15"
+      },
+      {
+        "source_id": "HO-1035",
+        "canonical_sgw_id": "SGW-H3"
+      },
+      {
+        "source_id": "FI-1036",
+        "canonical_sgw_id": "SGW-F2"
+      },
+      {
+        "source_id": "EM-1037",
+        "canonical_sgw_id": "SGW-E1"
+      },
+      {
+        "source_id": "DI-1038",
+        "canonical_sgw_id": "SGW-D1"
+      },
+      {
+        "source_id": "PO-1039",
+        "canonical_sgw_id": "SGW-PS1"
+      }
+    ],
+    "field_ops": [
+      {
+        "source_id": "OPS-S17",
+        "canonical_sgw_id": "SGW-S17"
+      },
+      {
+        "source_id": "OPS-S31",
+        "canonical_sgw_id": "SGW-S31"
+      },
+      {
+        "source_id": "OPS-S08",
+        "canonical_sgw_id": "SGW-S08"
+      },
+      {
+        "source_id": "OPS-S12",
+        "canonical_sgw_id": "SGW-S12"
+      },
+      {
+        "source_id": "OPS-S01",
+        "canonical_sgw_id": "SGW-S01"
+      },
+      {
+        "source_id": "OPS-S02",
+        "canonical_sgw_id": "SGW-S02"
+      },
+      {
+        "source_id": "OPS-S03",
+        "canonical_sgw_id": "SGW-S03"
+      },
+      {
+        "source_id": "OPS-S04",
+        "canonical_sgw_id": "SGW-S04"
+      },
+      {
+        "source_id": "OPS-S05",
+        "canonical_sgw_id": "SGW-S05"
+      },
+      {
+        "source_id": "OPS-S06",
+        "canonical_sgw_id": "SGW-S06"
+      },
+      {
+        "source_id": "OPS-S07",
+        "canonical_sgw_id": "SGW-S07"
+      },
+      {
+        "source_id": "OPS-S09",
+        "canonical_sgw_id": "SGW-S09"
+      },
+      {
+        "source_id": "OPS-S10",
+        "canonical_sgw_id": "SGW-S10"
+      },
+      {
+        "source_id": "OPS-S11",
+        "canonical_sgw_id": "SGW-S11"
+      },
+      {
+        "source_id": "OPS-S13",
+        "canonical_sgw_id": "SGW-S13"
+      },
+      {
+        "source_id": "OPS-S14",
+        "canonical_sgw_id": "SGW-S14"
+      },
+      {
+        "source_id": "OPS-S15",
+        "canonical_sgw_id": "SGW-S15"
+      },
+      {
+        "source_id": "OPS-S16",
+        "canonical_sgw_id": "SGW-S16"
+      },
+      {
+        "source_id": "OPS-P4",
+        "canonical_sgw_id": "SGW-P4"
+      },
+      {
+        "source_id": "OPS-P9",
+        "canonical_sgw_id": "SGW-P9"
+      },
+      {
+        "source_id": "OPS-P7",
+        "canonical_sgw_id": "SGW-P7"
+      },
+      {
+        "source_id": "OPS-P11",
+        "canonical_sgw_id": "SGW-P11"
+      },
+      {
+        "source_id": "OPS-P1",
+        "canonical_sgw_id": "SGW-P1"
+      },
+      {
+        "source_id": "OPS-P2",
+        "canonical_sgw_id": "SGW-P2"
+      },
+      {
+        "source_id": "OPS-P3",
+        "canonical_sgw_id": "SGW-P3"
+      },
+      {
+        "source_id": "OPS-P5",
+        "canonical_sgw_id": "SGW-P5"
+      },
+      {
+        "source_id": "OPS-P6",
+        "canonical_sgw_id": "SGW-P6"
+      },
+      {
+        "source_id": "OPS-P8",
+        "canonical_sgw_id": "SGW-P8"
+      },
+      {
+        "source_id": "OPS-P10",
+        "canonical_sgw_id": "SGW-P10"
+      },
+      {
+        "source_id": "OPS-P12",
+        "canonical_sgw_id": "SGW-P12"
+      },
+      {
+        "source_id": "OPS-W12",
+        "canonical_sgw_id": "SGW-W12"
+      },
+      {
+        "source_id": "OPS-W07",
+        "canonical_sgw_id": "SGW-W07"
+      },
+      {
+        "source_id": "OPS-W09",
+        "canonical_sgw_id": "SGW-W09"
+      },
+      {
+        "source_id": "OPS-W03",
+        "canonical_sgw_id": "SGW-W03"
+      },
+      {
+        "source_id": "OPS-W15",
+        "canonical_sgw_id": "SGW-W15"
+      },
+      {
+        "source_id": "OPS-H3",
+        "canonical_sgw_id": "SGW-H3"
+      },
+      {
+        "source_id": "OPS-F2",
+        "canonical_sgw_id": "SGW-F2"
+      },
+      {
+        "source_id": "OPS-E1",
+        "canonical_sgw_id": "SGW-E1"
+      },
+      {
+        "source_id": "OPS-D1",
+        "canonical_sgw_id": "SGW-D1"
+      },
+      {
+        "source_id": "OPS-PS1",
+        "canonical_sgw_id": "SGW-PS1"
+      }
+    ]
+  },
+  "assets": [
+    {
+      "sgw_id": "SGW-S17",
+      "asset_type": "substation",
+      "name": "Substation S17",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1000",
+        "legacy_gis": "GIS/S17"
+      },
+      "latitude": 32.735,
+      "longitude": -79.86,
+      "condition_score": 78,
+      "disruption_baseline": 0.32,
+      "storm_exposure": 0.7,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-03-17",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "coastal",
+        "coastal_flood_exposure": true
+      }
+    },
+    {
+      "sgw_id": "SGW-S31",
+      "asset_type": "substation",
+      "name": "Substation S31",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1001",
+        "legacy_gis": "GIS/S31"
+      },
+      "latitude": 33.05,
+      "longitude": -80.36,
+      "condition_score": 40,
+      "disruption_baseline": 0.37,
+      "storm_exposure": 0.82,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-06-27",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "inland_resilient",
+        "intrinsic_criticality": 1.0
+      }
+    },
+    {
+      "sgw_id": "SGW-S08",
+      "asset_type": "substation",
+      "name": "Substation S08",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1002",
+        "legacy_gis": "GIS/S08"
+      },
+      "latitude": 32.991627,
+      "longitude": -80.431566,
+      "condition_score": 63,
+      "disruption_baseline": 0.25,
+      "storm_exposure": 0.65,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-01-16",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S12",
+      "asset_type": "substation",
+      "name": "Substation S12",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1003",
+        "legacy_gis": "GIS/S12"
+      },
+      "latitude": 32.952463,
+      "longitude": -80.434609,
+      "condition_score": 81,
+      "disruption_baseline": 0.11,
+      "storm_exposure": 0.42,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-02-27",
+      "open_work_orders": 3,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S01",
+      "asset_type": "substation",
+      "name": "Substation S01",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1004",
+        "legacy_gis": "GIS/S01"
+      },
+      "latitude": 33.119878,
+      "longitude": -80.009892,
+      "condition_score": 62,
+      "disruption_baseline": 0.15,
+      "storm_exposure": 0.4,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-02-23",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "inland_flood"
+      }
+    },
+    {
+      "sgw_id": "SGW-S02",
+      "asset_type": "substation",
+      "name": "Substation S02",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1005",
+        "legacy_gis": "GIS/S02"
+      },
+      "latitude": 32.874833,
+      "longitude": -80.396207,
+      "condition_score": 65,
+      "disruption_baseline": 0.1,
+      "storm_exposure": 0.76,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-01-21",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S03",
+      "asset_type": "substation",
+      "name": "Substation S03",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1006",
+        "legacy_gis": "GIS/S03"
+      },
+      "latitude": 32.931335,
+      "longitude": -80.377601,
+      "condition_score": 86,
+      "disruption_baseline": 0.12,
+      "storm_exposure": 0.27,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-04-12",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S04",
+      "asset_type": "substation",
+      "name": "Substation S04",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1007",
+        "legacy_gis": "GIS/S04"
+      },
+      "latitude": 32.985582,
+      "longitude": -80.041348,
+      "condition_score": 88,
+      "disruption_baseline": 0.18,
+      "storm_exposure": 0.71,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-01-17",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "inland_flood"
+      }
+    },
+    {
+      "sgw_id": "SGW-S05",
+      "asset_type": "substation",
+      "name": "Substation S05",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1008",
+        "legacy_gis": "GIS/S05"
+      },
+      "latitude": 33.035,
+      "longitude": -80.295,
+      "condition_score": 53,
+      "disruption_baseline": 0.22,
+      "storm_exposure": 0.71,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-03-15",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S06",
+      "asset_type": "substation",
+      "name": "Substation S06",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1009",
+        "legacy_gis": "GIS/S06"
+      },
+      "latitude": 33.105,
+      "longitude": -80.155,
+      "condition_score": 70,
+      "disruption_baseline": 0.11,
+      "storm_exposure": 0.39,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-05-15",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_flood"
+      }
+    },
+    {
+      "sgw_id": "SGW-S07",
+      "asset_type": "substation",
+      "name": "Substation S07",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1010",
+        "legacy_gis": "GIS/S07"
+      },
+      "latitude": 33.14568,
+      "longitude": -80.050866,
+      "condition_score": 58,
+      "disruption_baseline": 0.15,
+      "storm_exposure": 0.39,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-02-20",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "inland_flood"
+      }
+    },
+    {
+      "sgw_id": "SGW-S09",
+      "asset_type": "substation",
+      "name": "Substation S09",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1011",
+        "legacy_gis": "GIS/S09"
+      },
+      "latitude": 32.904536,
+      "longitude": -80.411611,
+      "condition_score": 62,
+      "disruption_baseline": 0.22,
+      "storm_exposure": 0.68,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-05-20",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S10",
+      "asset_type": "substation",
+      "name": "Substation S10",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1012",
+        "legacy_gis": "GIS/S10"
+      },
+      "latitude": 32.845,
+      "longitude": -79.985,
+      "condition_score": 89,
+      "disruption_baseline": 0.16,
+      "storm_exposure": 0.72,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-02-17",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "coastal"
+      }
+    },
+    {
+      "sgw_id": "SGW-S11",
+      "asset_type": "substation",
+      "name": "Substation S11",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1013",
+        "legacy_gis": "GIS/S11"
+      },
+      "latitude": 32.925,
+      "longitude": -80.32,
+      "condition_score": 85,
+      "disruption_baseline": 0.15,
+      "storm_exposure": 0.56,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-02-26",
+      "open_work_orders": 3,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S13",
+      "asset_type": "substation",
+      "name": "Substation S13",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1014",
+        "legacy_gis": "GIS/S13"
+      },
+      "latitude": 32.790307,
+      "longitude": -80.35721,
+      "condition_score": 53,
+      "disruption_baseline": 0.21,
+      "storm_exposure": 0.71,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-06-23",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S14",
+      "asset_type": "substation",
+      "name": "Substation S14",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1015",
+        "legacy_gis": "GIS/S14"
+      },
+      "latitude": 33.145,
+      "longitude": -80.06,
+      "condition_score": 72,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.78,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-01-13",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "inland_flood"
+      }
+    },
+    {
+      "sgw_id": "SGW-S15",
+      "asset_type": "substation",
+      "name": "Substation S15",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1016",
+        "legacy_gis": "GIS/S15"
+      },
+      "latitude": 32.792753,
+      "longitude": -80.448118,
+      "condition_score": 89,
+      "disruption_baseline": 0.13,
+      "storm_exposure": 0.41,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-06-18",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-S16",
+      "asset_type": "substation",
+      "name": "Substation S16",
+      "domain": "electric",
+      "source_ids": {
+        "electric_registry": "SU-1017",
+        "legacy_gis": "GIS/S16"
+      },
+      "latitude": 33.16,
+      "longitude": -80.145,
+      "condition_score": 80,
+      "disruption_baseline": 0.23,
+      "storm_exposure": 0.71,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-05-16",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_flood"
+      }
+    },
+    {
+      "sgw_id": "SGW-P4",
+      "asset_type": "pump_station",
+      "name": "Pump Station P4",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1018",
+        "legacy_gis": "GIS/P4"
+      },
+      "latitude": 32.77,
+      "longitude": -79.9,
+      "condition_score": 74,
+      "disruption_baseline": 0.18,
+      "storm_exposure": 0.55,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-05-10",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "coastal",
+        "backup_endurance_hours": 6
+      }
+    },
+    {
+      "sgw_id": "SGW-P9",
+      "asset_type": "pump_station",
+      "name": "Pump Station P9",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1019",
+        "legacy_gis": "GIS/P9"
+      },
+      "latitude": 33.01,
+      "longitude": -80.31,
+      "condition_score": 83,
+      "disruption_baseline": 0.12,
+      "storm_exposure": 0.4,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-03-19",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_resilient",
+        "backup_endurance_hours": 18
+      }
+    },
+    {
+      "sgw_id": "SGW-P7",
+      "asset_type": "pump_station",
+      "name": "Pump Station P7",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1020",
+        "legacy_gis": "GIS/P7"
+      },
+      "latitude": 32.746646,
+      "longitude": -79.940754,
+      "condition_score": 80,
+      "disruption_baseline": 0.12,
+      "storm_exposure": 0.4,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-01-12",
+      "open_work_orders": 3,
+      "attributes": {
+        "operating_zone": "coastal",
+        "backup_endurance_hours": 8
+      }
+    },
+    {
+      "sgw_id": "SGW-P11",
+      "asset_type": "pump_station",
+      "name": "Pump Station P11",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1021",
+        "legacy_gis": "GIS/P11"
+      },
+      "latitude": 33.11,
+      "longitude": -80.08,
+      "condition_score": 67,
+      "disruption_baseline": 0.2,
+      "storm_exposure": 0.71,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-05-14",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_flood",
+        "flood_sensitive": true,
+        "backup_endurance_hours": 4
+      }
+    },
+    {
+      "sgw_id": "SGW-P1",
+      "asset_type": "pump_station",
+      "name": "Pump Station P1",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1022",
+        "legacy_gis": "GIS/P1"
+      },
+      "latitude": 32.96273,
+      "longitude": -80.098176,
+      "condition_score": 80,
+      "disruption_baseline": 0.24,
+      "storm_exposure": 0.31,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-02-27",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "lower_exposure",
+        "backup_endurance_hours": 12
+      }
+    },
+    {
+      "sgw_id": "SGW-P2",
+      "asset_type": "pump_station",
+      "name": "Pump Station P2",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1023",
+        "legacy_gis": "GIS/P2"
+      },
+      "latitude": 32.891773,
+      "longitude": -79.928224,
+      "condition_score": 69,
+      "disruption_baseline": 0.15,
+      "storm_exposure": 0.58,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-04-13",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "coastal",
+        "backup_endurance_hours": 8
+      }
+    },
+    {
+      "sgw_id": "SGW-P3",
+      "asset_type": "pump_station",
+      "name": "Pump Station P3",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1024",
+        "legacy_gis": "GIS/P3"
+      },
+      "latitude": 33.08,
+      "longitude": -80.14,
+      "condition_score": 64,
+      "disruption_baseline": 0.09,
+      "storm_exposure": 0.23,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-01-12",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "inland_flood",
+        "backup_endurance_hours": 6
+      }
+    },
+    {
+      "sgw_id": "SGW-P5",
+      "asset_type": "pump_station",
+      "name": "Pump Station P5",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1025",
+        "legacy_gis": "GIS/P5"
+      },
+      "latitude": 32.83,
+      "longitude": -79.97,
+      "condition_score": 64,
+      "disruption_baseline": 0.09,
+      "storm_exposure": 0.24,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-03-25",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "coastal",
+        "backup_endurance_hours": 10
+      }
+    },
+    {
+      "sgw_id": "SGW-P6",
+      "asset_type": "pump_station",
+      "name": "Pump Station P6",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1026",
+        "legacy_gis": "GIS/P6"
+      },
+      "latitude": 32.945,
+      "longitude": -80.3,
+      "condition_score": 84,
+      "disruption_baseline": 0.1,
+      "storm_exposure": 0.72,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-04-23",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_resilient",
+        "backup_endurance_hours": 12
+      }
+    },
+    {
+      "sgw_id": "SGW-P8",
+      "asset_type": "pump_station",
+      "name": "Pump Station P8",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1027",
+        "legacy_gis": "GIS/P8"
+      },
+      "latitude": 32.914846,
+      "longitude": -80.179126,
+      "condition_score": 56,
+      "disruption_baseline": 0.1,
+      "storm_exposure": 0.45,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-06-11",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "lower_exposure",
+        "backup_endurance_hours": 10
+      }
+    },
+    {
+      "sgw_id": "SGW-P10",
+      "asset_type": "pump_station",
+      "name": "Pump Station P10",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1028",
+        "legacy_gis": "GIS/P10"
+      },
+      "latitude": 33.116369,
+      "longitude": -80.305779,
+      "condition_score": 53,
+      "disruption_baseline": 0.15,
+      "storm_exposure": 0.4,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-02-27",
+      "open_work_orders": 3,
+      "attributes": {
+        "operating_zone": "inland_resilient",
+        "backup_endurance_hours": 10
+      }
+    },
+    {
+      "sgw_id": "SGW-P12",
+      "asset_type": "pump_station",
+      "name": "Pump Station P12",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "PU-1029",
+        "legacy_gis": "GIS/P12"
+      },
+      "latitude": 33.125,
+      "longitude": -80.13,
+      "condition_score": 58,
+      "disruption_baseline": 0.15,
+      "storm_exposure": 0.37,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-04-27",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "inland_flood",
+        "backup_endurance_hours": 8
+      }
+    },
+    {
+      "sgw_id": "SGW-W12",
+      "asset_type": "water_zone",
+      "name": "Water Service Zone W12",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "WA-1030",
+        "legacy_gis": "GIS/W12"
+      },
+      "latitude": 32.81,
+      "longitude": -79.95,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-01-12",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "coastal",
+        "population": 84000
+      }
+    },
+    {
+      "sgw_id": "SGW-W07",
+      "asset_type": "water_zone",
+      "name": "Water Service Zone W07",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "WA-1031",
+        "legacy_gis": "GIS/W07"
+      },
+      "latitude": 32.97,
+      "longitude": -80.28,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-02-22",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "inland_resilient",
+        "population": 28000
+      }
+    },
+    {
+      "sgw_id": "SGW-W09",
+      "asset_type": "water_zone",
+      "name": "Water Service Zone W09",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "WA-1032",
+        "legacy_gis": "GIS/W09"
+      },
+      "latitude": 32.795733,
+      "longitude": -80.44875,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-04-18",
+      "open_work_orders": 3,
+      "attributes": {
+        "operating_zone": "inland_resilient",
+        "population": 52000
+      }
+    },
+    {
+      "sgw_id": "SGW-W03",
+      "asset_type": "water_zone",
+      "name": "Water Service Zone W03",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "WA-1033",
+        "legacy_gis": "GIS/W03"
+      },
+      "latitude": 33.06,
+      "longitude": -80.12,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-06-27",
+      "open_work_orders": 3,
+      "attributes": {
+        "operating_zone": "inland_flood",
+        "population": 41000
+      }
+    },
+    {
+      "sgw_id": "SGW-W15",
+      "asset_type": "water_zone",
+      "name": "Water Service Zone W15",
+      "domain": "water",
+      "source_ids": {
+        "water_ops": "WA-1034",
+        "legacy_gis": "GIS/W15"
+      },
+      "latitude": 32.791207,
+      "longitude": -80.277909,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-01-28",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "inland_resilient",
+        "population": 33000
+      }
+    },
+    {
+      "sgw_id": "SGW-H3",
+      "asset_type": "hospital",
+      "name": "Hospital H3",
+      "domain": "community",
+      "source_ids": {
+        "water_ops": "HO-1035",
+        "legacy_gis": "GIS/H3"
+      },
+      "latitude": 32.823,
+      "longitude": -79.96,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-05-25",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "coastal",
+        "beds": 410
+      }
+    },
+    {
+      "sgw_id": "SGW-F2",
+      "asset_type": "fire_station",
+      "name": "Fire Station F2",
+      "domain": "community",
+      "source_ids": {
+        "water_ops": "FI-1036",
+        "legacy_gis": "GIS/F2"
+      },
+      "latitude": 32.798,
+      "longitude": -79.935,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-02-12",
+      "open_work_orders": 0,
+      "attributes": {
+        "operating_zone": "coastal",
+        "appliances": 6
+      }
+    },
+    {
+      "sgw_id": "SGW-E1",
+      "asset_type": "emergency_operations_centre",
+      "name": "Emergency Operations Centre E1",
+      "domain": "community",
+      "source_ids": {
+        "water_ops": "EM-1037",
+        "legacy_gis": "GIS/E1"
+      },
+      "latitude": 33.030598,
+      "longitude": -80.313582,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-01-28",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    },
+    {
+      "sgw_id": "SGW-D1",
+      "asset_type": "dialysis_centre",
+      "name": "Dialysis Centre D1",
+      "domain": "community",
+      "source_ids": {
+        "water_ops": "DI-1038",
+        "legacy_gis": "GIS/D1"
+      },
+      "latitude": 33.05,
+      "longitude": -80.13,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-CENTRAL",
+      "last_inspection_date": "2026-01-23",
+      "open_work_orders": 2,
+      "attributes": {
+        "operating_zone": "inland_flood"
+      }
+    },
+    {
+      "sgw_id": "SGW-PS1",
+      "asset_type": "police_station",
+      "name": "Police Station PS1",
+      "domain": "community",
+      "source_ids": {
+        "water_ops": "PO-1039",
+        "legacy_gis": "GIS/PS1"
+      },
+      "latitude": 32.955,
+      "longitude": -80.27,
+      "condition_score": 70,
+      "disruption_baseline": 0.14,
+      "storm_exposure": 0.5,
+      "service_region": "SGW-NORTH",
+      "last_inspection_date": "2026-06-20",
+      "open_work_orders": 1,
+      "attributes": {
+        "operating_zone": "inland_resilient"
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from_id": "SGW-S17",
+      "to_id": "SGW-P4",
+      "relationship": "powers",
+      "backup_endurance_hours": 6
+    },
+    {
+      "from_id": "SGW-P4",
+      "to_id": "SGW-W12",
+      "relationship": "serves",
+      "capacity_share": 0.7
+    },
+    {
+      "from_id": "SGW-W12",
+      "to_id": "SGW-H3",
+      "relationship": "located_in",
+      "dependency_class": "service_consequence"
+    },
+    {
+      "from_id": "SGW-W12",
+      "to_id": "SGW-F2",
+      "relationship": "located_in",
+      "dependency_class": "service_consequence",
+      "verified": true,
+      "confidence": 0.68,
+      "source": "inferred_service_registry",
+      "last_validated": "2026-06-18"
+    },
+    {
+      "from_id": "SGW-S10",
+      "to_id": "SGW-P5",
+      "relationship": "powers",
+      "backup_endurance_hours": 10
+    },
+    {
+      "from_id": "SGW-P5",
+      "to_id": "SGW-W12",
+      "relationship": "serves",
+      "capacity_share": 0.3
+    },
+    {
+      "from_id": "SGW-S31",
+      "to_id": "SGW-P9",
+      "relationship": "powers",
+      "redundancy_group": "P9-feeds"
+    },
+    {
+      "from_id": "SGW-S05",
+      "to_id": "SGW-P9",
+      "relationship": "backup_feed",
+      "redundancy_group": "P9-feeds",
+      "capacity_share": 0.3
+    },
+    {
+      "from_id": "SGW-P9",
+      "to_id": "SGW-W07",
+      "relationship": "serves",
+      "capacity_share": 1.0
+    },
+    {
+      "from_id": "SGW-S11",
+      "to_id": "SGW-P6",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P6",
+      "to_id": "SGW-W07",
+      "relationship": "serves",
+      "capacity_share": 0.4
+    },
+    {
+      "from_id": "SGW-S08",
+      "to_id": "SGW-P7",
+      "relationship": "powers",
+      "redundancy_group": "P7-feeds"
+    },
+    {
+      "from_id": "SGW-S12",
+      "to_id": "SGW-P7",
+      "relationship": "backup_feed",
+      "redundancy_group": "P7-feeds",
+      "capacity_share": 1.0
+    },
+    {
+      "from_id": "SGW-P7",
+      "to_id": "SGW-W09",
+      "relationship": "serves",
+      "capacity_share": 0.65
+    },
+    {
+      "from_id": "SGW-S13",
+      "to_id": "SGW-P8",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P8",
+      "to_id": "SGW-W09",
+      "relationship": "serves",
+      "capacity_share": 0.35
+    },
+    {
+      "from_id": "SGW-S02",
+      "to_id": "SGW-P1",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P1",
+      "to_id": "SGW-W15",
+      "relationship": "serves",
+      "capacity_share": 0.34
+    },
+    {
+      "from_id": "SGW-S03",
+      "to_id": "SGW-P2",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P2",
+      "to_id": "SGW-W15",
+      "relationship": "serves",
+      "capacity_share": 0.33
+    },
+    {
+      "from_id": "SGW-S06",
+      "to_id": "SGW-P3",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P3",
+      "to_id": "SGW-W03",
+      "relationship": "serves",
+      "capacity_share": 0.25
+    },
+    {
+      "from_id": "SGW-S15",
+      "to_id": "SGW-P10",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P10",
+      "to_id": "SGW-W15",
+      "relationship": "serves",
+      "capacity_share": 0.33
+    },
+    {
+      "from_id": "SGW-S14",
+      "to_id": "SGW-P11",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P11",
+      "to_id": "SGW-W03",
+      "relationship": "serves",
+      "capacity_share": 0.5
+    },
+    {
+      "from_id": "SGW-S16",
+      "to_id": "SGW-P12",
+      "relationship": "powers"
+    },
+    {
+      "from_id": "SGW-P12",
+      "to_id": "SGW-W03",
+      "relationship": "serves",
+      "capacity_share": 0.25
+    },
+    {
+      "from_id": "SGW-W09",
+      "to_id": "SGW-E1",
+      "relationship": "located_in",
+      "dependency_class": "service_consequence"
+    },
+    {
+      "from_id": "SGW-W03",
+      "to_id": "SGW-D1",
+      "relationship": "located_in",
+      "dependency_class": "service_consequence"
+    },
+    {
+      "from_id": "SGW-W07",
+      "to_id": "SGW-PS1",
+      "relationship": "located_in",
+      "dependency_class": "service_consequence"
+    }
+  ],
+  "advisories": [
+    {
+      "advisory_id": "ADV-T72",
+      "issued_at": "2026-09-01T08:00:00Z",
+      "label": "T-72 hours",
+      "storm_severity": 0.68,
+      "event_id": "HURRICANE-IRIS",
+      "stage": "T-72",
+      "storm_category": 2,
+      "wind_severity": 0.68,
+      "rainfall_severity": 0.61,
+      "flood_severity": 0.71,
+      "storm_center_latitude": 31.9,
+      "storm_center_longitude": -78.7,
+      "impact_radius_km": 44.3,
+      "storm_track": [
+        {
+          "stage": "T-72",
+          "latitude": 31.9,
+          "longitude": -78.7
+        },
+        {
+          "stage": "T-48",
+          "latitude": 32.25,
+          "longitude": -79.15
+        },
+        {
+          "stage": "T-24",
+          "latitude": 32.55,
+          "longitude": -79.6
+        },
+        {
+          "stage": "T-12",
+          "latitude": 32.78,
+          "longitude": -79.9
+        },
+        {
+          "stage": "Landfall",
+          "latitude": 33.0,
+          "longitude": -80.18
+        }
+      ],
+      "data_freshness_minutes": {
+        "weather": 8,
+        "field_ops": 12,
+        "maintenance": 120
+      },
+      "changes": [
+        {
+          "type": "weather_watch",
+          "field": "forecast_cone",
+          "current": "broad"
+        }
+      ]
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "issued_at": "2026-09-02T08:00:00Z",
+      "label": "T-48 hours",
+      "storm_severity": 0.76,
+      "event_id": "HURRICANE-IRIS",
+      "stage": "T-48",
+      "storm_category": 2,
+      "wind_severity": 0.76,
+      "rainfall_severity": 0.68,
+      "flood_severity": 0.8,
+      "storm_center_latitude": 32.25,
+      "storm_center_longitude": -79.15,
+      "impact_radius_km": 46.2,
+      "storm_track": [
+        {
+          "stage": "T-72",
+          "latitude": 31.9,
+          "longitude": -78.7
+        },
+        {
+          "stage": "T-48",
+          "latitude": 32.25,
+          "longitude": -79.15
+        },
+        {
+          "stage": "T-24",
+          "latitude": 32.55,
+          "longitude": -79.6
+        },
+        {
+          "stage": "T-12",
+          "latitude": 32.78,
+          "longitude": -79.9
+        },
+        {
+          "stage": "Landfall",
+          "latitude": 33.0,
+          "longitude": -80.18
+        }
+      ],
+      "data_freshness_minutes": {
+        "weather": 8,
+        "field_ops": 12,
+        "maintenance": 120
+      },
+      "changes": [
+        {
+          "type": "weather_update",
+          "area": "SGW-NORTH",
+          "field": "track_proximity",
+          "current": "increased"
+        },
+        {
+          "type": "field_update",
+          "asset_id": "SGW-S17",
+          "field": "restoration_hours",
+          "current": 4
+        }
+      ]
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "issued_at": "2026-09-03T08:00:00Z",
+      "label": "T-24 hours",
+      "storm_severity": 0.9,
+      "event_id": "HURRICANE-IRIS",
+      "stage": "T-24",
+      "storm_category": 3,
+      "wind_severity": 0.9,
+      "rainfall_severity": 0.81,
+      "flood_severity": 0.95,
+      "storm_center_latitude": 32.55,
+      "storm_center_longitude": -79.6,
+      "impact_radius_km": 49.6,
+      "storm_track": [
+        {
+          "stage": "T-72",
+          "latitude": 31.9,
+          "longitude": -78.7
+        },
+        {
+          "stage": "T-48",
+          "latitude": 32.25,
+          "longitude": -79.15
+        },
+        {
+          "stage": "T-24",
+          "latitude": 32.55,
+          "longitude": -79.6
+        },
+        {
+          "stage": "T-12",
+          "latitude": 32.78,
+          "longitude": -79.9
+        },
+        {
+          "stage": "Landfall",
+          "latitude": 33.0,
+          "longitude": -80.18
+        }
+      ],
+      "data_freshness_minutes": {
+        "weather": 8,
+        "field_ops": 12,
+        "maintenance": 120
+      },
+      "changes": [
+        {
+          "type": "field_update",
+          "asset_id": "SGW-S17",
+          "field": "restoration_hours",
+          "previous": 4,
+          "current": 14
+        },
+        {
+          "type": "weather_update",
+          "area": "SGW-NORTH",
+          "field": "forecast_confidence",
+          "current": "high"
+        }
+      ]
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "issued_at": "2026-09-04T08:00:00Z",
+      "label": "T-12 hours",
+      "storm_severity": 0.96,
+      "event_id": "HURRICANE-IRIS",
+      "stage": "T-12",
+      "storm_category": 3,
+      "wind_severity": 0.96,
+      "rainfall_severity": 0.86,
+      "flood_severity": 1.01,
+      "storm_center_latitude": 32.78,
+      "storm_center_longitude": -79.9,
+      "impact_radius_km": 51.0,
+      "storm_track": [
+        {
+          "stage": "T-72",
+          "latitude": 31.9,
+          "longitude": -78.7
+        },
+        {
+          "stage": "T-48",
+          "latitude": 32.25,
+          "longitude": -79.15
+        },
+        {
+          "stage": "T-24",
+          "latitude": 32.55,
+          "longitude": -79.6
+        },
+        {
+          "stage": "T-12",
+          "latitude": 32.78,
+          "longitude": -79.9
+        },
+        {
+          "stage": "Landfall",
+          "latitude": 33.0,
+          "longitude": -80.18
+        }
+      ],
+      "data_freshness_minutes": {
+        "weather": 8,
+        "field_ops": 12,
+        "maintenance": 120
+      },
+      "changes": [
+        {
+          "type": "weather_update",
+          "asset_id": "SGW-P11",
+          "field": "flood_exposure",
+          "current": "increased"
+        },
+        {
+          "type": "verification",
+          "asset_id": "SGW-P4",
+          "field": "generator_status",
+          "current": "verified_operational"
+        }
+      ]
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "issued_at": "2026-09-05T08:00:00Z",
+      "label": "Landfall",
+      "storm_severity": 0.84,
+      "event_id": "HURRICANE-IRIS",
+      "stage": "Landfall",
+      "storm_category": 3,
+      "wind_severity": 0.84,
+      "rainfall_severity": 0.76,
+      "flood_severity": 0.88,
+      "storm_center_latitude": 33.0,
+      "storm_center_longitude": -80.18,
+      "impact_radius_km": 48.2,
+      "storm_track": [
+        {
+          "stage": "T-72",
+          "latitude": 31.9,
+          "longitude": -78.7
+        },
+        {
+          "stage": "T-48",
+          "latitude": 32.25,
+          "longitude": -79.15
+        },
+        {
+          "stage": "T-24",
+          "latitude": 32.55,
+          "longitude": -79.6
+        },
+        {
+          "stage": "T-12",
+          "latitude": 32.78,
+          "longitude": -79.9
+        },
+        {
+          "stage": "Landfall",
+          "latitude": 33.0,
+          "longitude": -80.18
+        }
+      ],
+      "data_freshness_minutes": {
+        "weather": 8,
+        "field_ops": 12,
+        "maintenance": 120
+      },
+      "changes": [
+        {
+          "type": "response_update",
+          "asset_id": "SGW-P4",
+          "field": "temporary_generation",
+          "current": "in_progress"
+        },
+        {
+          "type": "response_update",
+          "asset_id": "SGW-S17",
+          "field": "priority_inspection",
+          "current": "approved"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S17",
+      "flood_depth_m": 0.28,
+      "wind_gust_kph": 80.2,
+      "restoration_hours": 4,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S31",
+      "flood_depth_m": 0.06,
+      "wind_gust_kph": 88.0,
+      "restoration_hours": 9.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S08",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 82.5,
+      "restoration_hours": 8.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S12",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 75.1,
+      "restoration_hours": 6.0,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S01",
+      "flood_depth_m": 0.49,
+      "wind_gust_kph": 66.0,
+      "restoration_hours": 5.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S02",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 86.0,
+      "restoration_hours": 9.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S03",
+      "flood_depth_m": 0.06,
+      "wind_gust_kph": 70.2,
+      "restoration_hours": 4.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S04",
+      "flood_depth_m": 0.41,
+      "wind_gust_kph": 76.0,
+      "restoration_hours": 8.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S05",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 84.4,
+      "restoration_hours": 8.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S06",
+      "flood_depth_m": 0.27,
+      "wind_gust_kph": 65.7,
+      "restoration_hours": 5.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S07",
+      "flood_depth_m": 0.39,
+      "wind_gust_kph": 65.7,
+      "restoration_hours": 5.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S09",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 83.5,
+      "restoration_hours": 8.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S10",
+      "flood_depth_m": 0.25,
+      "wind_gust_kph": 80.9,
+      "restoration_hours": 8.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S11",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 79.6,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S13",
+      "flood_depth_m": 0.06,
+      "wind_gust_kph": 84.4,
+      "restoration_hours": 8.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S14",
+      "flood_depth_m": 0.31,
+      "wind_gust_kph": 78.3,
+      "restoration_hours": 9.4,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S15",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 74.7,
+      "restoration_hours": 5.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-S16",
+      "flood_depth_m": 0.36,
+      "wind_gust_kph": 76.0,
+      "restoration_hours": 8.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P4",
+      "flood_depth_m": 0.34,
+      "wind_gust_kph": 75.4,
+      "restoration_hours": 7.2,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "unverified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P9",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 74.4,
+      "restoration_hours": 5.8,
+      "generator_status": "operational",
+      "backup_available_hours": 18,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P7",
+      "flood_depth_m": 0.45,
+      "wind_gust_kph": 70.5,
+      "restoration_hours": 5.8,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P11",
+      "flood_depth_m": 0.69,
+      "wind_gust_kph": 76.0,
+      "restoration_hours": 8.8,
+      "generator_status": "operational",
+      "backup_available_hours": 4,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P1",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 58.6,
+      "restoration_hours": 5.0,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P2",
+      "flood_depth_m": 0.37,
+      "wind_gust_kph": 76.3,
+      "restoration_hours": 7.5,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P3",
+      "flood_depth_m": 0.39,
+      "wind_gust_kph": 60.5,
+      "restoration_hours": 4.2,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P5",
+      "flood_depth_m": 0.43,
+      "wind_gust_kph": 65.4,
+      "restoration_hours": 4.3,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P6",
+      "flood_depth_m": 0.06,
+      "wind_gust_kph": 84.7,
+      "restoration_hours": 8.9,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P8",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 63.1,
+      "restoration_hours": 6.3,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P10",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 74.4,
+      "restoration_hours": 5.8,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-P12",
+      "flood_depth_m": 0.48,
+      "wind_gust_kph": 65.0,
+      "restoration_hours": 5.5,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-W12",
+      "flood_depth_m": 0.39,
+      "wind_gust_kph": 73.8,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-W07",
+      "flood_depth_m": 0.06,
+      "wind_gust_kph": 77.6,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-W09",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 77.6,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-W03",
+      "flood_depth_m": 0.3,
+      "wind_gust_kph": 69.2,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-W15",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 77.6,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-H3",
+      "flood_depth_m": 0.38,
+      "wind_gust_kph": 73.8,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-F2",
+      "flood_depth_m": 0.42,
+      "wind_gust_kph": 73.8,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-E1",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 77.6,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-D1",
+      "flood_depth_m": 0.31,
+      "wind_gust_kph": 69.2,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T72",
+      "sgw_id": "SGW-PS1",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 77.6,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-01T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S17",
+      "flood_depth_m": 0.26,
+      "wind_gust_kph": 85.5,
+      "restoration_hours": 4,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S31",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 94.2,
+      "restoration_hours": 10.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S08",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 88.1,
+      "restoration_hours": 8.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S12",
+      "flood_depth_m": 0.06,
+      "wind_gust_kph": 79.8,
+      "restoration_hours": 6.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S01",
+      "flood_depth_m": 0.38,
+      "wind_gust_kph": 69.7,
+      "restoration_hours": 6.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S02",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 92.0,
+      "restoration_hours": 10.1,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S03",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 74.3,
+      "restoration_hours": 4.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S04",
+      "flood_depth_m": 0.33,
+      "wind_gust_kph": 80.8,
+      "restoration_hours": 9.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S05",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 90.2,
+      "restoration_hours": 9.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S06",
+      "flood_depth_m": 0.49,
+      "wind_gust_kph": 69.3,
+      "restoration_hours": 6.1,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S07",
+      "flood_depth_m": 0.45,
+      "wind_gust_kph": 69.3,
+      "restoration_hours": 6.1,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S09",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 89.2,
+      "restoration_hours": 9.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S10",
+      "flood_depth_m": 0.49,
+      "wind_gust_kph": 86.3,
+      "restoration_hours": 9.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S11",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 84.8,
+      "restoration_hours": 8.0,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S13",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 90.2,
+      "restoration_hours": 9.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S14",
+      "flood_depth_m": 0.29,
+      "wind_gust_kph": 83.4,
+      "restoration_hours": 10.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S15",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 79.4,
+      "restoration_hours": 6.4,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-S16",
+      "flood_depth_m": 0.44,
+      "wind_gust_kph": 80.8,
+      "restoration_hours": 9.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P4",
+      "flood_depth_m": 0.36,
+      "wind_gust_kph": 150.0,
+      "restoration_hours": 7.9,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "unverified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P9",
+      "flood_depth_m": 0.06,
+      "wind_gust_kph": 79.0,
+      "restoration_hours": 6.3,
+      "generator_status": "operational",
+      "backup_available_hours": 18,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P7",
+      "flood_depth_m": 0.34,
+      "wind_gust_kph": 74.7,
+      "restoration_hours": 6.3,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P11",
+      "flood_depth_m": 0.82,
+      "wind_gust_kph": 80.8,
+      "restoration_hours": 9.6,
+      "generator_status": "operational",
+      "backup_available_hours": 4,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P1",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 61.4,
+      "restoration_hours": 5.3,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P2",
+      "flood_depth_m": 0.26,
+      "wind_gust_kph": 81.2,
+      "restoration_hours": 8.2,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P3",
+      "flood_depth_m": 0.39,
+      "wind_gust_kph": 63.5,
+      "restoration_hours": 4.4,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P5",
+      "flood_depth_m": 0.42,
+      "wind_gust_kph": 68.9,
+      "restoration_hours": 4.6,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P6",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 90.6,
+      "restoration_hours": 9.7,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P8",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 66.4,
+      "restoration_hours": 6.8,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P10",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 79.0,
+      "restoration_hours": 6.3,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-P12",
+      "flood_depth_m": 0.54,
+      "wind_gust_kph": 68.6,
+      "restoration_hours": 5.9,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-W12",
+      "flood_depth_m": 0.5,
+      "wind_gust_kph": 150.0,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-W07",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 82.7,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-W09",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 150.0,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-W03",
+      "flood_depth_m": 0.35,
+      "wind_gust_kph": 73.3,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-W15",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 82.7,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-H3",
+      "flood_depth_m": 0.45,
+      "wind_gust_kph": 78.3,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-F2",
+      "flood_depth_m": 0.29,
+      "wind_gust_kph": 78.3,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-E1",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 82.7,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-D1",
+      "flood_depth_m": 0.33,
+      "wind_gust_kph": 73.3,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T48",
+      "sgw_id": "SGW-PS1",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 82.7,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-02T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S17",
+      "flood_depth_m": 0.53,
+      "wind_gust_kph": 94.8,
+      "restoration_hours": 14,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S31",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 105.1,
+      "restoration_hours": 12.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S08",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 97.8,
+      "restoration_hours": 10.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S12",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 88.0,
+      "restoration_hours": 7.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S01",
+      "flood_depth_m": 0.42,
+      "wind_gust_kph": 76.0,
+      "restoration_hours": 7.0,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S02",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 102.5,
+      "restoration_hours": 11.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S03",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 81.6,
+      "restoration_hours": 5.4,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S04",
+      "flood_depth_m": 0.47,
+      "wind_gust_kph": 89.3,
+      "restoration_hours": 10.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S05",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 100.4,
+      "restoration_hours": 10.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S06",
+      "flood_depth_m": 0.5,
+      "wind_gust_kph": 75.6,
+      "restoration_hours": 6.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S07",
+      "flood_depth_m": 0.4,
+      "wind_gust_kph": 75.6,
+      "restoration_hours": 6.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S09",
+      "flood_depth_m": 0.14,
+      "wind_gust_kph": 99.1,
+      "restoration_hours": 10.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S10",
+      "flood_depth_m": 0.4,
+      "wind_gust_kph": 95.7,
+      "restoration_hours": 11.1,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S11",
+      "flood_depth_m": 0.14,
+      "wind_gust_kph": 94.0,
+      "restoration_hours": 9.1,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S13",
+      "flood_depth_m": 0.14,
+      "wind_gust_kph": 100.4,
+      "restoration_hours": 10.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S14",
+      "flood_depth_m": 0.41,
+      "wind_gust_kph": 92.3,
+      "restoration_hours": 11.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S15",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 87.6,
+      "restoration_hours": 7.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-S16",
+      "flood_depth_m": 0.47,
+      "wind_gust_kph": 89.3,
+      "restoration_hours": 10.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P4",
+      "flood_depth_m": 0.38,
+      "wind_gust_kph": 88.4,
+      "restoration_hours": 8.9,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "unverified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P9",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 87.2,
+      "restoration_hours": 7.0,
+      "generator_status": "operational",
+      "backup_available_hours": 18,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P7",
+      "flood_depth_m": 0.53,
+      "wind_gust_kph": 82.0,
+      "restoration_hours": 7.0,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P11",
+      "flood_depth_m": 0.77,
+      "wind_gust_kph": 89.3,
+      "restoration_hours": 10.9,
+      "generator_status": "operational",
+      "backup_available_hours": 4,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P1",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 66.2,
+      "restoration_hours": 5.9,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P2",
+      "flood_depth_m": 0.5,
+      "wind_gust_kph": 89.7,
+      "restoration_hours": 9.3,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P3",
+      "flood_depth_m": 0.63,
+      "wind_gust_kph": 68.8,
+      "restoration_hours": 4.9,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P5",
+      "flood_depth_m": 0.4,
+      "wind_gust_kph": 75.2,
+      "restoration_hours": 5.0,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P6",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 100.8,
+      "restoration_hours": 11.1,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P8",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 72.2,
+      "restoration_hours": 7.7,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P10",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 87.2,
+      "restoration_hours": 7.0,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-P12",
+      "flood_depth_m": 0.54,
+      "wind_gust_kph": 74.8,
+      "restoration_hours": 6.7,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-W12",
+      "flood_depth_m": 0.6,
+      "wind_gust_kph": 86.3,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-W07",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 91.4,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-W09",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 91.4,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-W03",
+      "flood_depth_m": 0.45,
+      "wind_gust_kph": 80.3,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-W15",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 91.4,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-H3",
+      "flood_depth_m": 0.43,
+      "wind_gust_kph": 86.3,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-F2",
+      "flood_depth_m": 0.6,
+      "wind_gust_kph": 86.3,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-E1",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 91.4,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-D1",
+      "flood_depth_m": 0.65,
+      "wind_gust_kph": 80.3,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T24",
+      "sgw_id": "SGW-PS1",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 91.4,
+      "restoration_hours": 8.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-03T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S17",
+      "flood_depth_m": 0.33,
+      "wind_gust_kph": 98.8,
+      "restoration_hours": 14,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S31",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 109.8,
+      "restoration_hours": 13.0,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S08",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 102.0,
+      "restoration_hours": 10.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S12",
+      "flood_depth_m": 0.14,
+      "wind_gust_kph": 91.5,
+      "restoration_hours": 7.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S01",
+      "flood_depth_m": 0.61,
+      "wind_gust_kph": 78.8,
+      "restoration_hours": 7.4,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S02",
+      "flood_depth_m": 0.16,
+      "wind_gust_kph": 107.0,
+      "restoration_hours": 12.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S03",
+      "flood_depth_m": 0.14,
+      "wind_gust_kph": 84.7,
+      "restoration_hours": 5.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S04",
+      "flood_depth_m": 0.43,
+      "wind_gust_kph": 92.9,
+      "restoration_hours": 11.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S05",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 104.8,
+      "restoration_hours": 11.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S06",
+      "flood_depth_m": 0.71,
+      "wind_gust_kph": 78.3,
+      "restoration_hours": 7.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S07",
+      "flood_depth_m": 0.7,
+      "wind_gust_kph": 78.3,
+      "restoration_hours": 7.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S09",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 103.4,
+      "restoration_hours": 11.1,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S10",
+      "flood_depth_m": 0.53,
+      "wind_gust_kph": 99.8,
+      "restoration_hours": 11.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S11",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 97.9,
+      "restoration_hours": 9.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S13",
+      "flood_depth_m": 0.15,
+      "wind_gust_kph": 104.8,
+      "restoration_hours": 11.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S14",
+      "flood_depth_m": 0.54,
+      "wind_gust_kph": 96.1,
+      "restoration_hours": 12.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S15",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 91.1,
+      "restoration_hours": 7.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-S16",
+      "flood_depth_m": 0.48,
+      "wind_gust_kph": 92.9,
+      "restoration_hours": 11.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P4",
+      "flood_depth_m": 0.54,
+      "wind_gust_kph": 92.0,
+      "restoration_hours": 9.4,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P9",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 90.6,
+      "restoration_hours": 7.4,
+      "generator_status": "operational",
+      "backup_available_hours": 18,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P7",
+      "flood_depth_m": 0.37,
+      "wind_gust_kph": 85.2,
+      "restoration_hours": 7.4,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P11",
+      "flood_depth_m": 1.38,
+      "wind_gust_kph": 92.9,
+      "restoration_hours": 11.5,
+      "generator_status": "operational",
+      "backup_available_hours": 4,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P1",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 68.3,
+      "restoration_hours": 6.2,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P2",
+      "flood_depth_m": 0.56,
+      "wind_gust_kph": 93.4,
+      "restoration_hours": 9.8,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P3",
+      "flood_depth_m": 0.42,
+      "wind_gust_kph": 71.0,
+      "restoration_hours": 5.1,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P5",
+      "flood_depth_m": 0.5,
+      "wind_gust_kph": 77.9,
+      "restoration_hours": 5.2,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P6",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 105.2,
+      "restoration_hours": 11.7,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P8",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 74.7,
+      "restoration_hours": 8.0,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P10",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 90.6,
+      "restoration_hours": 7.4,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-P12",
+      "flood_depth_m": 0.43,
+      "wind_gust_kph": 77.4,
+      "restoration_hours": 7.0,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-W12",
+      "flood_depth_m": 0.57,
+      "wind_gust_kph": 89.7,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-W07",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 95.2,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-W09",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 95.2,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-W03",
+      "flood_depth_m": 0.52,
+      "wind_gust_kph": 83.3,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-W15",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 95.2,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-H3",
+      "flood_depth_m": 0.48,
+      "wind_gust_kph": 89.7,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-F2",
+      "flood_depth_m": 0.57,
+      "wind_gust_kph": 89.7,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-E1",
+      "flood_depth_m": 0.16,
+      "wind_gust_kph": 95.2,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-D1",
+      "flood_depth_m": 0.63,
+      "wind_gust_kph": 83.3,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T12",
+      "sgw_id": "SGW-PS1",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 95.2,
+      "restoration_hours": 8.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-04T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S17",
+      "flood_depth_m": 0.35,
+      "wind_gust_kph": 90.9,
+      "restoration_hours": 14,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S31",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 100.4,
+      "restoration_hours": 11.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S08",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 93.7,
+      "restoration_hours": 9.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S12",
+      "flood_depth_m": 0.07,
+      "wind_gust_kph": 84.5,
+      "restoration_hours": 6.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S01",
+      "flood_depth_m": 0.62,
+      "wind_gust_kph": 73.3,
+      "restoration_hours": 6.7,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S02",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 98.0,
+      "restoration_hours": 10.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S03",
+      "flood_depth_m": 0.09,
+      "wind_gust_kph": 78.5,
+      "restoration_hours": 5.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S04",
+      "flood_depth_m": 0.57,
+      "wind_gust_kph": 85.7,
+      "restoration_hours": 10.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S05",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 96.0,
+      "restoration_hours": 10.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S06",
+      "flood_depth_m": 0.32,
+      "wind_gust_kph": 72.9,
+      "restoration_hours": 6.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S07",
+      "flood_depth_m": 0.63,
+      "wind_gust_kph": 72.9,
+      "restoration_hours": 6.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S09",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 94.8,
+      "restoration_hours": 10.0,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S10",
+      "flood_depth_m": 0.49,
+      "wind_gust_kph": 91.7,
+      "restoration_hours": 10.5,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S11",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 90.1,
+      "restoration_hours": 8.6,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S13",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 96.0,
+      "restoration_hours": 10.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S14",
+      "flood_depth_m": 0.5,
+      "wind_gust_kph": 88.5,
+      "restoration_hours": 11.2,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S15",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 84.1,
+      "restoration_hours": 6.8,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-S16",
+      "flood_depth_m": 0.43,
+      "wind_gust_kph": 85.7,
+      "restoration_hours": 10.3,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P4",
+      "flood_depth_m": 0.39,
+      "wind_gust_kph": 84.9,
+      "restoration_hours": 8.5,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P9",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 83.7,
+      "restoration_hours": 6.7,
+      "generator_status": "operational",
+      "backup_available_hours": 18,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P7",
+      "flood_depth_m": 0.47,
+      "wind_gust_kph": 78.9,
+      "restoration_hours": 6.7,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P11",
+      "flood_depth_m": 1.34,
+      "wind_gust_kph": 85.7,
+      "restoration_hours": 10.3,
+      "generator_status": "operational",
+      "backup_available_hours": 4,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P1",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 64.1,
+      "restoration_hours": 5.6,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P2",
+      "flood_depth_m": 0.52,
+      "wind_gust_kph": 86.1,
+      "restoration_hours": 8.8,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P3",
+      "flood_depth_m": 0.56,
+      "wind_gust_kph": 66.5,
+      "restoration_hours": 4.7,
+      "generator_status": "operational",
+      "backup_available_hours": 6,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P5",
+      "flood_depth_m": 0.33,
+      "wind_gust_kph": 72.5,
+      "restoration_hours": 4.8,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P6",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 96.4,
+      "restoration_hours": 10.5,
+      "generator_status": "operational",
+      "backup_available_hours": 12,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P8",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 69.7,
+      "restoration_hours": 7.3,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P10",
+      "flood_depth_m": 0.1,
+      "wind_gust_kph": 83.7,
+      "restoration_hours": 6.7,
+      "generator_status": "operational",
+      "backup_available_hours": 10,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-P12",
+      "flood_depth_m": 0.49,
+      "wind_gust_kph": 72.1,
+      "restoration_hours": 6.4,
+      "generator_status": "operational",
+      "backup_available_hours": 8,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-W12",
+      "flood_depth_m": 0.53,
+      "wind_gust_kph": 82.9,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-W07",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 87.7,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-W09",
+      "flood_depth_m": 0.08,
+      "wind_gust_kph": 87.7,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-W03",
+      "flood_depth_m": 0.46,
+      "wind_gust_kph": 77.3,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-W15",
+      "flood_depth_m": 0.11,
+      "wind_gust_kph": 87.7,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-H3",
+      "flood_depth_m": 0.43,
+      "wind_gust_kph": 82.9,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-F2",
+      "flood_depth_m": 0.36,
+      "wind_gust_kph": 82.9,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-E1",
+      "flood_depth_m": 0.12,
+      "wind_gust_kph": 87.7,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-D1",
+      "flood_depth_m": 0.45,
+      "wind_gust_kph": 77.3,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    },
+    {
+      "advisory_id": "ADV-T0",
+      "sgw_id": "SGW-PS1",
+      "flood_depth_m": 0.13,
+      "wind_gust_kph": 87.7,
+      "restoration_hours": 7.9,
+      "generator_status": "not_applicable",
+      "backup_available_hours": null,
+      "verification_status": "verified",
+      "reported_at": "2026-09-05T08:00:00Z",
+      "reported_by": "Field Operations",
+      "source": "field_ops"
+    }
+  ]
+}

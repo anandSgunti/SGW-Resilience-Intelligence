@@ -1,0 +1,301 @@
+[
+  {
+    "advisory_id": "ADV-T72",
+    "issued_at": "2026-09-01T08:00:00Z",
+    "label": "T-72 hours",
+    "storm_severity": 0.68,
+    "event_id": "HURRICANE-IRIS",
+    "stage": "T-72",
+    "storm_category": 2,
+    "wind_severity": 0.68,
+    "rainfall_severity": 0.61,
+    "flood_severity": 0.71,
+    "storm_center_latitude": 31.9,
+    "storm_center_longitude": -78.7,
+    "impact_radius_km": 44.3,
+    "storm_track": [
+      {
+        "stage": "T-72",
+        "latitude": 31.9,
+        "longitude": -78.7
+      },
+      {
+        "stage": "T-48",
+        "latitude": 32.25,
+        "longitude": -79.15
+      },
+      {
+        "stage": "T-24",
+        "latitude": 32.55,
+        "longitude": -79.6
+      },
+      {
+        "stage": "T-12",
+        "latitude": 32.78,
+        "longitude": -79.9
+      },
+      {
+        "stage": "Landfall",
+        "latitude": 33.0,
+        "longitude": -80.18
+      }
+    ],
+    "data_freshness_minutes": {
+      "weather": 8,
+      "field_ops": 12,
+      "maintenance": 120
+    },
+    "changes": [
+      {
+        "type": "weather_watch",
+        "field": "forecast_cone",
+        "current": "broad"
+      }
+    ]
+  },
+  {
+    "advisory_id": "ADV-T48",
+    "issued_at": "2026-09-02T08:00:00Z",
+    "label": "T-48 hours",
+    "storm_severity": 0.76,
+    "event_id": "HURRICANE-IRIS",
+    "stage": "T-48",
+    "storm_category": 2,
+    "wind_severity": 0.76,
+    "rainfall_severity": 0.68,
+    "flood_severity": 0.8,
+    "storm_center_latitude": 32.25,
+    "storm_center_longitude": -79.15,
+    "impact_radius_km": 46.2,
+    "storm_track": [
+      {
+        "stage": "T-72",
+        "latitude": 31.9,
+        "longitude": -78.7
+      },
+      {
+        "stage": "T-48",
+        "latitude": 32.25,
+        "longitude": -79.15
+      },
+      {
+        "stage": "T-24",
+        "latitude": 32.55,
+        "longitude": -79.6
+      },
+      {
+        "stage": "T-12",
+        "latitude": 32.78,
+        "longitude": -79.9
+      },
+      {
+        "stage": "Landfall",
+        "latitude": 33.0,
+        "longitude": -80.18
+      }
+    ],
+    "data_freshness_minutes": {
+      "weather": 8,
+      "field_ops": 12,
+      "maintenance": 120
+    },
+    "changes": [
+      {
+        "type": "weather_update",
+        "area": "SGW-NORTH",
+        "field": "track_proximity",
+        "current": "increased"
+      },
+      {
+        "type": "field_update",
+        "asset_id": "SGW-S17",
+        "field": "restoration_hours",
+        "current": 4
+      }
+    ]
+  },
+  {
+    "advisory_id": "ADV-T24",
+    "issued_at": "2026-09-03T08:00:00Z",
+    "label": "T-24 hours",
+    "storm_severity": 0.9,
+    "event_id": "HURRICANE-IRIS",
+    "stage": "T-24",
+    "storm_category": 3,
+    "wind_severity": 0.9,
+    "rainfall_severity": 0.81,
+    "flood_severity": 0.95,
+    "storm_center_latitude": 32.55,
+    "storm_center_longitude": -79.6,
+    "impact_radius_km": 49.6,
+    "storm_track": [
+      {
+        "stage": "T-72",
+        "latitude": 31.9,
+        "longitude": -78.7
+      },
+      {
+        "stage": "T-48",
+        "latitude": 32.25,
+        "longitude": -79.15
+      },
+      {
+        "stage": "T-24",
+        "latitude": 32.55,
+        "longitude": -79.6
+      },
+      {
+        "stage": "T-12",
+        "latitude": 32.78,
+        "longitude": -79.9
+      },
+      {
+        "stage": "Landfall",
+        "latitude": 33.0,
+        "longitude": -80.18
+      }
+    ],
+    "data_freshness_minutes": {
+      "weather": 8,
+      "field_ops": 12,
+      "maintenance": 120
+    },
+    "changes": [
+      {
+        "type": "field_update",
+        "asset_id": "SGW-S17",
+        "field": "restoration_hours",
+        "previous": 4,
+        "current": 14
+      },
+      {
+        "type": "weather_update",
+        "area": "SGW-NORTH",
+        "field": "forecast_confidence",
+        "current": "high"
+      }
+    ]
+  },
+  {
+    "advisory_id": "ADV-T12",
+    "issued_at": "2026-09-04T08:00:00Z",
+    "label": "T-12 hours",
+    "storm_severity": 0.96,
+    "event_id": "HURRICANE-IRIS",
+    "stage": "T-12",
+    "storm_category": 3,
+    "wind_severity": 0.96,
+    "rainfall_severity": 0.86,
+    "flood_severity": 1.01,
+    "storm_center_latitude": 32.78,
+    "storm_center_longitude": -79.9,
+    "impact_radius_km": 51.0,
+    "storm_track": [
+      {
+        "stage": "T-72",
+        "latitude": 31.9,
+        "longitude": -78.7
+      },
+      {
+        "stage": "T-48",
+        "latitude": 32.25,
+        "longitude": -79.15
+      },
+      {
+        "stage": "T-24",
+        "latitude": 32.55,
+        "longitude": -79.6
+      },
+      {
+        "stage": "T-12",
+        "latitude": 32.78,
+        "longitude": -79.9
+      },
+      {
+        "stage": "Landfall",
+        "latitude": 33.0,
+        "longitude": -80.18
+      }
+    ],
+    "data_freshness_minutes": {
+      "weather": 8,
+      "field_ops": 12,
+      "maintenance": 120
+    },
+    "changes": [
+      {
+        "type": "weather_update",
+        "asset_id": "SGW-P11",
+        "field": "flood_exposure",
+        "current": "increased"
+      },
+      {
+        "type": "verification",
+        "asset_id": "SGW-P4",
+        "field": "generator_status",
+        "current": "verified_operational"
+      }
+    ]
+  },
+  {
+    "advisory_id": "ADV-T0",
+    "issued_at": "2026-09-05T08:00:00Z",
+    "label": "Landfall",
+    "storm_severity": 0.84,
+    "event_id": "HURRICANE-IRIS",
+    "stage": "Landfall",
+    "storm_category": 3,
+    "wind_severity": 0.84,
+    "rainfall_severity": 0.76,
+    "flood_severity": 0.88,
+    "storm_center_latitude": 33.0,
+    "storm_center_longitude": -80.18,
+    "impact_radius_km": 48.2,
+    "storm_track": [
+      {
+        "stage": "T-72",
+        "latitude": 31.9,
+        "longitude": -78.7
+      },
+      {
+        "stage": "T-48",
+        "latitude": 32.25,
+        "longitude": -79.15
+      },
+      {
+        "stage": "T-24",
+        "latitude": 32.55,
+        "longitude": -79.6
+      },
+      {
+        "stage": "T-12",
+        "latitude": 32.78,
+        "longitude": -79.9
+      },
+      {
+        "stage": "Landfall",
+        "latitude": 33.0,
+        "longitude": -80.18
+      }
+    ],
+    "data_freshness_minutes": {
+      "weather": 8,
+      "field_ops": 12,
+      "maintenance": 120
+    },
+    "changes": [
+      {
+        "type": "response_update",
+        "asset_id": "SGW-P4",
+        "field": "temporary_generation",
+        "current": "in_progress"
+      },
+      {
+        "type": "response_update",
+        "asset_id": "SGW-S17",
+        "field": "priority_inspection",
+        "current": "approved"
+      }
+    ]
+  }
+]

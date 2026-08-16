@@ -1,0 +1,162 @@
+[
+  {
+    "source_id": "OPS-S17",
+    "canonical_sgw_id": "SGW-S17"
+  },
+  {
+    "source_id": "OPS-S31",
+    "canonical_sgw_id": "SGW-S31"
+  },
+  {
+    "source_id": "OPS-S08",
+    "canonical_sgw_id": "SGW-S08"
+  },
+  {
+    "source_id": "OPS-S12",
+    "canonical_sgw_id": "SGW-S12"
+  },
+  {
+    "source_id": "OPS-S01",
+    "canonical_sgw_id": "SGW-S01"
+  },
+  {
+    "source_id": "OPS-S02",
+    "canonical_sgw_id": "SGW-S02"
+  },
+  {
+    "source_id": "OPS-S03",
+    "canonical_sgw_id": "SGW-S03"
+  },
+  {
+    "source_id": "OPS-S04",
+    "canonical_sgw_id": "SGW-S04"
+  },
+  {
+    "source_id": "OPS-S05",
+    "canonical_sgw_id": "SGW-S05"
+  },
+  {
+    "source_id": "OPS-S06",
+    "canonical_sgw_id": "SGW-S06"
+  },
+  {
+    "source_id": "OPS-S07",
+    "canonical_sgw_id": "SGW-S07"
+  },
+  {
+    "source_id": "OPS-S09",
+    "canonical_sgw_id": "SGW-S09"
+  },
+  {
+    "source_id": "OPS-S10",
+    "canonical_sgw_id": "SGW-S10"
+  },
+  {
+    "source_id": "OPS-S11",
+    "canonical_sgw_id": "SGW-S11"
+  },
+  {
+    "source_id": "OPS-S13",
+    "canonical_sgw_id": "SGW-S13"
+  },
+  {
+    "source_id": "OPS-S14",
+    "canonical_sgw_id": "SGW-S14"
+  },
+  {
+    "source_id": "OPS-S15",
+    "canonical_sgw_id": "SGW-S15"
+  },
+  {
+    "source_id": "OPS-S16",
+    "canonical_sgw_id": "SGW-S16"
+  },
+  {
+    "source_id": "OPS-P4",
+    "canonical_sgw_id": "SGW-P4"
+  },
+  {
+    "source_id": "OPS-P9",
+    "canonical_sgw_id": "SGW-P9"
+  },
+  {
+    "source_id": "OPS-P7",
+    "canonical_sgw_id": "SGW-P7"
+  },
+  {
+    "source_id": "OPS-P11",
+    "canonical_sgw_id": "SGW-P11"
+  },
+  {
+    "source_id": "OPS-P1",
+    "canonical_sgw_id": "SGW-P1"
+  },
+  {
+    "source_id": "OPS-P2",
+    "canonical_sgw_id": "SGW-P2"
+  },
+  {
+    "source_id": "OPS-P3",
+    "canonical_sgw_id": "SGW-P3"
+  },
+  {
+    "source_id": "OPS-P5",
+    "canonical_sgw_id": "SGW-P5"
+  },
+  {
+    "source_id": "OPS-P6",
+    "canonical_sgw_id": "SGW-P6"
+  },
+  {
+    "source_id": "OPS-P8",
+    "canonical_sgw_id": "SGW-P8"
+  },
+  {
+    "source_id": "OPS-P10",
+    "canonical_sgw_id": "SGW-P10"
+  },
+  {
+    "source_id": "OPS-P12",
+    "canonical_sgw_id": "SGW-P12"
+  },
+  {
+    "source_id": "OPS-W12",
+    "canonical_sgw_id": "SGW-W12"
+  },
+  {
+    "source_id": "OPS-W07",
+    "canonical_sgw_id": "SGW-W07"
+  },
+  {
+    "source_id": "OPS-W09",
+    "canonical_sgw_id": "SGW-W09"
+  },
+  {
+    "source_id": "OPS-W03",
+    "canonical_sgw_id": "SGW-W03"
+  },
+  {
+    "source_id": "OPS-W15",
+    "canonical_sgw_id": "SGW-W15"
+  },
+  {
+    "source_id": "OPS-H3",
+    "canonical_sgw_id": "SGW-H3"
+  },
+  {
+    "source_id": "OPS-F2",
+    "canonical_sgw_id": "SGW-F2"
+  },
+  {
+    "source_id": "OPS-E1",
+    "canonical_sgw_id": "SGW-E1"
+  },
+  {
+    "source_id": "OPS-D1",
+    "canonical_sgw_id": "SGW-D1"
+  },
+  {
+    "source_id": "OPS-PS1",
+    "canonical_sgw_id": "SGW-PS1"
+  }
+]

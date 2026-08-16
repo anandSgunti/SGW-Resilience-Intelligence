@@ -1,0 +1,162 @@
+[
+  {
+    "source_id": "GIS/S17",
+    "canonical_sgw_id": "SGW-S17"
+  },
+  {
+    "source_id": "GIS/S31",
+    "canonical_sgw_id": "SGW-S31"
+  },
+  {
+    "source_id": "GIS/S08",
+    "canonical_sgw_id": "SGW-S08"
+  },
+  {
+    "source_id": "GIS/S12",
+    "canonical_sgw_id": "SGW-S12"
+  },
+  {
+    "source_id": "GIS/S01",
+    "canonical_sgw_id": "SGW-S01"
+  },
+  {
+    "source_id": "GIS/S02",
+    "canonical_sgw_id": "SGW-S02"
+  },
+  {
+    "source_id": "GIS/S03",
+    "canonical_sgw_id": "SGW-S03"
+  },
+  {
+    "source_id": "GIS/S04",
+    "canonical_sgw_id": "SGW-S04"
+  },
+  {
+    "source_id": "GIS/S05",
+    "canonical_sgw_id": "SGW-S05"
+  },
+  {
+    "source_id": "GIS/S06",
+    "canonical_sgw_id": "SGW-S06"
+  },
+  {
+    "source_id": "GIS/S07",
+    "canonical_sgw_id": "SGW-S07"
+  },
+  {
+    "source_id": "GIS/S09",
+    "canonical_sgw_id": "SGW-S09"
+  },
+  {
+    "source_id": "GIS/S10",
+    "canonical_sgw_id": "SGW-S10"
+  },
+  {
+    "source_id": "GIS/S11",
+    "canonical_sgw_id": "SGW-S11"
+  },
+  {
+    "source_id": "GIS/S13",
+    "canonical_sgw_id": "SGW-S13"
+  },
+  {
+    "source_id": "GIS/S14",
+    "canonical_sgw_id": "SGW-S14"
+  },
+  {
+    "source_id": "GIS/S15",
+    "canonical_sgw_id": "SGW-S15"
+  },
+  {
+    "source_id": "GIS/S16",
+    "canonical_sgw_id": "SGW-S16"
+  },
+  {
+    "source_id": "GIS/P4",
+    "canonical_sgw_id": "SGW-P4"
+  },
+  {
+    "source_id": "GIS/P9",
+    "canonical_sgw_id": "SGW-P9"
+  },
+  {
+    "source_id": "GIS/P7",
+    "canonical_sgw_id": "SGW-P7"
+  },
+  {
+    "source_id": "GIS/P11",
+    "canonical_sgw_id": "SGW-P11"
+  },
+  {
+    "source_id": "GIS/P1",
+    "canonical_sgw_id": "SGW-P1"
+  },
+  {
+    "source_id": "GIS/P2",
+    "canonical_sgw_id": "SGW-P2"
+  },
+  {
+    "source_id": "GIS/P3",
+    "canonical_sgw_id": "SGW-P3"
+  },
+  {
+    "source_id": "GIS/P5",
+    "canonical_sgw_id": "SGW-P5"
+  },
+  {
+    "source_id": "GIS/P6",
+    "canonical_sgw_id": "SGW-P6"
+  },
+  {
+    "source_id": "GIS/P8",
+    "canonical_sgw_id": "SGW-P8"
+  },
+  {
+    "source_id": "GIS/P10",
+    "canonical_sgw_id": "SGW-P10"
+  },
+  {
+    "source_id": "GIS/P12",
+    "canonical_sgw_id": "SGW-P12"
+  },
+  {
+    "source_id": "GIS/W12",
+    "canonical_sgw_id": "SGW-W12"
+  },
+  {
+    "source_id": "GIS/W07",
+    "canonical_sgw_id": "SGW-W07"
+  },
+  {
+    "source_id": "GIS/W09",
+    "canonical_sgw_id": "SGW-W09"
+  },
+  {
+    "source_id": "GIS/W03",
+    "canonical_sgw_id": "SGW-W03"
+  },
+  {
+    "source_id": "GIS/W15",
+    "canonical_sgw_id": "SGW-W15"
+  },
+  {
+    "source_id": "GIS/H3",
+    "canonical_sgw_id": "SGW-H3"
+  },
+  {
+    "source_id": "GIS/F2",
+    "canonical_sgw_id": "SGW-F2"
+  },
+  {
+    "source_id": "GIS/E1",
+    "canonical_sgw_id": "SGW-E1"
+  },
+  {
+    "source_id": "GIS/D1",
+    "canonical_sgw_id": "SGW-D1"
+  },
+  {
+    "source_id": "GIS/PS1",
+    "canonical_sgw_id": "SGW-PS1"
+  }
+]

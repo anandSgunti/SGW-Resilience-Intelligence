@@ -1,0 +1,186 @@
+[
+  {
+    "from_id": "SGW-S17",
+    "to_id": "SGW-P4",
+    "relationship": "powers",
+    "backup_endurance_hours": 6
+  },
+  {
+    "from_id": "SGW-P4",
+    "to_id": "SGW-W12",
+    "relationship": "serves",
+    "capacity_share": 0.7
+  },
+  {
+    "from_id": "SGW-W12",
+    "to_id": "SGW-H3",
+    "relationship": "located_in",
+    "dependency_class": "service_consequence"
+  },
+  {
+    "from_id": "SGW-W12",
+    "to_id": "SGW-F2",
+    "relationship": "located_in",
+    "dependency_class": "service_consequence",
+    "verified": true,
+    "confidence": 0.68,
+    "source": "inferred_service_registry",
+    "last_validated": "2026-06-18"
+  },
+  {
+    "from_id": "SGW-S10",
+    "to_id": "SGW-P5",
+    "relationship": "powers",
+    "backup_endurance_hours": 10
+  },
+  {
+    "from_id": "SGW-P5",
+    "to_id": "SGW-W12",
+    "relationship": "serves",
+    "capacity_share": 0.3
+  },
+  {
+    "from_id": "SGW-S31",
+    "to_id": "SGW-P9",
+    "relationship": "powers",
+    "redundancy_group": "P9-feeds"
+  },
+  {
+    "from_id": "SGW-S05",
+    "to_id": "SGW-P9",
+    "relationship": "backup_feed",
+    "redundancy_group": "P9-feeds",
+    "capacity_share": 0.3
+  },
+  {
+    "from_id": "SGW-P9",
+    "to_id": "SGW-W07",
+    "relationship": "serves",
+    "capacity_share": 1.0
+  },
+  {
+    "from_id": "SGW-S11",
+    "to_id": "SGW-P6",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P6",
+    "to_id": "SGW-W07",
+    "relationship": "serves",
+    "capacity_share": 0.4
+  },
+  {
+    "from_id": "SGW-S08",
+    "to_id": "SGW-P7",
+    "relationship": "powers",
+    "redundancy_group": "P7-feeds"
+  },
+  {
+    "from_id": "SGW-S12",
+    "to_id": "SGW-P7",
+    "relationship": "backup_feed",
+    "redundancy_group": "P7-feeds",
+    "capacity_share": 1.0
+  },
+  {
+    "from_id": "SGW-P7",
+    "to_id": "SGW-W09",
+    "relationship": "serves",
+    "capacity_share": 0.65
+  },
+  {
+    "from_id": "SGW-S13",
+    "to_id": "SGW-P8",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P8",
+    "to_id": "SGW-W09",
+    "relationship": "serves",
+    "capacity_share": 0.35
+  },
+  {
+    "from_id": "SGW-S02",
+    "to_id": "SGW-P1",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P1",
+    "to_id": "SGW-W15",
+    "relationship": "serves",
+    "capacity_share": 0.34
+  },
+  {
+    "from_id": "SGW-S03",
+    "to_id": "SGW-P2",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P2",
+    "to_id": "SGW-W15",
+    "relationship": "serves",
+    "capacity_share": 0.33
+  },
+  {
+    "from_id": "SGW-S06",
+    "to_id": "SGW-P3",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P3",
+    "to_id": "SGW-W03",
+    "relationship": "serves",
+    "capacity_share": 0.25
+  },
+  {
+    "from_id": "SGW-S15",
+    "to_id": "SGW-P10",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P10",
+    "to_id": "SGW-W15",
+    "relationship": "serves",
+    "capacity_share": 0.33
+  },
+  {
+    "from_id": "SGW-S14",
+    "to_id": "SGW-P11",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P11",
+    "to_id": "SGW-W03",
+    "relationship": "serves",
+    "capacity_share": 0.5
+  },
+  {
+    "from_id": "SGW-S16",
+    "to_id": "SGW-P12",
+    "relationship": "powers"
+  },
+  {
+    "from_id": "SGW-P12",
+    "to_id": "SGW-W03",
+    "relationship": "serves",
+    "capacity_share": 0.25
+  },
+  {
+    "from_id": "SGW-W09",
+    "to_id": "SGW-E1",
+    "relationship": "located_in",
+    "dependency_class": "service_consequence"
+  },
+  {
+    "from_id": "SGW-W03",
+    "to_id": "SGW-D1",
+    "relationship": "located_in",
+    "dependency_class": "service_consequence"
+  },
+  {
+    "from_id": "SGW-W07",
+    "to_id": "SGW-PS1",
+    "relationship": "located_in",
+    "dependency_class": "service_consequence"
+  }
+]
