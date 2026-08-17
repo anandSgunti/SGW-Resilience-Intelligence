@@ -299,7 +299,11 @@ test("6E.3 wires the golden Assess to Respond to Inform path without client anal
 test("6D.4 uses only canonical backend advisory stages for the leadership trajectory", async () => {
   const leadership = await readFile(new URL("../app/leadership/page.tsx", import.meta.url), "utf8");
   assert.match(leadership, /"T-72", "T-48", "T-24", "T-12", "Landfall"/);
-  assert.doesNotMatch(leadership, /"T-0"/);
+  // A bare "T-0" ban would also reject the display alias, so assert on what
+  // is actually requested: the STAGES array must carry no T-0 token.
+  const stages = leadership.match(/const STAGES = \[(.*?)\]/s)?.[1] ?? "";
+  assert.doesNotMatch(stages, /"T-0"/);
+  assert.match(leadership, /STAGE_LABELS/);
   // allSettled, not all: a single unreachable advisory must not blank the strip.
   assert.match(leadership, /Promise\.allSettled\(STAGES\.map/);
   assert.match(leadership, /largestMover/);

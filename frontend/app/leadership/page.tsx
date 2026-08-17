@@ -13,6 +13,10 @@ const API = process.env.NEXT_PUBLIC_SGW_API_URL ?? "http://127.0.0.1:8000";
 // These are backend advisory stages, not display aliases. The final event
 // stage is `Landfall`; using `T-0` would 404 and invalidate the full timeline.
 const STAGES = ["T-72", "T-48", "T-24", "T-12", "Landfall"];
+// Display aliases only. STAGES above holds the tokens actually requested;
+// the final advisory is sent as `Landfall` and shown as `T-0`.
+const STAGE_LABELS = [{ value: "Landfall", label: "T-0" }];
+const stageLabel = (value: string) => STAGE_LABELS.find((item) => item.value === value)?.label ?? value;
 const compact = (value: number) => value >= 1000 ? `${Math.round(value / 1000)}k` : String(value);
 const label = (value: string) => value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 // Owned means a named team is accountable. Approval is a decision, not an
@@ -65,6 +69,9 @@ export default function LeadershipPage() {
       coverage: actions.length ? Math.round((actions.filter((item) => isOwned(item.status)).length / actions.length) * 100) : 0 };
   }, [critical, state]);
   const compare = useMemo(() => ({ before: timeline[left], after: timeline[right] }), [left, right, timeline]);
+  const before = compare.before;
+  const after = compare.after;
+  const worsening = Boolean(after && before && after.summary.critical_assets > before.summary.critical_assets);
   const largestMover = useMemo(() => compare.after?.assessments.find((item) => item.primary_change) ?? null, [compare.after]);
   const sourceFacts = useMemo(() => state ? [
     `Advisory ${state.advisory.stage} · ${state.advisory.issued_at}`, `${state.summary.critical_assets} Critical · ${state.summary.high_assets} High`,
@@ -75,30 +82,224 @@ export default function LeadershipPage() {
   async function createBriefing() { setBusy(true); setError(null); try { const response = await fetch(`${API}/api/briefings`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ advisory: stage }) }); if (!response.ok) throw new Error(); const next = await response.json() as Briefing; setBriefing(next); setDraft(next.text); } catch { setError("The grounded executive brief is temporarily unavailable."); } finally { setBusy(false); } }
   async function approveBriefing() { if (!briefing || !approver.trim() || !draft.trim()) return; setBusy(true); try { const response = await fetch(`${API}/api/briefings/${briefing.briefing_id}/approve`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ approved_by: approver.trim(), final_text: draft.trim() }) }); if (!response.ok) throw new Error(); setBriefing(await response.json() as Briefing); } catch { setError("The brief could not be approved."); } finally { setBusy(false); } }
 
-  return <main className="shell"><style>{css}</style>
-    <header><Link href="/">← Risk overview</Link><div><small>SOUTHEASTERN GRID &amp; WATER</small><strong>Leadership view</strong></div><span>Hurricane Iris · {state?.advisory.stage ?? stage}</span></header>
-    <section className="hero"><div><small>INFORM</small><h1>Situation, decisions, readiness</h1><p>Leadership sees preparedness gaps, not workflow detail.</p></div><div style={{ display: "flex", alignItems: "center", gap: 9 }}><b>Category {state?.advisory.storm_category ?? "—"}</b><a href={`/?t=${encodeURIComponent(stage)}&filter=critical`} style={{ padding: 10, border: "1px solid #9ecaff", color: "#007aff", textDecoration: "none", fontSize: 12.5, fontWeight: 500 }}>View critical risks →</a></div></section>
-    {error && <p className="error">{error}</p>}
-    <section className="kpis"><Metric value={state?.summary.critical_assets} text="Critical risks" /><Metric value={state?.summary.high_assets} text="High risks" /><Metric value={state ? compact(state.summary.exposed_residents) : undefined} text="Residents exposed" /><Metric value={`${readiness.coverage}%`} text="Mitigation coverage" /></section>
-    <section className="content"><div className="main">
-      <SectionHead eyebrow="6D.2 · Response readiness" title="Are the biggest risks being managed?" href={`/respond?t=${stage}`} />
-      <div className="readiness"><Metric value={`${readiness.ownedActions} / ${readiness.actions.length}`} text="Critical actions with an owner" /><Metric value={readiness.active} text="Critical actions in progress" /><Metric value={readiness.completed} text="Critical actions completed" /><Metric value={readiness.unassigned} text="Critical actions awaiting an owner" warning={readiness.unassigned > 0} /></div>
-      <div className="coverage"><span>Mitigation coverage</span><strong>{readiness.coverage}%</strong><small style={{ color: "#6e6e73", fontSize: 9 }}>{readiness.coveredRisks} / {critical.length} critical risks fully owned</small><i><em style={{ width: `${readiness.coverage}%` }} /></i><a href={`/respond?t=${stage}`}>Open Response Board →</a></div>
-      <div className="actions">{readiness.material.map((item) => <a key={item.recommendation_id} href={`/respond?t=${stage}&asset=${item.asset_id}`}><b>{item.asset_id.replace("SGW-", "")} · {item.title}</b><span className={item.status === "recommended" ? "warn" : ""}>{item.status === "recommended" ? "UNASSIGNED ⚠" : `${label(item.status)} · ${item.owner ?? "Operations"}`}</span></a>)}</div>
-      <SectionHead eyebrow="6D.4 · Event trajectory" title="Is the situation getting better or worse?" />
-      <div className="trajectory">{STAGES.map((item) => <button onClick={() => selectStage(item)} className={stage === item ? "active" : ""} key={item}><b>{item}</b><strong>{timeline[item]?.summary.critical_assets ?? "—"}</strong><span>Critical</span><small>{timeline[item] ? compact(timeline[item].summary.exposed_residents) : "…"} residents</small></button>)}</div>
-      <div className="compare"><div><label>Compare <select value={left} onChange={(event) => setLeft(event.target.value)}>{STAGES.map((item) => <option key={item}>{item}</option>)}</select> ↔ <select value={right} onChange={(event) => setRight(event.target.value)}>{STAGES.map((item) => <option key={item}>{item}</option>)}</select></label><p>Situation {compare.after && compare.before && compare.after.summary.critical_assets > compare.before.summary.critical_assets ? "worsening" : "stable"}: review structured deltas, not separate dashboards.</p></div><div className="deltas"><Delta label="Critical assets" from={compare.before?.summary.critical_assets} to={compare.after?.summary.critical_assets} /><Delta label="Residents exposed" from={compare.before ? compact(compare.before.summary.exposed_residents) : undefined} to={compare.after ? compact(compare.after.summary.exposed_residents) : undefined} /><Delta label="Open actions" from={compare.before?.summary.open_actions} to={compare.after?.summary.open_actions} /><Delta label="Mitigation coverage" from="—" to={right === stage ? `${readiness.coverage}%` : "—"} /></div></div>
-      {largestMover && <div className="mover"><b>Largest mover · {largestMover.sgw_id.replace("SGW-", "")}</b><span>#{largestMover.rank} · {largestMover.primary_change ?? "Current advisory change"}</span></div>}
-    </div><aside>
-      <div className="brief-head"><small>6D.3 · Grounded executive brief</small><h2>Draft, verify, approve</h2>{briefing && <span className={briefing.status}>{label(briefing.status)}</span>}</div>
-      {!briefing ? <div className="brief-body"><p>Build a short executive update from a locked fact pack. Regeneration always creates a new draft.</p><button onClick={() => void createBriefing()} disabled={busy}>{busy ? "Preparing…" : "Generate draft brief"}</button></div> : <div className="brief-body"><p className="provenance">Grounded · {briefing.model} · v{briefing.version}<br />Fact pack {briefing.fact_pack_sha256.slice(0, 12)} · source {briefing.advisory_id}</p>{briefing.status === "approved" ? <><p className="final">{briefing.final_text}</p><small>Approved by {briefing.approved_by} · {briefing.approved_at && new Date(briefing.approved_at).toLocaleString()}</small></> : <><label>Draft — awaiting approval<textarea value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={1200} /></label><label>Approver name<input value={approver} onChange={(event) => setApprover(event.target.value)} /></label><div className="buttons"><button onClick={() => void createBriefing()} disabled={busy}>Regenerate</button><button onClick={() => void approveBriefing()} disabled={busy || !approver.trim() || !draft.trim()}>Approve</button></div></>}</div>}
-      <div className="facts"><small>SOURCE FACTS</small>{sourceFacts.map((fact) => <span key={fact}>{fact}</span>)}</div>
-    </aside></section>
-  </main>;
+  return (
+    <main className="ds-screen mx-auto w-full max-w-[1600px] px-5 pb-16 pt-6 md:px-8">
+      <section className="panel rise flex flex-wrap items-center justify-between gap-5 p-6">
+        <div className="flex items-start gap-3">
+          <span className="mt-1 h-11 w-1 rounded-full bg-[image:var(--gradient-ember)]" />
+          <div>
+            <p className="eyebrow-mono">Inform · Situation, decisions, readiness</p>
+            <h1 className="mt-1 font-display text-2xl font-semibold">Leadership view</h1>
+            <small className="text-xs text-muted-foreground">
+              Hurricane Iris · {state?.advisory.stage ?? stage}{state ? ` · issued ${new Date(state.advisory.issued_at).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}` : ""}.
+              Leadership sees preparedness gaps, not workflow detail.
+            </small>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="rounded-2xl border border-critical/45 bg-critical/10 px-4 py-3">
+            <strong className="block font-display text-xl text-critical">Category {state?.advisory.storm_category ?? "—"}</strong>
+            <small className="eyebrow-mono mt-1 block text-critical/80">Storm intensity</small>
+          </div>
+          <Link href={`/?t=${encodeURIComponent(stage)}&filter=critical`} className="press rounded-full border border-border bg-surface/70 px-4 py-2 text-sm font-medium hover:border-primary/40">View critical risks →</Link>
+        </div>
+      </section>
+
+      {error ? <p className="panel mt-4 rounded-2xl border border-critical/40 bg-critical/10 px-4 py-3 text-xs text-critical">{error}</p> : null}
+
+      <section className="mt-5 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
+        <Metric value={state?.summary.critical_assets} text="Critical assets" />
+        <Metric value={state?.summary.high_assets} text="High assets" />
+        <Metric value={state ? compact(state.summary.exposed_residents) : undefined} text="Residents exposed" />
+        <Metric value={readiness.unassigned} text="Unassigned critical actions" warning={readiness.unassigned > 0} />
+      </section>
+
+      <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="flex flex-col gap-5">
+          <div className="panel rise p-6">
+            <SectionHead eyebrow="Readiness" heading="Mitigation coverage" note={`${readiness.active} active · ${readiness.completed} completed`} />
+            <div className="glass-chip flex flex-wrap items-center gap-4 rounded-2xl px-4 py-3.5">
+              <strong className="font-display text-2xl">{readiness.coverage}%</strong>
+              <div className="min-w-40 flex-1">
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+                  <span className="block h-full rounded-full bg-verified transition-[width] duration-500" style={{ width: `${readiness.coverage}%` }} />
+                </div>
+                <small className="mt-2 block text-[11px] text-muted-foreground">{readiness.coveredRisks} / {critical.length} critical risks fully owned</small>
+              </div>
+              <Link href={`/respond?t=${encodeURIComponent(stage)}`} className="text-xs font-medium text-primary hover:underline">Open response board →</Link>
+            </div>
+
+            <div className="mt-3 flex flex-col gap-2">
+              {readiness.material.map((item) => (
+                <Link key={item.recommendation_id} href={`/respond?t=${encodeURIComponent(stage)}&asset=${encodeURIComponent(item.asset_id)}`}
+                  className="glass-chip press flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3 hover:-translate-y-0.5">
+                  <b className="text-sm font-medium">
+                    <span className="font-mono text-[11px] text-muted-foreground">{item.asset_id.replace("SGW-", "")}</span> · {item.title}
+                  </b>
+                  <span className={`text-[11px] ${item.status === "recommended" ? "text-high" : "text-verified"}`}>
+                    {item.status === "recommended" ? "Unassigned ⚠" : `${label(item.status)} · ${item.owner ?? "Operations"}`}
+                  </span>
+                </Link>
+              ))}
+              {!readiness.material.length ? <p className="text-xs text-muted-foreground">No critical actions raised at this advisory.</p> : null}
+            </div>
+          </div>
+
+          <div className="panel rise p-6">
+            <SectionHead eyebrow="Trajectory" heading="Advisory timeline" note="First advisory → landfall" />
+
+            <div className="overflow-x-auto pb-1">
+              <div className="relative min-w-[620px] px-3 pb-2 pt-7">
+                <div className="relative h-1.5 rounded-full bg-surface-2">
+                  <span className="absolute inset-y-0 left-0 rounded-full bg-[image:var(--gradient-ember)] transition-[width] duration-500"
+                    style={{ width: `${(STAGES.indexOf(stage) / Math.max(STAGES.length - 1, 1)) * 100}%` }} />
+                </div>
+                <div className="pointer-events-none absolute inset-x-3 top-0 flex justify-between">
+                  <span className="eyebrow-mono text-[10px] text-muted-foreground">First advisory</span>
+                  <span className="eyebrow-mono text-[10px] text-critical">Landfall</span>
+                </div>
+
+                <div className="mt-4 flex items-start justify-between gap-2">
+                  {STAGES.map((item, index) => {
+                    const entry = timeline[item];
+                    const active = stage === item;
+                    const previous = index > 0 ? timeline[STAGES[index - 1]] : undefined;
+                    const delta = previous && entry ? entry.summary.critical_assets - previous.summary.critical_assets : 0;
+                    return (
+                      <button key={item} onClick={() => selectStage(item)} className="press group relative flex flex-1 flex-col items-center gap-2 text-center">
+                        <span className={`absolute -top-[30px] h-4 w-4 rounded-full border-2 transition-all ${active ? "scale-125 border-primary bg-primary shadow-[0_0_0_6px_oklch(0.62_0.19_42/0.16)]" : "border-border bg-surface group-hover:border-primary/60"}`} />
+                        <span className={`font-mono text-[11px] uppercase tracking-widest ${active ? "text-primary" : "text-muted-foreground"}`}>{stageLabel(item)}</span>
+                        <span className={`glass-chip w-full rounded-2xl px-2 py-2.5 transition-all group-hover:-translate-y-0.5 ${active ? "border border-primary/50 bg-primary/10" : "border border-border"}`}>
+                          <strong className="block font-display text-xl">{entry?.summary.critical_assets ?? "—"}</strong>
+                          <small className="block text-[10px] text-muted-foreground">Critical</small>
+                          <small className="mt-1 block text-[10px] text-muted-foreground">{entry ? compact(entry.summary.exposed_residents) : "…"} residents</small>
+                          {delta !== 0 ? (
+                            <small className={`mt-1.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${delta > 0 ? "bg-critical/12 text-critical" : "bg-verified/12 text-verified"}`}>
+                              {delta > 0 ? `▲ +${delta} critical` : `▼ ${Math.abs(delta)} recovered`}
+                            </small>
+                          ) : <small className="mt-1.5 inline-block text-[10px] text-muted-foreground">no change</small>}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-border bg-surface-2 p-4">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="eyebrow-mono">Compare</span>
+                <select value={left} onChange={(event) => setLeft(event.target.value)} aria-label="Compare from"
+                  className="rounded-xl border border-border bg-surface px-2.5 py-1.5 text-xs outline-none focus:border-primary/60">
+                  {STAGES.map((item) => <option key={item} value={item}>{stageLabel(item)}</option>)}
+                </select>
+                <span className="text-muted-foreground">↔</span>
+                <select value={right} onChange={(event) => setRight(event.target.value)} aria-label="Compare to"
+                  className="rounded-xl border border-border bg-surface px-2.5 py-1.5 text-xs outline-none focus:border-primary/60">
+                  {STAGES.map((item) => <option key={item} value={item}>{stageLabel(item)}</option>)}
+                </select>
+                <small className={`ml-auto text-[11px] ${worsening ? "text-critical" : "text-verified"}`}>Situation {worsening ? "worsening" : "stable"}</small>
+              </div>
+
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <Delta text="Critical assets" from={before?.summary.critical_assets} to={after?.summary.critical_assets} />
+                <Delta text="High assets" from={before?.summary.high_assets} to={after?.summary.high_assets} />
+                <Delta text="Residents exposed" from={before ? compact(before.summary.exposed_residents) : undefined} to={after ? compact(after.summary.exposed_residents) : undefined} />
+                <Delta text="Open actions" from={before?.summary.open_actions} to={after?.summary.open_actions} />
+              </div>
+
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">Review structured deltas between advisories, not separate dashboards.</p>
+            </div>
+
+            {largestMover ? (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-accent/40 bg-accent/10 px-4 py-3">
+                <strong className="text-sm">Largest mover · {largestMover.sgw_id.replace("SGW-", "")}</strong>
+                <span className="text-xs text-muted-foreground">#{largestMover.rank} · {largestMover.primary_change}</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <aside className="flex flex-col gap-5">
+          <div className="panel rise p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div><p className="eyebrow-mono">Grounded executive brief</p><h2 className="mt-1 text-lg font-semibold">Draft, verify, approve</h2></div>
+              {briefing ? (
+                <span className={`rounded-full border px-2.5 py-0.5 text-[10px] uppercase tracking-wider ${briefing.status === "approved" ? "border-verified/50 bg-verified/10 text-verified" : "border-high/50 bg-high/10 text-high"}`}>{label(briefing.status)}</span>
+              ) : null}
+            </div>
+
+            {!briefing ? (
+              <div className="mt-4">
+                <p className="text-xs leading-relaxed text-muted-foreground">Build a short executive update from a locked fact pack. Regeneration always creates a new draft.</p>
+                <button onClick={() => void createBriefing()} disabled={busy} className="press mt-3 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50">{busy ? "Preparing…" : "Generate draft brief"}</button>
+              </div>
+            ) : (
+              <div className="mt-4">
+                <small className="block text-[11px] text-verified">Grounded · {briefing.model} · v{briefing.version}</small>
+                <small className="mt-1 block text-[11px] text-muted-foreground">Fact pack {briefing.fact_pack_sha256.slice(0, 16)} · source {briefing.advisory_id}</small>
+
+                {briefing.status === "approved" ? (
+                  <>
+                    <p className="mt-3 whitespace-pre-line text-xs leading-relaxed">{briefing.final_text}</p>
+                    <small className="mt-3 block text-[11px] text-verified">Approved by {briefing.approved_by}{briefing.approved_at ? ` · ${new Date(briefing.approved_at).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}` : ""}</small>
+                  </>
+                ) : (
+                  <>
+                    <label className="mt-3 block text-[11px] uppercase tracking-wider text-muted-foreground">Draft — awaiting approval
+                      <textarea value={draft} maxLength={1200} rows={10} onChange={(event) => setDraft(event.target.value)}
+                        className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3 py-2 text-xs normal-case leading-relaxed tracking-normal text-foreground outline-none focus:border-primary/60" />
+                    </label>
+                    <label className="mt-2 block text-[11px] uppercase tracking-wider text-muted-foreground">Approver name
+                      <input value={approver} onChange={(event) => setApprover(event.target.value)} placeholder="Required to release"
+                        className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm normal-case tracking-normal text-foreground outline-none focus:border-primary/60" />
+                    </label>
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <button onClick={() => void createBriefing()} disabled={busy} className="press rounded-full border border-border bg-surface/70 px-4 py-2 text-sm disabled:opacity-50">Regenerate</button>
+                      <button onClick={() => void approveBriefing()} disabled={busy || !approver.trim() || !draft.trim()}
+                        className="press rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40">Approve</button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="panel rise p-6">
+            <p className="eyebrow-mono">Source facts</p>
+            <div className="mt-3 flex flex-col gap-2">
+              {sourceFacts.map((fact) => <span key={fact} className="glass-chip rounded-2xl px-3.5 py-2.5 text-xs">{fact}</span>)}
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  );
 }
 
-function Metric({ value, text, warning = false }: { value: string | number | undefined; text: string; warning?: boolean }) { return <div className={warning ? "metric warning" : "metric"}><strong>{value ?? "—"}</strong><span>{text}</span></div>; }
-function SectionHead({ eyebrow, title, href }: { eyebrow: string; title: string; href?: string }) { return <div className="section-head"><div><small>{eyebrow}</small><h2>{title}</h2></div>{href && <a href={href}>Response Board →</a>}</div>; }
-function Delta({ label: text, from, to }: { label: string; from: string | number | undefined; to: string | number | undefined }) { return <span><small>{text}</small><b>{from ?? "—"} → {to ?? "—"}</b></span>; }
+function Metric({ value, text, warning = false }: { value: string | number | undefined; text: string; warning?: boolean }) {
+  return (
+    <div className="glass-chip press rounded-2xl px-4 py-3.5">
+      <strong className={`block font-display text-2xl leading-none ${warning ? "text-high" : "text-foreground"}`}>{value ?? "—"}</strong>
+      <small className="eyebrow-mono mt-2 block">{text}</small>
+    </div>
+  );
+}
 
-const css = `.shell{min-height:100vh;background:#f5f5f7;color:#1d1d1f;font:15px/1.47 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}.shell *{box-sizing:border-box}header{height:66px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 28px;border-bottom:1px solid #d2d2d7}header a,header span,.section-head a{color:#6e6e73;text-decoration:none;font:12.5px inherit}header div{text-align:center}header div small,.section-head small,.hero small,.brief-head small,.facts small{display:block;color:#6e6e73;letter-spacing:.04em;font:600 12px inherit}header div strong{display:block;margin-top:4px}.hero{display:flex;justify-content:space-between;align-items:center;padding:24px 28px;border-bottom:1px solid #d2d2d7;background:#ffffff}.hero h1{margin:7px 0;font-size:24px}.hero p{margin:0;color:#6e6e73}.hero b{padding:14px;border:1px solid #ffb3ae;color:#ff3b30;font:600 16px inherit}.error{margin:15px;padding:10px;border:1px solid #ff8a82;color:#ff3b30}.kpis,.readiness{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #d2d2d7}.metric{min-height:80px;padding:15px 20px;border-right:1px solid #d2d2d7}.metric strong{display:block;font:600 21px inherit}.metric span{display:block;margin-top:6px;color:#6e6e73;text-transform:uppercase;font-size:11.5px;letter-spacing:.07em}.metric.warning strong{color:#ff9500}.content{display:grid;grid-template-columns:minmax(0,1fr) 390px}.main{padding:25px 28px;border-right:1px solid #d2d2d7}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:15px}.section-head h2,.brief-head h2{margin:6px 0 0;font-size:16px}.section-head a{color:#007aff}.readiness{border:1px solid #d2d2d7}.coverage{display:flex;align-items:center;gap:12px;margin:12px 0;padding:11px 13px;border:1px solid #c7c7cc}.coverage span{color:#6e6e73;font-size:12px}.coverage strong{font:600 16px inherit}.coverage i{height:5px;flex:1;background:#e8e8ed}.coverage em{display:block;height:100%;background:#34c759}.coverage a{color:#007aff;text-decoration:none;font:12px inherit}.actions{border:1px solid #d2d2d7}.actions a{display:flex;justify-content:space-between;gap:12px;padding:12px;border-bottom:1px solid #d2d2d7;color:#1d1d1f;text-decoration:none}.actions a:last-child{border-bottom:0}.actions b{font-size:12.5px}.actions span{color:#34c759;font:11.5px inherit}.actions .warn{color:#ff9500}.trajectory{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #d2d2d7}.trajectory button{padding:12px;border:0;border-right:1px solid #d2d2d7;background:#ffffff;color:#1d1d1f;text-align:left;cursor:pointer}.trajectory button.active{box-shadow:inset 0 2px #007aff;background:#f2f2f7}.trajectory button strong,.trajectory button span,.trajectory button small{display:block}.trajectory button strong{margin:8px 0 3px;font:600 18px inherit}.trajectory button span,.trajectory button small{color:#6e6e73;font-size:11.5px}.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;padding:13px;border:1px solid #d2d2d7}.compare label{font:600 12px inherit}.compare select{margin:0 4px;border:1px solid #c7c7cc;background:#ffffff;color:#1d1d1f;padding:4px}.compare p{color:#6e6e73;font-size:12px;line-height:1.5}.deltas{display:grid;grid-template-columns:1fr 1fr;gap:9px}.deltas span{padding:7px;border-left:2px solid #ff9500}.deltas small,.deltas b{display:block}.deltas small{color:#6e6e73;font-size:11px}.deltas b{margin-top:3px;font:12px inherit}.mover{display:flex;justify-content:space-between;margin-top:12px;padding:11px;border:1px solid #9ecaff}.mover span{color:#6e6e73;font-size:12px}aside{background:#f5f5f7}.brief-head{position:relative;padding:22px 20px;border-bottom:1px solid #d2d2d7}.brief-head>span{position:absolute;right:20px;top:22px;padding:4px 6px;border:1px solid #ff9500;color:#ff9500;font:11px inherit;text-transform:uppercase}.brief-head>span.approved{border-color:#34c759;color:#34c759}.brief-body,.facts{padding:20px}.brief-body p{color:#48484a;font-size:12.5px;line-height:1.55}.brief-body button{padding:9px 10px;border:1px solid #9ecaff;background:#e6f0ff;color:#007aff;font:11.5px inherit;cursor:pointer}.brief-body label{display:block;margin-top:12px;color:#6e6e73;font:11.5px inherit;text-transform:uppercase}.brief-body textarea,.brief-body input{width:100%;margin-top:6px;padding:8px;border:1px solid #c7c7cc;background:#ffffff;color:#1d1d1f;font:12.5px inherit}.brief-body textarea{min-height:130px;resize:vertical}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.provenance{color:#34c759!important;font:11.5px inherit}.final{color:#1d1d1f!important}.facts{border-top:1px solid #d2d2d7}.facts span{display:block;margin-top:8px;color:#48484a;font-size:12px}@media(max-width:850px){.content{grid-template-columns:1fr}.main{border-right:0}.kpis,.readiness{grid-template-columns:repeat(2,1fr)}}@media(max-width:550px){header{grid-template-columns:1fr auto}header div{display:none}.hero{padding:18px}.trajectory{grid-template-columns:1fr}.trajectory button{border-bottom:1px solid #d2d2d7}.compare{grid-template-columns:1fr}.actions a,.mover{flex-direction:column}.coverage{align-items:flex-start;flex-wrap:wrap}}`;
+function SectionHead({ eyebrow, heading, note }: { eyebrow: string; heading: string; note?: string }) {
+  return (
+    <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+      <div><p className="eyebrow-mono">{eyebrow}</p><h2 className="mt-1 text-lg font-semibold">{heading}</h2></div>
+      {note ? <small className="text-xs text-muted-foreground">{note}</small> : null}
+    </div>
+  );
+}
+
+function Delta({ text, from, to }: { text: string; from: string | number | undefined; to: string | number | undefined }) {
+  return (
+    <span className="glass-chip block rounded-2xl border-l-2 border-l-high px-3.5 py-2.5">
+      <small className="block text-[11px] text-muted-foreground">{text}</small>
+      <b className="mt-1 block text-sm">{from ?? "—"} → {to ?? "—"}</b>
+    </span>
+  );
+}
