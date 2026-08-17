@@ -248,6 +248,27 @@ class LikelihoodAssessment:
     band: LikelihoodBand
     components: tuple[LikelihoodComponent, ...]
     drivers: tuple[str, ...]
+    # Provenance for `score`. The operational track is always the transparent
+    # scorecard, so this is `deterministic-baseline` by construction.
+    likelihood_source: str = "deterministic-baseline"
+    # --- experimental ML track -------------------------------------------
+    # A second, parallel opinion from a logistic regression trained on
+    # synthetic history. It is reported, never consumed: `score`, `raw_score`,
+    # `band` and every downstream risk/tier/ranking value are computed without
+    # reference to these fields. Divergence between the two tracks is the
+    # interesting signal, so it is surfaced rather than reconciled away.
+    experimental_ml_likelihood: float | None = None
+    experimental_ml_band: str | None = None
+    experimental_ml_drivers: tuple[str, ...] = ()
+    model_name: str | None = None
+    model_version: str | None = None
+
+    @property
+    def experimental_ml_delta(self) -> float | None:
+        """ML estimate minus the operational scorecard, in percentage points."""
+        if self.experimental_ml_likelihood is None:
+            return None
+        return round(self.experimental_ml_likelihood - self.score, 1)
 
 
 @dataclass(frozen=True)
@@ -383,6 +404,14 @@ class Assessment:
     restoration_hours: float = 0.0
     flood_depth_m: float = 0.0
     direct_flood_sensitive: bool = False
+    likelihood_source: str = "deterministic-baseline"
+    # Experimental ML track, carried through for display only. Nothing in
+    # `risk_score`, `tier` or `rank` is derived from these.
+    experimental_ml_likelihood: float | None = None
+    experimental_ml_band: str | None = None
+    experimental_ml_drivers: tuple[str, ...] = ()
+    model_name: str | None = None
+    model_version: str | None = None
     max_uncovered_hours: float = 0.0
     limiting_backup_hours: float = 0.0
     limiting_service_id: str | None = None

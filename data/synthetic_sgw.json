@@ -512,6 +512,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 11,
+        "previous_failures": 1,
         "coastal_flood_exposure": true
       }
     },
@@ -534,6 +536,8 @@
       "open_work_orders": 0,
       "attributes": {
         "operating_zone": "inland_resilient",
+        "asset_age_years": 30,
+        "previous_failures": 3,
         "intrinsic_criticality": 1.0
       }
     },
@@ -555,7 +559,9 @@
       "last_inspection_date": "2026-01-16",
       "open_work_orders": 1,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 17,
+        "previous_failures": 2
       }
     },
     {
@@ -576,7 +582,9 @@
       "last_inspection_date": "2026-02-27",
       "open_work_orders": 3,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 11,
+        "previous_failures": 1
       }
     },
     {
@@ -597,7 +605,9 @@
       "last_inspection_date": "2026-02-23",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "inland_flood"
+        "operating_zone": "inland_flood",
+        "asset_age_years": 25,
+        "previous_failures": 2
       }
     },
     {
@@ -618,7 +628,9 @@
       "last_inspection_date": "2026-01-21",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 24,
+        "previous_failures": 2
       }
     },
     {
@@ -639,7 +651,9 @@
       "last_inspection_date": "2026-04-12",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 4,
+        "previous_failures": 1
       }
     },
     {
@@ -660,7 +674,9 @@
       "last_inspection_date": "2026-01-17",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "inland_flood"
+        "operating_zone": "inland_flood",
+        "asset_age_years": 9,
+        "previous_failures": 0
       }
     },
     {
@@ -681,7 +697,9 @@
       "last_inspection_date": "2026-03-15",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 27,
+        "previous_failures": 2
       }
     },
     {
@@ -702,7 +720,9 @@
       "last_inspection_date": "2026-05-15",
       "open_work_orders": 1,
       "attributes": {
-        "operating_zone": "inland_flood"
+        "operating_zone": "inland_flood",
+        "asset_age_years": 14,
+        "previous_failures": 1
       }
     },
     {
@@ -723,7 +743,9 @@
       "last_inspection_date": "2026-02-20",
       "open_work_orders": 0,
       "attributes": {
-        "operating_zone": "inland_flood"
+        "operating_zone": "inland_flood",
+        "asset_age_years": 25,
+        "previous_failures": 1
       }
     },
     {
@@ -744,7 +766,9 @@
       "last_inspection_date": "2026-05-20",
       "open_work_orders": 1,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 25,
+        "previous_failures": 1
       }
     },
     {
@@ -765,7 +789,9 @@
       "last_inspection_date": "2026-02-17",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "coastal"
+        "operating_zone": "coastal",
+        "asset_age_years": 8,
+        "previous_failures": 0
       }
     },
     {
@@ -786,7 +812,9 @@
       "last_inspection_date": "2026-02-26",
       "open_work_orders": 3,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 5,
+        "previous_failures": 1
       }
     },
     {
@@ -807,7 +835,9 @@
       "last_inspection_date": "2026-06-23",
       "open_work_orders": 0,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 26,
+        "previous_failures": 3
       }
     },
     {
@@ -828,7 +858,9 @@
       "last_inspection_date": "2026-01-13",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "inland_flood"
+        "operating_zone": "inland_flood",
+        "asset_age_years": 20,
+        "previous_failures": 2
       }
     },
     {
@@ -849,7 +881,9 @@
       "last_inspection_date": "2026-06-18",
       "open_work_orders": 1,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 11,
+        "previous_failures": 0
       }
     },
     {
@@ -870,7 +904,9 @@
       "last_inspection_date": "2026-05-16",
       "open_work_orders": 1,
       "attributes": {
-        "operating_zone": "inland_flood"
+        "operating_zone": "inland_flood",
+        "asset_age_years": 10,
+        "previous_failures": 2
       }
     },
     {
@@ -892,6 +928,8 @@
       "open_work_orders": 2,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 13,
+        "previous_failures": 1,
         "backup_endurance_hours": 6
       }
     },
@@ -914,6 +952,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "inland_resilient",
+        "asset_age_years": 6,
+        "previous_failures": 1,
         "backup_endurance_hours": 18
       }
     },
@@ -936,6 +976,8 @@
       "open_work_orders": 3,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 10,
+        "previous_failures": 1,
         "backup_endurance_hours": 8
       }
     },
@@ -958,6 +1000,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "inland_flood",
+        "asset_age_years": 16,
+        "previous_failures": 2,
         "flood_sensitive": true,
         "backup_endurance_hours": 4
       }
@@ -981,6 +1025,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "lower_exposure",
+        "asset_age_years": 14,
+        "previous_failures": 1,
         "backup_endurance_hours": 12
       }
     },
@@ -1003,6 +1049,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 21,
+        "previous_failures": 2,
         "backup_endurance_hours": 8
       }
     },
@@ -1025,6 +1073,8 @@
       "open_work_orders": 0,
       "attributes": {
         "operating_zone": "inland_flood",
+        "asset_age_years": 19,
+        "previous_failures": 2,
         "backup_endurance_hours": 6
       }
     },
@@ -1047,6 +1097,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 18,
+        "previous_failures": 2,
         "backup_endurance_hours": 10
       }
     },
@@ -1069,6 +1121,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "inland_resilient",
+        "asset_age_years": 7,
+        "previous_failures": 1,
         "backup_endurance_hours": 12
       }
     },
@@ -1091,6 +1145,8 @@
       "open_work_orders": 0,
       "attributes": {
         "operating_zone": "lower_exposure",
+        "asset_age_years": 25,
+        "previous_failures": 2,
         "backup_endurance_hours": 10
       }
     },
@@ -1113,6 +1169,8 @@
       "open_work_orders": 3,
       "attributes": {
         "operating_zone": "inland_resilient",
+        "asset_age_years": 23,
+        "previous_failures": 3,
         "backup_endurance_hours": 10
       }
     },
@@ -1135,6 +1193,8 @@
       "open_work_orders": 0,
       "attributes": {
         "operating_zone": "inland_flood",
+        "asset_age_years": 27,
+        "previous_failures": 2,
         "backup_endurance_hours": 8
       }
     },
@@ -1157,6 +1217,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 13,
+        "previous_failures": 1,
         "population": 84000
       }
     },
@@ -1179,6 +1241,8 @@
       "open_work_orders": 0,
       "attributes": {
         "operating_zone": "inland_resilient",
+        "asset_age_years": 21,
+        "previous_failures": 1,
         "population": 28000
       }
     },
@@ -1201,6 +1265,8 @@
       "open_work_orders": 3,
       "attributes": {
         "operating_zone": "inland_resilient",
+        "asset_age_years": 14,
+        "previous_failures": 2,
         "population": 52000
       }
     },
@@ -1223,6 +1289,8 @@
       "open_work_orders": 3,
       "attributes": {
         "operating_zone": "inland_flood",
+        "asset_age_years": 22,
+        "previous_failures": 1,
         "population": 41000
       }
     },
@@ -1245,6 +1313,8 @@
       "open_work_orders": 0,
       "attributes": {
         "operating_zone": "inland_resilient",
+        "asset_age_years": 19,
+        "previous_failures": 1,
         "population": 33000
       }
     },
@@ -1267,6 +1337,8 @@
       "open_work_orders": 1,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 20,
+        "previous_failures": 1,
         "beds": 410
       }
     },
@@ -1289,6 +1361,8 @@
       "open_work_orders": 0,
       "attributes": {
         "operating_zone": "coastal",
+        "asset_age_years": 16,
+        "previous_failures": 2,
         "appliances": 6
       }
     },
@@ -1310,7 +1384,9 @@
       "last_inspection_date": "2026-01-28",
       "open_work_orders": 1,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 17,
+        "previous_failures": 2
       }
     },
     {
@@ -1331,7 +1407,9 @@
       "last_inspection_date": "2026-01-23",
       "open_work_orders": 2,
       "attributes": {
-        "operating_zone": "inland_flood"
+        "operating_zone": "inland_flood",
+        "asset_age_years": 18,
+        "previous_failures": 1
       }
     },
     {
@@ -1352,7 +1430,9 @@
       "last_inspection_date": "2026-06-20",
       "open_work_orders": 1,
       "attributes": {
-        "operating_zone": "inland_resilient"
+        "operating_zone": "inland_resilient",
+        "asset_age_years": 20,
+        "previous_failures": 1
       }
     }
   ],

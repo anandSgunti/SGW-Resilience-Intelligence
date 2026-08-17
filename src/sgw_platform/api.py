@@ -93,6 +93,53 @@ def create_app(platform: PlatformApplication | None = None) -> FastAPI:
     def health():
         return {"status": "ok"}
 
+    @app.get("/api/model")
+    def model_card():
+        """Card for the experimental ML track.
+
+        Published so the estimate can never appear on screen without its
+        provenance: what it is, what it was trained on, and the fact that it
+        does not drive the operational ranking.
+        """
+        from sgw_platform.ml.likelihood_model import (
+            DISRUPTION_MODEL,
+            MODEL_NAME,
+            MODEL_VERSION,
+            TRAINING_DESCRIPTION,
+        )
+        from sgw_platform.ml.training_data import FEATURE_ORDER, TRAINING_ROWS, TRAINING_SEED
+
+        coefficients = DISRUPTION_MODEL.coefficients()
+        return {
+            "name": MODEL_NAME,
+            "version": MODEL_VERSION,
+            "available": DISRUPTION_MODEL.available,
+            "status": "experimental",
+            "deployment_mode": "shadow",
+            "drives_operational_ranking": False,
+            "training_data": TRAINING_DESCRIPTION,
+            "training_rows": TRAINING_ROWS,
+            "training_seed": TRAINING_SEED,
+            "features": FEATURE_ORDER,
+            "coefficients": dict(
+                sorted(coefficients.items(), key=lambda item: abs(item[1]), reverse=True)
+            ),
+            "caveat": (
+                "Runs in shadow mode. Trained on synthetic history, not on SGW "
+                "outcomes, so it is not independent real-world evidence and is not a "
+                "validated failure probability. Promotion into the decision path "
+                "requires real outcome data to measure calibration against."
+            ),
+        }
+
+    @app.get("/api/model/divergence")
+    def baseline_divergence(t: str | None = Query(default=None)):
+        """Assets where the operational and experimental tracks disagree."""
+        try:
+            return platform.baseline_divergence(t)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
     @app.get("/api/state")
     def current_state(t: str | None = Query(default=None)):
         try:

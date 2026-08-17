@@ -177,3 +177,43 @@ def test_verification_history_is_exposed_to_every_screen():
     assert target_detail["state"]["verification_status"] == "verified"
     assert target_detail["state"]["source"] == "field_verification"
     assert target_detail["state"]["reported_by"] == "Field Ops"
+
+
+def test_owner_is_attributed_on_every_event_after_assignment():
+    """Ownership is established at assignment and must carry to every later event.
+
+    Only `assign` supplies an owner, so recording the raw argument left the
+    start and complete events attributed to nobody. An audit trail that cannot
+    say who was doing the work at each step is not an audit trail.
+    """
+    platform = _platform()
+    action = _verification_action(platform)
+
+    platform.decide_response(action.recommendation_id, "approve", "control-room")
+    platform.decide_response(action.recommendation_id, "assign", "control-room", owner="Field Team B")
+    platform.decide_response(action.recommendation_id, "start", "Field Team B")
+    updated, _ = platform.decide_response(
+        action.recommendation_id, "complete", "Field Team B",
+        result={"outcome": FieldOutcome.VERIFIED_OPERATIONAL.value, "detail": "Backup verified on site"},
+    )
+
+    owned = {
+        event.status.value: event.owner
+        for event in updated.history
+        if event.status.value in {"assigned", "in_progress", "completed"}
+    }
+    assert owned == {
+        "assigned": "Field Team B",
+        "in_progress": "Field Team B",
+        "completed": "Field Team B",
+    }
+    assert updated.owner == "Field Team B"
+
+
+def test_events_before_assignment_have_no_owner():
+    """The fix must not backfill an owner onto decisions taken before one existed."""
+    platform = _platform()
+    action = _verification_action(platform)
+    updated = platform.decide_response(action.recommendation_id, "approve", "control-room")[0]
+    approved = next(item for item in updated.history if item.status.value == "approved")
+    assert approved.owner is None

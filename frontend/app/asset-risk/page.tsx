@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 type Lens = "infrastructure" | "consequence" | "confidence";
 type Asset = { sgw_id: string; asset_type: string; name: string; condition_score: number; attributes: Record<string, string | number | boolean> };
 type AssetState = { backup_available_hours: number | null; generator_status: string; verification_status: string; restoration_hours: number; flood_depth_m: number; wind_gust_kph: number; operational_status: string };
-type Assessment = { sgw_id: string; disruption_likelihood: number; consequence_score: number; risk_score: number; tier: string; confidence: string; max_uncovered_hours: number; primary_change: string | null; confidence_reasons: string[]; verification_actions: string[]; current_drivers: Array<{ metric: string; label: string; value: string | number; unit: string | null; impact: string }> };
+type Assessment = { sgw_id: string; disruption_likelihood: number; consequence_score: number; risk_score: number; tier: string; confidence: string; max_uncovered_hours: number; primary_change: string | null; confidence_reasons: string[]; verification_actions: string[]; likelihood_source?: string; experimental_ml_likelihood?: number | null; experimental_ml_band?: string | null; experimental_ml_drivers?: string[]; model_name?: string | null; model_version?: string | null; current_drivers: Array<{ metric: string; label: string; value: string | number; unit: string | null; impact: string }> };
 type NodeContext = { asset: Asset; state: AssetState; assessment: Assessment };
 type Edge = { from_id: string; to_id: string; relationship: string; dependency_class: string; confidence: number; verified: boolean; source: string; last_validated: string; capacity_share: number | null; backup_endurance_hours: number | null };
 type RecommendedAction = { recommendation_id: string; asset_id: string; target_asset_id: string | null; title: string; reason: string; priority: string; default_owner: string; status: string };
@@ -17,6 +17,9 @@ type ExplainPayload = { headline: string; answer: string; supporting_facts: Arra
 type Point = { x: number; y: number };
 
 const API_URL = process.env.NEXT_PUBLIC_SGW_API_URL ?? "http://127.0.0.1:8000";
+
+type DivergenceFinding = { sgw_id: string; name: string; operational_likelihood: number; model_likelihood: number; delta: number; direction: string; authored_baseline: number; condition_score: number; tier: string; rank: number; finding: string; action: string };
+type DivergencePayload = { advisory_id: string; stage: string; rule: string; threshold: number | null; mean_divergence: number | null; standard_deviation: number | null; population: number; total: number; findings: DivergenceFinding[]; note: string };
 
 function compactId(value: string) { return value.replace("SGW-", ""); }
 function title(value: string) { return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
@@ -91,6 +94,152 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: str
       <strong className={`block font-display text-2xl leading-none ${tone ?? "text-foreground"}`}>{value}</strong>
       <small className="eyebrow-mono mt-2 block">{label}</small>
     </div>
+  );
+}
+
+function BaselineReview({ payload, focusedId, onSelect }: { payload: DivergencePayload; focusedId: string; onSelect: (id: string) => void }) {
+  if (payload.findings.length === 0) return null;
+  return (
+    <section className="panel rise mt-6 p-6 sm:p-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow-mono">Model governance · shadow-mode disagreement</p>
+          <h2 className="mt-1 text-xl font-semibold">Baseline assumption review</h2>
+        </div>
+        <span className="glass-chip rounded-full px-3 py-1 font-mono text-[11px] tracking-widest text-muted-foreground">
+          {payload.total} of {payload.population} assets
+        </span>
+      </div>
+
+      <p className="mt-3 max-w-3xl text-xs leading-relaxed text-muted-foreground">
+        Assets where operational likelihood materially diverges from the shadow ML
+        estimate. The shadow model is trained on synthetic history and is not
+        independent real-world evidence, so divergence does not show the operational
+        figure is wrong. It identifies the susceptibility assumption as a candidate for
+        review. Nothing here changes priority.
+      </p>
+
+      <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+        Rule: {payload.rule} · network mean {payload.mean_divergence?.toFixed(1)} pts ·
+        σ {payload.standard_deviation?.toFixed(1)} · threshold {payload.threshold?.toFixed(1)} pts
+      </p>
+
+      <ul className="mt-4 space-y-2">
+        {payload.findings.map((item) => (
+          <li key={item.sgw_id}>
+            <button
+              type="button"
+              onClick={() => onSelect(item.sgw_id)}
+              className={`press w-full rounded-2xl border px-4 py-3 text-left transition ${
+                item.sgw_id === focusedId ? "border-primary/50 bg-primary/[0.06]" : "border-border bg-surface-2/50 hover:border-primary/30"
+              }`}
+            >
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <span className="text-sm font-semibold">
+                  {compactId(item.sgw_id)} · {item.name}
+                </span>
+                <span className="flex items-baseline gap-3 font-mono text-[11px] text-muted-foreground">
+                  <span>Baseline {item.operational_likelihood.toFixed(1)}%</span>
+                  <span>Shadow ML {item.model_likelihood.toFixed(1)}%</span>
+                  <span className="font-semibold text-foreground">Δ {Math.abs(item.delta).toFixed(1)} pts</span>
+                  <span className="text-primary">Review →</span>
+                </span>
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.finding}</p>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function DualTrackLikelihood({ assessment }: { assessment: Assessment }) {
+  // Tolerate a backend that predates the experimental track: an older process
+  // omits these fields entirely, and a stale panel must not take the page down.
+  const ml = assessment.experimental_ml_likelihood ?? null;
+  const drivers = assessment.experimental_ml_drivers ?? [];
+  const operational = assessment.disruption_likelihood;
+  const delta = ml === null ? null : Math.round(ml - operational);
+  return (
+    <section className="panel rise mt-6 p-6 sm:p-8">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow-mono">Shadow mode · does not affect ranking</p>
+          <h2 className="mt-1 text-xl font-semibold">Model comparison</h2>
+        </div>
+        <span className="glass-chip rounded-full px-3 py-1 font-mono text-[11px] tracking-widest text-muted-foreground">
+          Ranking uses the operational baseline only
+        </span>
+      </div>
+
+      <dl className="mt-5 grid gap-4 lg:grid-cols-3">
+        <div className="rounded-2xl border border-primary/40 bg-primary/[0.06] p-5">
+          <dt className="eyebrow-mono text-primary">Operational likelihood</dt>
+          <dd className="mt-2 text-4xl font-semibold tracking-tight">{operational.toFixed(1)}%</dd>
+          <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+            Authoritative transparent baseline
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-surface-2/60 p-5">
+          <dt className="eyebrow-mono">Experimental ML estimate</dt>
+          <dd className="mt-2 text-4xl font-semibold tracking-tight text-muted-foreground">
+            {ml === null ? "Unavailable" : `${ml.toFixed(1)}%`}
+          </dd>
+          <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+            {assessment.model_name ?? "Logistic Regression"} · synthetic historical data · shadow mode
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-surface-2/40 p-5">
+          <dt className="eyebrow-mono">Difference</dt>
+          <dd className="mt-2 text-4xl font-semibold tracking-tight text-muted-foreground">
+            {delta === null ? "—" : `${Math.abs(delta).toFixed(1)} pts`}
+          </dd>
+          <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+            {delta === null
+              ? "No shadow estimate for this asset"
+              : delta > 0
+                ? "Shadow model reads higher"
+                : "Shadow model reads lower"}
+          </p>
+        </div>
+      </dl>
+
+      {ml === null ? (
+        // An unavailable model is a state worth stating plainly. It is also the
+        // graceful-degradation guarantee made visible.
+        <p className="mt-4 rounded-2xl border border-border bg-surface-2/40 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+          The shadow estimate did not run. Nothing on this screen changes as a result:
+          risk, tiering, ranking and playbooks never read it.
+        </p>
+      ) : (
+        <details className="mt-4 rounded-2xl border border-border bg-surface-2/40 px-4 py-3">
+          <summary className="press cursor-pointer text-xs font-semibold">
+            How to read this comparison
+          </summary>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            The shadow model is trained on synthetic history, so it is not independent
+            real-world evidence and cannot establish that the operational figure is
+            wrong. It runs alongside the authoritative baseline as a governance signal:
+            material divergence identifies a susceptibility assumption as a candidate
+            for review. With real SGW outage outcomes, calibration could be measured and
+            the model considered for promotion into the decision path.
+          </p>
+          {drivers.length > 0 ? (
+            <>
+              <p className="mt-3 eyebrow-mono">Shadow model drivers</p>
+              <ul className="mt-1 space-y-1">
+                {drivers.map((driver) => (
+                  <li key={driver} className="font-mono text-[11px] text-muted-foreground">· {driver}</li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+        </details>
+      )}
+    </section>
   );
 }
 
@@ -296,6 +445,7 @@ export default function AssetRiskPage() {
   const [chatOpen, setChatOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [divergence, setDivergence] = useState<DivergencePayload | null>(null);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -314,6 +464,17 @@ export default function AssetRiskPage() {
       .finally(() => setLoading(false));
     return () => controller.abort();
   }, [assetId, stage]);
+
+  useEffect(() => {
+    // Advisory-only: the review queue is network-wide, not asset-scoped.
+    // A backend without the experimental track simply leaves it hidden.
+    const controller = new AbortController();
+    fetch(`${API_URL}/api/model/divergence?t=${encodeURIComponent(stage)}`, { signal: controller.signal })
+      .then((response) => (response.ok ? (response.json() as Promise<DivergencePayload>) : null))
+      .then(setDivergence)
+      .catch(() => setDivergence(null));
+    return () => controller.abort();
+  }, [stage]);
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -351,6 +512,9 @@ export default function AssetRiskPage() {
           <Stat label="Confidence" value={detail ? title(detail.assessment.confidence) : "—"} />
         </div>
       </header>
+
+      {detail ? <DualTrackLikelihood assessment={detail.assessment} /> : null}
+      {divergence ? <BaselineReview payload={divergence} focusedId={focusedId} onSelect={setFocusedId} /> : null}
 
       <section className="panel rise mt-6 p-6 sm:p-8">
         <div className="flex flex-wrap items-end justify-between gap-4">

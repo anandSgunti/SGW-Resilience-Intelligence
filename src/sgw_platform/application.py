@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import statistics
 from dataclasses import asdict, replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -45,10 +46,23 @@ def _digest(payload: dict[str, Any]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+_DIVERGENCE_NOTE = (
+    "Model-governance signal, not evidence of error. The shadow model is trained "
+    "on synthetic history and is not independent real-world evidence, so it cannot "
+    "establish that an operational figure is wrong. Divergence identifies a "
+    "susceptibility assumption as a candidate for review. Ranking is unaffected."
+)
+
+
 class PlatformApplication:
     """One coherent, reusable state boundary for API, jobs, and future storage."""
 
-    def __init__(self, adapter: InfrastructureAdapter, narrator: Narrator | None = None):
+    def __init__(
+        self,
+        adapter: InfrastructureAdapter,
+        narrator: Narrator | None = None,
+        assessment_engine: AssessmentEngine | None = None,
+    ):
         self.adapter = adapter
         self.assets = adapter.load_assets()
         self.assets_by_id = {asset.sgw_id: asset for asset in self.assets}
@@ -65,7 +79,10 @@ class PlatformApplication:
             for advisory in self.advisories
         }
         self.graph = DependencyGraph(adapter.load_dependencies())
-        self.timeline = AssessmentEngine().assess_timeline(
+        # Injectable so tests can run the pipeline with the experimental ML
+        # track switched off and compare the operational numbers.
+        self.assessment_engine = assessment_engine or AssessmentEngine()
+        self.timeline = self.assessment_engine.assess_timeline(
             self.assets, self.advisories, self.states, self.graph
         )
         self.playbooks = PlaybookEngine()
@@ -144,7 +161,7 @@ class PlatformApplication:
         return self.advisories[index:]
 
     def _reassess(self) -> None:
-        self.timeline = AssessmentEngine().assess_timeline(
+        self.timeline = self.assessment_engine.assess_timeline(
             self.assets, self.advisories, self.states, self.graph
         )
 
@@ -305,6 +322,94 @@ class PlatformApplication:
             },
             "responses": [asdict(item) for item in responses],
             "verifications": [asdict(item) for item in self.verifications(advisory.advisory_id)],
+        }
+
+    # Assets are flagged when their divergence exceeds one standard deviation
+    # above the network mean for the same advisory. A distribution-based rule
+    # is used deliberately: a fixed cutoff invites being tuned until it
+    # captures whichever asset the demo wants to discuss. This one is
+    # recomputed per advisory and reports whatever qualifies.
+    DIVERGENCE_SIGMAS = 1.0
+
+    def baseline_divergence(self, advisory_value: str | None = None, limit: int = 5) -> dict[str, Any]:
+        """Assets whose two likelihood tracks diverge unusually far.
+
+        This is model governance, not prediction. The shadow model is trained
+        on synthetic history, so it is not independent real-world evidence and
+        cannot establish that any operational figure is wrong. What it can do
+        is disagree, and a disagreement large relative to the rest of the
+        network identifies the susceptibility assumption as a candidate for
+        review.
+
+        The scorecard's largest single term is `disruption_baseline`, an
+        authored susceptibility prior. The shadow model never sees it and works
+        only from observable asset and hazard features, so the direction of the
+        gap localises what to look at:
+
+        * model higher -> observable features are more adverse than the
+          authored baseline anticipates.
+        * model lower  -> the operational figure rests substantially on the
+          authored baseline rather than on observable features.
+
+        Neither resolves automatically, and neither changes ranking.
+        """
+        advisory = self.resolve_advisory(advisory_value)
+        scored = [
+            (item, round(item.experimental_ml_likelihood - item.disruption_likelihood, 1))
+            for item in self.timeline[advisory.advisory_id]
+            if item.experimental_ml_likelihood is not None
+        ]
+        if not scored:
+            return {
+                "advisory_id": advisory.advisory_id, "stage": advisory.stage,
+                "rule": "mean + 1 standard deviation of network divergence",
+                "threshold": None, "mean_divergence": None, "standard_deviation": None,
+                "population": 0, "total": 0, "findings": [], "note": _DIVERGENCE_NOTE,
+            }
+
+        magnitudes = [abs(delta) for _, delta in scored]
+        mean = statistics.mean(magnitudes)
+        deviation = statistics.pstdev(magnitudes)
+        threshold = round(mean + self.DIVERGENCE_SIGMAS * deviation, 1)
+
+        findings = []
+        for assessment, delta in scored:
+            if abs(delta) < threshold:
+                continue
+            asset = self.assets_by_id[assessment.sgw_id]
+            model_higher = delta > 0
+            findings.append({
+                "sgw_id": assessment.sgw_id,
+                "name": asset.name,
+                "operational_likelihood": assessment.disruption_likelihood,
+                "model_likelihood": assessment.experimental_ml_likelihood,
+                "delta": delta,
+                "direction": "model_higher" if model_higher else "model_lower",
+                "authored_baseline": asset.disruption_baseline,
+                "condition_score": asset.condition_score,
+                "tier": assessment.tier.value,
+                "rank": assessment.rank,
+                "finding": (
+                    f"{assessment.sgw_id} shows material divergence between the "
+                    f"operational baseline and a shadow model using observable asset "
+                    f"and hazard features. That divergence identifies the "
+                    f"susceptibility assumption of {asset.disruption_baseline:.2f} as a "
+                    f"candidate for review."
+                ),
+                "action": "Review the susceptibility assumption.",
+            })
+        findings.sort(key=lambda item: abs(item["delta"]), reverse=True)
+        return {
+            "advisory_id": advisory.advisory_id,
+            "stage": advisory.stage,
+            "rule": "mean + 1 standard deviation of network divergence",
+            "threshold": threshold,
+            "mean_divergence": round(mean, 1),
+            "standard_deviation": round(deviation, 1),
+            "population": len(scored),
+            "total": len(findings),
+            "findings": findings[:limit],
+            "note": _DIVERGENCE_NOTE,
         }
 
     def asset_detail(self, asset_value: str, advisory_value: str | None = None) -> dict[str, Any]:

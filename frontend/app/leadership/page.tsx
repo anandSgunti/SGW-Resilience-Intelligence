@@ -72,7 +72,36 @@ export default function LeadershipPage() {
   const before = compare.before;
   const after = compare.after;
   const worsening = Boolean(after && before && after.summary.critical_assets > before.summary.critical_assets);
-  const largestMover = useMemo(() => compare.after?.assessments.find((item) => item.primary_change) ?? null, [compare.after]);
+  /* Largest mover is measured across the two advisories actually selected
+     above, not read off `primary_change` — that field is computed against each
+     advisory's immediate predecessor, so it can report a move outside the
+     window being compared.
+
+     Movement is ranked by risk-score delta, not by rank delta. Rank change is
+     quantised and depends on how crowded the neighbourhood is: climbing five
+     places through a packed midfield is less movement than climbing four
+     places into #1 on three times the risk change. Rank delta breaks ties and
+     is shown alongside because leadership reads the ranked list. Assets absent
+     from the earlier advisory have no measurable movement. */
+  const largestMover = useMemo(() => {
+    if (!before || !after) return null;
+    const priorRank = new Map(before.assessments.map((item) => [item.sgw_id, item.rank]));
+    const priorRisk = new Map(before.assessments.map((item) => [item.sgw_id, item.risk_score]));
+    const moved = after.assessments.flatMap((item) => {
+      const wasRank = priorRank.get(item.sgw_id);
+      const wasRisk = priorRisk.get(item.sgw_id);
+      if (wasRank === undefined || wasRisk === undefined) return [];
+      // Positive rankDelta means the asset climbed towards #1.
+      return [{ item, rankDelta: wasRank - item.rank, riskDelta: Math.round((item.risk_score - wasRisk) * 10) / 10, wasRank }];
+    });
+    const ranked = moved
+      .filter((entry) => entry.rankDelta !== 0 || entry.riskDelta !== 0)
+      .sort((a, b) =>
+        Math.abs(b.riskDelta) - Math.abs(a.riskDelta)
+        || Math.abs(b.rankDelta) - Math.abs(a.rankDelta)
+        || a.item.sgw_id.localeCompare(b.item.sgw_id));
+    return ranked[0] ?? null;
+  }, [before, after]);
   const sourceFacts = useMemo(() => state ? [
     `Advisory ${state.advisory.stage} · ${state.advisory.issued_at}`, `${state.summary.critical_assets} Critical · ${state.summary.high_assets} High`,
     `${compact(state.summary.exposed_residents)} residents exposed`, `${readiness.coverage}% mitigation coverage`,
@@ -213,8 +242,16 @@ export default function LeadershipPage() {
 
             {largestMover ? (
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-accent/40 bg-accent/10 px-4 py-3">
-                <strong className="text-sm">Largest mover · {largestMover.sgw_id.replace("SGW-", "")}</strong>
-                <span className="text-xs text-muted-foreground">#{largestMover.rank} · {largestMover.primary_change}</span>
+                <strong className="text-sm">
+                  Largest mover · {largestMover.item.sgw_id.replace("SGW-", "")}
+                </strong>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {largestMover.rankDelta === 0
+                    ? `#${largestMover.item.rank} held`
+                    : `#${largestMover.wasRank} → #${largestMover.item.rank} (${largestMover.rankDelta > 0 ? "+" : ""}${largestMover.rankDelta})`}
+                  {" · risk "}
+                  {largestMover.riskDelta > 0 ? "+" : ""}{largestMover.riskDelta.toFixed(1)}
+                </span>
               </div>
             ) : null}
           </div>

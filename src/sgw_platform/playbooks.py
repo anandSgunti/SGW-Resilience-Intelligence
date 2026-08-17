@@ -262,7 +262,12 @@ class RecommendationStore:
         if status == RecommendationStatus.ASSIGNED and not owner:
             raise ValueError("An owner is required when assigning a recommendation")
         timestamp = occurred_at or datetime.now(timezone.utc).isoformat()
-        event = RecommendationEvent(status, timestamp, actor, owner, reason)
-        updated = replace(current, status=status, owner=owner or current.owner, history=current.history + (event,))
+        # Ownership is established at assignment and carries forward. Only
+        # `assign` supplies an owner, so recording the raw argument left every
+        # later event (start, complete) attributed to nobody. The event and the
+        # recommendation must agree on who owned the work at that moment.
+        effective_owner = owner or current.owner
+        event = RecommendationEvent(status, timestamp, actor, effective_owner, reason)
+        updated = replace(current, status=status, owner=effective_owner, history=current.history + (event,))
         self._items[recommendation_id] = updated
         return updated

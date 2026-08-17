@@ -61,7 +61,23 @@ def build_synthetic_payload(seed: int = SEED) -> dict:
             (round(32.72 + rng.random() * .46, 6), round(-80.45 + rng.random() * .58, 6)),
         )
         operating_zone = _operating_zone(latitude, longitude)
-        attributes = {"operating_zone": operating_zone, **(attrs or {})}
+        # Maintenance history the experimental ML track reads. Older, more
+        # failure-prone plant is correlated with a lower condition score so the
+        # synthetic estimate does not contradict the recorded condition.
+        #
+        # Drawn from a private stream keyed on the asset id, not from `rng`.
+        # Taking these from the shared stream would shift every later draw and
+        # silently change wind, flood and inspection values across the whole
+        # scenario. Adding a field must not perturb existing data.
+        history = random.Random(f"maintenance-history:{sgw_id}")
+        asset_age_years = max(2, min(60, int(round((100 - condition) * 0.55 + history.uniform(-4, 6)))))
+        previous_failures = max(0, min(6, int(round((100 - condition) / 22 + history.uniform(-0.6, 0.9)))))
+        attributes = {
+            "operating_zone": operating_zone,
+            "asset_age_years": asset_age_years,
+            "previous_failures": previous_failures,
+            **(attrs or {}),
+        }
         assets.append({"sgw_id": sgw_id, "asset_type": kind, "name": name,
                        "domain": domain,
                        "source_ids": {"electric_registry" if kind == "substation" else "water_ops": f"{kind[:2].upper()}-{1000 + index}", "legacy_gis": f"GIS/{sgw_id[4:]}"},

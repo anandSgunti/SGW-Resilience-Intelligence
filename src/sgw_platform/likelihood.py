@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
+from sgw_platform.ml.likelihood_model import (
+    DISRUPTION_MODEL,
+    SOURCE_FALLBACK,
+    DisruptionLikelihoodModel,
+    features_from_state,
+)
 from sgw_platform.models import (
     Advisory,
     Asset,
@@ -21,15 +29,62 @@ def _band(score: float) -> LikelihoodBand:
 
 
 class LikelihoodEngine:
-    """Calculates asset disruption likelihood without considering consequence.
+    """Asset disruption likelihood on two deliberately separate tracks.
 
-    Dependencies, downstream population, restoration duration, backup endurance,
-    and alternate feeds intentionally do not enter this calculation.
+    **Operational** (`score`, `raw_score`, `band`) is the transparent
+    scorecard in `_deterministic`. It is the only track that feeds systemic
+    risk, tiering, ranking and playbooks. Every point it awards is inspectable
+    and attributable to a named component.
+
+    **Experimental** (`experimental_ml_*`) is a logistic regression trained on
+    synthetic history. It is attached to the same assessment and reported to
+    the UI, but nothing consumes it.
+
+    The separation is intentional rather than transitional. The scorecard's
+    largest single input is `disruption_baseline`, an authored susceptibility
+    prior. Training the model on that field would mean learning back a number
+    we wrote ourselves and presenting the echo as a prediction. So the model is
+    given only condition, hazard, age and failure-history features, and is
+    allowed to disagree. Where it does, the disagreement is the finding.
+
+    Neither track considers consequence. Dependencies, downstream population,
+    restoration duration, backup endurance and alternate feeds intentionally do
+    not enter this calculation.
     """
 
     MAX_SCORE = 98.0
 
+    def __init__(self, model: DisruptionLikelihoodModel | None = None, use_model: bool = True):
+        self._model = model if model is not None else DISRUPTION_MODEL
+        self._use_model = use_model
+
     def assess(self, asset: Asset, state: AssetState, advisory: Advisory) -> LikelihoodAssessment:
+        operational = self._deterministic(asset, state, advisory)
+        if not self._use_model:
+            return operational
+        prediction = self._experimental(asset, state, advisory)
+        if prediction is None:
+            return operational
+        return replace(
+            operational,
+            experimental_ml_likelihood=prediction.likelihood,
+            experimental_ml_band=_band(prediction.likelihood).value,
+            experimental_ml_drivers=tuple(
+                f"{name.replace('_', ' ')} contributes {value:+.2f} to log-odds"
+                for name, value in prediction.drivers
+            ),
+            model_name=prediction.model_name,
+            model_version=prediction.model_version,
+        )
+
+    def _experimental(self, asset: Asset, state: AssetState, advisory: Advisory):
+        """Run the ML track. Any failure simply leaves the fields unset."""
+        try:
+            return self._model.predict(features_from_state(asset, state, advisory))
+        except Exception:  # noqa: BLE001 - the operational track must not care
+            return None
+
+    def _deterministic(self, asset: Asset, state: AssetState, advisory: Advisory) -> LikelihoodAssessment:
         baseline = min(40.0, asset.disruption_baseline * 100)
         # The adapter supplies a location- and advisory-derived wind prediction.
         # Converting it back to the engine's 0-50 contribution keeps the domain
@@ -60,7 +115,10 @@ class LikelihoodEngine:
         raw_score = round(sum(component.points for component in components), 1)
         score = min(self.MAX_SCORE, max(0.0, raw_score))
         drivers = self._drivers(asset, state, advisory, components)
-        return LikelihoodAssessment(advisory.advisory_id, asset.sgw_id, score, raw_score, _band(score), components, drivers)
+        return LikelihoodAssessment(
+            advisory.advisory_id, asset.sgw_id, score, raw_score, _band(score), components, drivers,
+            likelihood_source=SOURCE_FALLBACK,
+        )
 
     @staticmethod
     def _drivers(asset: Asset, state: AssetState, advisory: Advisory, components: tuple[LikelihoodComponent, ...]) -> tuple[str, ...]:
