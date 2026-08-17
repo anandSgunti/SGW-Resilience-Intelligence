@@ -23,6 +23,45 @@ function title(value: string) { return value.replaceAll("_", " ").replace(/\b\w/
 function edgeLabel(value: string) { return value === "located_in" ? "critical service" : value.replaceAll("_", " "); }
 function formatValue(value: string | number | null | undefined, unit = "") { return value === null || value === undefined || value === "" ? "—" : `${value}${unit}`; }
 
+
+/* ---- confidence semantics -------------------------------------------------
+   Confidence is not one quantity. A hospital's service record being well known
+   says nothing about whether the pump feeding it has been checked. Naming the
+   kind per asset type stops a chain of "High" reading as a high-confidence
+   conclusion. */
+const CONFIDENCE_KIND: Record<string, string> = {
+  substation: "Assessment confidence",
+  pump_station: "Operational confidence",
+  water_zone: "Service data confidence",
+};
+function confidenceKind(assetType: string) {
+  return CONFIDENCE_KIND[assetType] ?? "Service data confidence";
+}
+/** Topology links state a dependency; located_in states a service relationship. */
+function edgeConfidenceKind(edge: Edge) {
+  return edge.dependency_class === "service_consequence" || edge.relationship === "located_in"
+    ? "Service relationship"
+    : "Dependency confidence";
+}
+const CONFIDENCE_RANK: Record<string, number> = { low: 0, medium: 1, high: 2 };
+function band(score: number) { return score >= 0.85 ? "High" : score >= 0.6 ? "Medium" : "Low"; }
+function confidenceTone(level: string) {
+  const value = level.toLowerCase();
+  return value === "high" ? "text-verified" : value === "medium" ? "text-uncertain" : value === "low" ? "text-critical" : "text-muted-foreground";
+}
+/** The path is only as trustworthy as its weakest evidence, so the headline
+ *  reports the minimum and names what is holding it there. */
+function pathConfidence(contexts: NodeContext[]) {
+  if (!contexts.length) return { level: "Unknown", limiter: null as NodeContext | null };
+  const weakest = contexts.reduce((worst, item) =>
+    (CONFIDENCE_RANK[item.assessment.confidence] ?? 0) < (CONFIDENCE_RANK[worst.assessment.confidence] ?? 0) ? item : worst);
+  const atWeakest = contexts.filter((item) => item.assessment.confidence === weakest.assessment.confidence);
+  // Prefer an unverified node as the named limiter: that is the actionable gap.
+  const limiter = atWeakest.find((item) => item.state.verification_status !== "verified") ?? weakest;
+  const level = weakest.assessment.confidence;
+  return { level: level.charAt(0).toUpperCase() + level.slice(1), limiter };
+}
+
 function graphLayout(nodes: Asset[], edges: Edge[]) {
   const ids = new Set(nodes.map((node) => node.sgw_id));
   const incoming = new Map([...ids].map((id) => [id, 0]));
@@ -284,6 +323,8 @@ export default function AssetRiskPage() {
   }, [chatOpen]);
 
   const positions = useMemo(() => graphLayout(detail?.dependency_subgraph.nodes ?? [], detail?.dependency_subgraph.edges ?? []), [detail]);
+  const pathNodes = useMemo(() => Object.values(detail?.node_context ?? {}), [detail]);
+  const overall = useMemo(() => pathConfidence(pathNodes), [pathNodes]);
   const focused = detail?.node_context[focusedId] ?? (detail ? { asset: detail.asset, state: detail.state, assessment: detail.assessment } : null);
 
   if (error) return (
@@ -324,10 +365,26 @@ export default function AssetRiskPage() {
           </div>
         </div>
 
+        <div className="mt-4 flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-border bg-surface-2/70 px-4 py-3">
+          <div>
+            <p className="text-sm font-semibold">
+              Overall impact-path confidence: <span className={confidenceTone(overall.level)}>{overall.level}</span>
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {overall.limiter
+                ? `Limited by ${overall.limiter.state.verification_status === "verified" ? "" : "unverified "}${confidenceKind(overall.limiter.asset.asset_type).toLowerCase()} at ${compactId(overall.limiter.asset.sgw_id)}.`
+                : "No modelled dependency path for this asset."}
+            </p>
+          </div>
+          <p className="max-w-md text-[11px] leading-relaxed text-muted-foreground">
+            Dependencies are well understood. The conclusion sits at the weakest evidence on the path, not the strongest.
+          </p>
+        </div>
+
         <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
           {lens === "infrastructure" ? "Topology · redundancy · validated engineering relationships"
             : lens === "consequence" ? "Population · critical facilities · uncovered duration"
-            : "Verified · stale · unknown · conflicting evidence"}
+            : "Confidence is named per evidence type · the path inherits its weakest link"}
         </p>
 
         <div className={`grid-field relative mt-5 h-[460px] overflow-hidden rounded-[2rem] border border-border bg-surface-2/60 ${loading ? "opacity-70" : ""}`}>
@@ -365,10 +422,30 @@ export default function AssetRiskPage() {
                 </span>
                 <small className="mt-1 block text-[11px] text-muted-foreground">{title(node.asset_type)}</small>
                 {lens === "consequence" && node.asset_type === "water_zone" ? <b className="mt-1 block text-[11px] text-accent">{Number(node.attributes.population ?? 0).toLocaleString("en-US")} residents</b> : null}
-                {lens === "confidence" ? <b className="mt-1 block text-[11px] text-uncertain">{context.assessment.confidence} evidence</b> : null}
+                {lens === "confidence" ? (
+                  <b className="mt-1 block max-w-[190px] whitespace-normal text-[11px] font-medium leading-tight">
+                    <span className="text-muted-foreground">{confidenceKind(node.asset_type)}: </span>
+                    <span className={confidenceTone(context.assessment.confidence)}>{title(context.assessment.confidence)}</span>
+                  </b>
+                ) : null}
               </button>
             );
           })}
+
+          {/* Edge confidence sits on the link, not only on the nodes. */}
+          {lens === "confidence" ? (detail?.dependency_subgraph.edges ?? []).map((edge) => {
+            const from = positions.get(edge.from_id); const to = positions.get(edge.to_id);
+            if (!from || !to) return null;
+            const level = band(edge.confidence);
+            return (
+              <span key={`label-${edge.from_id}-${edge.to_id}-${edge.relationship}`}
+                style={{ left: `${(from.x + to.x) / 2}%`, top: `${(from.y + to.y) / 2}%` }}
+                className="glass-chip pointer-events-none absolute z-[5] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] leading-none">
+                <span className="text-muted-foreground">{edgeConfidenceKind(edge)}: </span>
+                <span className={confidenceTone(level)}>{level}</span>
+              </span>
+            );
+          }) : null}
 
           {hoveredNode && detail?.node_context[hoveredNode] ? (() => {
             const context = detail.node_context[hoveredNode]; const point = positions.get(hoveredNode)!;
@@ -376,7 +453,7 @@ export default function AssetRiskPage() {
               <div style={{ left: `${point.x}%`, top: `${point.y}%` }} className="panel pointer-events-none absolute z-10 w-56 -translate-x-1/2 translate-y-10 rounded-2xl p-3.5 text-xs">
                 <strong className="block">{compactId(hoveredNode)} · {title(context.asset.asset_type)}</strong>
                 <span className="mt-1 block text-muted-foreground">Risk {Math.round(context.assessment.risk_score)} · {title(context.assessment.tier)}</span>
-                <span className="block text-muted-foreground">Confidence: {title(context.assessment.confidence)}</span>
+                <span className="block text-muted-foreground">{confidenceKind(context.asset.asset_type)}: <span className={confidenceTone(context.assessment.confidence)}>{title(context.assessment.confidence)}</span></span>
               </div>
             );
           })() : null}
@@ -387,6 +464,7 @@ export default function AssetRiskPage() {
           <span className="flex items-center gap-2"><i className="h-0.5 w-6 bg-accent" />Service consequence</span>
           <span className="flex items-center gap-2"><i className="h-0.5 w-6 bg-uncertain" />Unverified</span>
           <span className="flex items-center gap-2"><i className="h-1 w-6 bg-critical" />Material resilience gap</span>
+          {lens === "confidence" ? <span className="flex items-center gap-2 normal-case tracking-normal">Node colour stays asset risk tier; confidence is stated in words.</span> : null}
         </div>
       </section>
 

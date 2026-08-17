@@ -69,6 +69,68 @@ function stamp(value: string) {
   return new Date(value).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
 }
 
+
+type AskPayload = { headline: string; answer: string; supporting_facts: Array<{ metric: string; label: string; value: string | number; unit: string | null }>; fact_pack_sha256: string; model: string; grounded: boolean };
+
+/** Grounded chat for the selected recommendation. Docked so it costs no
+ *  column, and answers only from the backend fact pack. */
+function ResponseAsk({ recommendation, stage, onClose }: { recommendation: Recommendation; stage: string; onClose: () => void }) {
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState<AskPayload | null>(null);
+  const [asking, setAsking] = useState(false);
+  const [askError, setAskError] = useState<string | null>(null);
+  const id = compactId(recommendation.asset_id);
+  const prompts = [
+    `Why was this action raised for ${id}?`,
+    `What happens if ${id} is not mitigated?`,
+    "What evidence is still unverified?",
+    "What changed since the previous advisory?",
+  ];
+  async function ask(next: string) {
+    const trimmed = next.trim(); if (!trimmed || asking) return;
+    setQuestion(trimmed); setAsking(true); setAskError(null); setAnswer(null);
+    try {
+      const response = await fetch(`${API_URL}/api/explain`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: trimmed, asset_id: recommendation.asset_id, advisory: stage }) });
+      if (!response.ok) throw new Error("Explanation unavailable");
+      setAnswer(await response.json() as AskPayload);
+    } catch { setAskError("The grounded answer is temporarily unavailable."); }
+    finally { setAsking(false); }
+  }
+  return (
+    <div className="panel flex h-[min(560px,70vh)] w-[min(400px,calc(100vw-2rem))] flex-col gap-4 p-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
+      <div className="flex items-start justify-between gap-3">
+        <div><p className="eyebrow-mono">Grounded intelligence</p><h3 className="mt-1 text-lg font-semibold">Ask about {id}</h3></div>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full border border-verified/40 bg-verified/10 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-verified">Facts only</span>
+          <button type="button" onClick={onClose} aria-label="Close chat" className="press grid h-7 w-7 place-items-center rounded-full border border-border text-muted-foreground hover:text-foreground">✕</button>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {prompts.map((prompt) => (
+          <button key={prompt} type="button" onClick={() => void ask(prompt)} className="glass-chip press rounded-full px-3.5 py-2 text-xs text-muted-foreground hover:text-foreground">{prompt}</button>
+        ))}
+      </div>
+      <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); void ask(question); }}>
+        <input aria-label={`Question about ${id}`} value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={`Ask about ${id}…`} maxLength={500}
+          className="glass-chip flex-1 rounded-full px-4 py-2.5 text-sm outline-none transition-shadow duration-300 focus:shadow-[0_0_0_4px_oklch(0.68_0.17_45/0.18)]" />
+        <button type="submit" disabled={!question.trim() || asking} className="press rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50">{asking ? "Asking…" : "Ask"}</button>
+      </form>
+      <div aria-live="polite" className="glass-chip min-h-24 flex-1 overflow-y-auto rounded-2xl p-4">
+        {asking ? <p className="text-sm text-muted-foreground">Building an answer from the locked fact pack…</p>
+          : askError ? <p className="text-sm text-critical">{askError}</p>
+          : answer ? (
+            <>
+              <strong className="block text-sm">{answer.headline}</strong>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{answer.answer}</p>
+              <small className="mt-3 block font-mono text-[11px] text-muted-foreground">Grounded · {answer.model} · Fact pack {answer.fact_pack_sha256.slice(0, 12)}</small>
+              <small className="mt-1 block text-[11px] text-verified">Answers cannot approve, assign or close an action.</small>
+            </>
+          ) : <p className="text-sm text-muted-foreground">Answers are composed only from the locked advisory fact pack.</p>}
+      </div>
+    </div>
+  );
+}
+
 export default function RespondPage() {
   const searchParams = useSearchParams();
   const { refreshIncident, setCurrentAdvisory, setSelectedAsset } = useIncident();
@@ -90,6 +152,7 @@ export default function RespondPage() {
   const [rationale, setRationale] = useState<Rationale | null>(null);
   const [rationaleLoading, setRationaleLoading] = useState(false);
   const [rationaleError, setRationaleError] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -102,6 +165,13 @@ export default function RespondPage() {
 
   const responses = state?.responses ?? [];
   const verifications = state?.verifications ?? [];
+  useEffect(() => {
+    if (!chatOpen) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setChatOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [chatOpen]);
+
   const filtered = useMemo(() => responses.filter((item) => (filter === "all" || item.priority === filter) && (!assetFocus || item.asset_id === assetFocus)), [responses, filter, assetFocus]);
   const selected = filtered.find((item) => item.recommendation_id === selectedId) ?? filtered[0] ?? null;
   useEffect(() => { const query = new URLSearchParams(window.location.search); query.set("t", stage); query.set("filter", filter); if (selected?.asset_id) { query.set("asset", selected.asset_id); setSelectedAsset(selected.asset_id); } setCurrentAdvisory(stage); window.history.replaceState(null, "", `/respond?${query.toString()}`); }, [filter, selected?.asset_id, setCurrentAdvisory, setSelectedAsset, stage]);
@@ -508,6 +578,17 @@ export default function RespondPage() {
           )}
         </aside>
       </section>
+      {selected ? (
+        <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+          {chatOpen ? <ResponseAsk key={selected.recommendation_id} recommendation={selected} stage={stage} onClose={() => setChatOpen(false)} /> : null}
+          <button type="button" onClick={() => setChatOpen((open) => !open)} aria-expanded={chatOpen}
+            aria-label={chatOpen ? "Close grounded intelligence" : `Ask about ${compactId(selected.asset_id)}`}
+            className="press flex items-center gap-2.5 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_18px_40px_-18px_oklch(0.62_0.19_42)] hover:opacity-95">
+            <span aria-hidden="true" className="text-base leading-none">{chatOpen ? "✕" : "✦"}</span>
+            {chatOpen ? "Close" : `Ask about ${compactId(selected.asset_id)}`}
+          </button>
+        </div>
+      ) : null}
       <p className="mt-6 text-center text-[11px] text-muted-foreground">Nothing on this screen computes risk. Every score, trigger and reassessment is read from the backend.</p>
     </main>
   );
