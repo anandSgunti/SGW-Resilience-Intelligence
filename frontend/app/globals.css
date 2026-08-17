@@ -402,3 +402,60 @@ h1,h2,p { margin-top:0; } h1,h2 { margin-bottom:0;font-size:17px;font-weight:520
   .event-map{height:420px}
   .index-scroll{max-height:340px}
 }
+
+/* ===================== Screens 2 & 3 — shared layout =====================
+   Both screens previously carried their own topbar (duplicating the shared
+   nav) and a full-width hero, then crammed everything else into one long
+   right rail. They now use Screen 1's language: a ribbon, then a three-column
+   stage of equal-height cards. */
+.asset-risk-shell,.response-shell{min-height:100vh;background:var(--surface);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",var(--font-geist-sans),system-ui,sans-serif;
+  font-size:15px;line-height:1.47;-webkit-font-smoothing:antialiased}
+.asset-risk-shell h1,.asset-risk-shell h2,.response-shell h1,.response-shell h2{margin:0;letter-spacing:-.01em}
+.ribbon-title{flex:1;min-width:0}
+.ribbon-title h1{font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ribbon-kicker{margin:0 0 1px;color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ribbon-kpi--critical small{text-transform:capitalize}
+.ribbon-kpi--high strong{color:#c76b00}
+.asset-lede{margin:0;padding:var(--s4) var(--s6) 0;max-width:110ch;color:var(--muted);font-size:14.5px}
+.asset-lede b{color:var(--ink);font-weight:590}
+
+/* --- Screen 2: graph | node detail | ask --- */
+.asset-risk-workspace{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:var(--s4);padding:var(--s4);align-items:start}
+.graph-panel,.asset-detail-rail,.asset-ask-rail{border-radius:var(--r);background:var(--raised);
+  box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.graph-panel{display:flex;flex-direction:column;border-right:0}
+.graph-toolbar{display:flex;align-items:center;gap:var(--s3);min-height:52px;padding:0 var(--s5);
+  border-bottom:1px solid var(--line-soft)}
+.graph-toolbar>div:first-child{margin-right:auto}
+.graph-toolbar h2{font-size:15px;font-weight:590}
+.asset-detail-rail,.asset-ask-rail{display:flex;flex-direction:column;background:var(--raised)}
+.asset-detail-rail>*,.asset-ask-rail>*{min-width:0}
+.empty-detail{margin:0;padding:var(--s5);color:var(--muted)}
+
+/* --- Screen 3: queue | decide | record --- */
+.response-workspace{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s4);padding:var(--s4);align-items:start}
+.response-queue{border-radius:var(--r);background:var(--raised);box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.response-detail{display:contents}
+.response-decide,.response-record{display:flex;flex-direction:column;border-radius:var(--r);
+  background:var(--raised);box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.response-decide>section,.response-record>section{border-bottom:1px solid var(--line-soft)}
+.response-decide>section:last-child,.response-record>section:last-child{border-bottom:0}
+.queue-toolbar{display:flex;align-items:center;gap:var(--s3);min-height:52px;padding:0 var(--s5);
+  border-bottom:1px solid var(--line-soft)}
+.queue-toolbar>div:first-child{margin-right:auto}
+.queue-toolbar h2{font-size:15px;font-weight:590}
+.response-detail-heading{padding:var(--s4) var(--s5);border-bottom:1px solid var(--line-soft)}
+.response-detail-heading h2{font-size:16px;font-weight:600}
+
+@media (max-width:1500px){
+  .asset-risk-workspace{grid-template-columns:1.4fr 1fr}
+  .asset-ask-rail{grid-column:1/-1}
+  .response-workspace{grid-template-columns:1fr 1fr}
+  .response-record{grid-column:1/-1}
+}
+@media (max-width:900px){
+  .asset-risk-workspace,.response-workspace{grid-template-columns:1fr}
+  .asset-ask-rail,.response-record{grid-column:auto}
+  .ribbon-title{flex-basis:100%;order:3}
+}

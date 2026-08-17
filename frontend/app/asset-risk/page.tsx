@@ -110,9 +110,19 @@ export default function AssetRiskPage() {
   const focused = detail?.node_context[focusedId] ?? (detail ? { asset: detail.asset, state: detail.state, assessment: detail.assessment } : null);
 
   return <main className="asset-risk-shell">
-    <header className="asset-risk-topbar"><Link href="/" className="back-link">← Risk overview</Link><div><p className="eyebrow">Southeastern Grid & Water</p><strong>Asset risk</strong></div><div className="asset-advisory"><span>Hurricane Iris · {detail?.advisory.stage ?? stage}</span><i>Active</i></div></header>
     {error ? <div className="asset-risk-error"><strong>Unable to load asset risk</strong><p>{error}</p><Link href="/">Return to risk overview</Link></div> : <>
-      <section className="asset-hero"><div><p className="eyebrow">Why does this asset matter right now?</p><h1>{detail ? `${compactId(detail.asset.sgw_id)} · ${detail.asset.name}` : "Loading asset context"}</h1><p>{detail?.assessment.primary_change ?? "Connecting to the current advisory state."}</p></div><div className="hero-metrics"><span><strong>{detail ? `${Math.round(detail.assessment.disruption_likelihood)}%` : "—"}</strong>Likelihood</span><span><strong>{detail ? Math.round(detail.assessment.consequence_score) : "—"}</strong>Consequence</span><span><strong className={`hero-tier hero-tier--${detail?.assessment.tier ?? "medium"}`}>{detail?.assessment.tier ?? "—"}</strong>Risk tier</span><span><strong>{detail ? title(detail.assessment.confidence) : "—"}</strong>Confidence</span></div></section>
+      <nav className="ribbon" aria-label="Asset risk summary">
+        <div className="ribbon-track" role="group" aria-label="Advisory stage"><span className="ribbon-step ribbon-step--active">{detail?.advisory.stage ?? stage}</span></div>
+        <div className="ribbon-title"><p className="ribbon-kicker">Why does this asset matter right now?</p>
+          <h1>{detail ? `${compactId(detail.asset.sgw_id)} · ${detail.asset.name}` : "Loading asset context"}</h1></div>
+        <div className="ribbon-summary">
+          <div className="ribbon-kpi"><strong>{detail ? `${Math.round(detail.assessment.disruption_likelihood)}%` : "—"}</strong><small>Likelihood</small></div>
+          <div className="ribbon-kpi"><strong>{detail ? Math.round(detail.assessment.consequence_score) : "—"}</strong><small>Consequence</small></div>
+          <div className={`ribbon-kpi ribbon-kpi--${detail?.assessment.tier ?? "medium"}`}><strong>{detail ? Math.round(detail.assessment.risk_score) : "—"}</strong><small>{detail?.assessment.tier ?? "Risk"}</small></div>
+          <div className="ribbon-kpi"><strong>{detail ? title(detail.assessment.confidence) : "—"}</strong><small>Confidence</small></div>
+        </div>
+      </nav>
+      <p className="asset-lede">{detail?.assessment.primary_change ?? "Connecting to the current advisory state."}</p>
       <section className="asset-risk-workspace">
         <div className="graph-panel"><div className="graph-toolbar"><div><p className="eyebrow">Dependency intelligence</p><h2>Connected impact path</h2></div><div className="lens-switch" aria-label="Graph lens">{(["infrastructure", "consequence", "confidence"] as Lens[]).map((item) => <button key={item} className={lens === item ? "lens-button lens-button--active" : "lens-button"} onClick={() => setLens(item)} aria-pressed={lens === item}>{title(item)}</button>)}</div></div>
           <div className={`dependency-graph dependency-graph--${lens}${loading ? " dependency-graph--loading" : ""}`}>
@@ -122,7 +132,10 @@ export default function AssetRiskPage() {
             {hoveredNode && detail?.node_context[hoveredNode] && (() => { const context = detail.node_context[hoveredNode]; const point = positions.get(hoveredNode)!; return <div className="graph-tooltip" style={{ left: `${point.x}%`, top: `${point.y}%` }}><strong>{compactId(hoveredNode)} · {title(context.asset.asset_type)}</strong>{context.asset.asset_type === "pump_station" ? <><span>Backup: {formatValue(context.state.backup_available_hours, "h")}</span><span>Generator readiness: {title(context.state.verification_status)}</span></> : <><span>Risk: {Math.round(context.assessment.risk_score)} · {title(context.assessment.tier)}</span><span>{context.asset.asset_type === "water_zone" ? `Population: ${Number(context.asset.attributes.population ?? 0).toLocaleString("en-US")}` : `Condition: ${context.asset.condition_score}/100`}</span></>}<span>Confidence: {title(context.assessment.confidence)}</span></div>; })()}
             {hoveredEdge && (() => { const from = positions.get(hoveredEdge.from_id)!; const to = positions.get(hoveredEdge.to_id)!; const uncertain = !hoveredEdge.verified || hoveredEdge.confidence < .8; return <div className="edge-tooltip" style={{ left: `${(from.x + to.x) / 2}%`, top: `${(from.y + to.y) / 2}%` }}><strong>{compactId(hoveredEdge.from_id)} → {compactId(hoveredEdge.to_id)}</strong><span>{title(edgeLabel(hoveredEdge.relationship))}</span><span>{uncertain ? "Dependency inferred / awaiting validation" : "Verified engineering record"}</span><small>Last validated {hoveredEdge.last_validated}</small></div>; })()}
           </div><div className="graph-legend"><span><i className="legend-line legend-line--solid" />Validated dependency</span><span><i className="legend-line legend-line--dashed" />Service consequence</span><span><i className="legend-line legend-line--uncertain" />Unverified</span><span><i className="legend-line legend-line--gap" />Material resilience gap</span></div></div>
-        <aside className="asset-detail-rail">{focused ? <><NodeDetail key={focusedId} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} /><AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} /></> : <p>Choose a node to inspect its evidence.</p>}</aside>
+        {focused ? <>
+          <aside className="asset-detail-rail"><NodeDetail key={focusedId} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} /></aside>
+          <aside className="asset-ask-rail"><AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} /></aside>
+        </> : <aside className="asset-detail-rail"><p className="empty-detail">Choose a node to inspect its evidence.</p></aside>}
       </section>
     </>}
   </main>;
