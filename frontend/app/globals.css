@@ -160,33 +160,36 @@ h1,h2,p { margin-top:0; } h1,h2 { margin-bottom:0;font-size:17px;font-weight:520
 .command-shell h1,.command-shell h2,.command-shell h3{margin:0;letter-spacing:-.01em}
 .command-shell .eyebrow{margin:2px 0 0;color:var(--muted);font:400 12.5px/1.3 inherit;letter-spacing:0;text-transform:none}
 
-/* ---------- ribbon ---------- */
-.ribbon{display:grid;grid-template-columns:repeat(5,1fr) minmax(300px,1.15fr);gap:1px;
-  background:var(--line-soft);border-bottom:1px solid var(--line)}
-.ribbon-step{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:11px var(--s4);
-  border:0;background:var(--raised);text-align:left;cursor:pointer;font:inherit;transition:background .2s var(--ease)}
-.ribbon-step:hover{background:#fafafc}
-.ribbon-step:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
-.ribbon-step em{font:600 26px/1 inherit;font-style:normal;letter-spacing:-.03em;color:var(--faint);font-variant-numeric:tabular-nums}
-.ribbon-text{min-width:0}
-.ribbon-text b{display:block;font-size:12.5px;font-weight:590;color:var(--muted)}
-.ribbon-text small{display:block;font-size:11.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ribbon-step--past em{color:var(--muted)}
-.ribbon-step--active{background:rgba(0,122,255,.06);box-shadow:inset 0 2px var(--blue)}
-.ribbon-step--active em{color:var(--red)}
-.ribbon-step--active .ribbon-text b{color:var(--blue)}
-.ribbon-step--active .ribbon-text small{color:var(--muted)}
-.ribbon-summary{display:grid;grid-template-columns:repeat(4,1fr);background:var(--raised)}
-.ribbon-kpi{display:flex;flex-direction:column;justify-content:center;padding:11px var(--s3);text-align:right;
-  text-decoration:none;color:var(--ink)}
-.ribbon-kpi+.ribbon-kpi{border-left:1px solid var(--line-soft)}
-.ribbon-kpi strong{font:600 20px/1 inherit;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.ribbon-kpi small{margin-top:3px;font-size:11px;color:var(--muted)}
+/* ---------- advisory ribbon ----------
+   A segmented control for the stage plus the current advisory's KPIs. The
+   per-advisory figures moved to the tooltip: the KPI row already answers
+   "now", and stacking five more numbers here read as clutter. */
+.ribbon{display:flex;align-items:center;gap:var(--s6);padding:var(--s3) var(--s6);
+  background:var(--raised);border-bottom:1px solid var(--line)}
+.ribbon-track{display:inline-flex;gap:2px;padding:3px;border-radius:11px;background:var(--fill)}
+.ribbon-step{min-width:74px;padding:7px 16px;border:0;border-radius:8px;background:transparent;
+  color:var(--muted);cursor:pointer;font:500 14px inherit;letter-spacing:-.01em;
+  transition:background .22s var(--ease),color .22s var(--ease),box-shadow .22s var(--ease)}
+.ribbon-step:hover{color:var(--ink)}
+.ribbon-step:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ribbon-step--past{color:var(--ink)}
+.ribbon-step--active{background:var(--raised);color:var(--ink);font-weight:590;
+  box-shadow:0 0 0 .5px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.12)}
+.ribbon-summary{margin-left:auto;display:flex;align-items:center;gap:var(--s2)}
+.ribbon-kpi{display:flex;align-items:baseline;gap:7px;padding:7px 14px;border-radius:999px;
+  background:var(--fill);text-decoration:none;color:var(--ink)}
+.ribbon-kpi strong{font:600 19px/1 inherit;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.ribbon-kpi small{font-size:13px;color:var(--muted)}
+.ribbon-kpi--critical{background:rgba(255,59,48,.10)}
 .ribbon-kpi--critical strong{color:var(--red)}
-.ribbon-kpi--high strong{color:var(--amber)}
-.ribbon-kpi--link:hover{background:rgba(0,122,255,.06)}
-.ribbon-kpi--link:hover small{color:var(--blue)}
-.ribbon-kpi--link:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.ribbon-kpi--critical small{color:#c22e26}
+.ribbon-kpi--high{background:rgba(255,149,0,.12)}
+.ribbon-kpi--high strong{color:#c76b00}
+.ribbon-kpi--high small{color:#c76b00}
+.ribbon-kpi--link{transition:background .2s var(--ease)}
+.ribbon-kpi--link:hover{background:rgba(0,122,255,.12)}
+.ribbon-kpi--link:hover small,.ribbon-kpi--link:hover strong{color:var(--blue)}
+.ribbon-kpi--link:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
 /* ---------- what-changed wire ---------- */
 .wire{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:var(--s4);height:60px;padding:0 var(--s6);
@@ -388,8 +391,8 @@ h1,h2,p { margin-top:0; } h1,h2 { margin-bottom:0;font-size:17px;font-weight:520
   .detail-split .slide{height:100%;overflow-y:auto;scrollbar-width:thin}
 }
 @media (max-width:1100px){
-  .ribbon{grid-template-columns:repeat(3,1fr)}
-  .ribbon-summary{grid-column:1/-1;border-top:1px solid var(--line-soft)}
+  .ribbon{flex-wrap:wrap;gap:var(--s3)}
+  .ribbon-summary{margin-left:0;flex-wrap:wrap}
 }
 @media (max-width:900px){
   .stage-body{grid-template-columns:1fr}

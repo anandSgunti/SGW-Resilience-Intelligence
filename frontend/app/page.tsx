@@ -219,20 +219,21 @@ export default function Home() {
 
   return (
     <main className="command-shell">
-      <nav className="ribbon" aria-label="Hurricane advisory trajectory">
-        {TIMELINE.map((item, index) => {
-          const summary = trajectory[item.value];
-          const active = stage === item.value;
-          return (
-            <button key={item.value} className={`ribbon-step${active ? " ribbon-step--active" : ""}${index < timelineIndex ? " ribbon-step--past" : ""}`} onClick={() => setStage(item.value)} aria-pressed={active} aria-label={`${item.label}: ${summary ? `${summary.critical_assets} critical, ${compactPopulation(summary.exposed_residents)} residents exposed` : "loading"}`}>
-              <em>{summary ? summary.critical_assets : "—"}</em>
-              <span className="ribbon-text">
-                <b>{item.label}</b>
-                <small>{summary ? `Critical · ${compactPopulation(summary.exposed_residents)}` : "Loading…"}</small>
-              </span>
-            </button>
-          );
-        })}
+      <nav className="ribbon" aria-label="Hurricane advisory timeline">
+        <div className="ribbon-track" role="group" aria-label="Select advisory">
+          {TIMELINE.map((item, index) => {
+            const summary = trajectory[item.value];
+            const active = stage === item.value;
+            // Per-advisory figures stay available on hover rather than crowding
+            // the control; the KPI row already carries the current advisory.
+            const detail = summary ? `${item.label}: ${summary.critical_assets} critical · ${compactPopulation(summary.exposed_residents)} residents exposed` : item.label;
+            return (
+              <button key={item.value} className={`ribbon-step${active ? " ribbon-step--active" : ""}${index < timelineIndex ? " ribbon-step--past" : ""}`} onClick={() => setStage(item.value)} aria-pressed={active} title={detail} aria-label={detail}>
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
         <div className="ribbon-summary">
           <div className="ribbon-kpi ribbon-kpi--critical"><strong>{state?.summary.critical_assets ?? 0}</strong><small>Critical</small></div>
           <div className="ribbon-kpi ribbon-kpi--high"><strong>{state?.summary.high_assets ?? 0}</strong><small>High</small></div>
