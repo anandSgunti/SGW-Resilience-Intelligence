@@ -13,6 +13,12 @@ const destinations = [
 
 const preservedKeys = ["t", "asset", "region", "filter", "railFilter", "railMode"];
 
+/** HURRICANE-IRIS -> Hurricane Iris */
+function eventName(id: string | null) {
+  if (!id) return null;
+  return id.split("-").map((part) => part[0] + part.slice(1).toLowerCase()).join(" ");
+}
+
 function contextualHref(destination: string) {
   const current = new URLSearchParams(window.location.search);
   const next = new URLSearchParams();
@@ -26,17 +32,59 @@ function contextualHref(destination: string) {
 
 export default function WorkflowNav() {
   const pathname = usePathname();
-  const { lastUpdated, dataFreshness, refreshing, error } = useIncident();
+  const { lastUpdated, dataFreshness, refreshing, error, currentEvent, currentAdvisory, state } = useIncident();
+  const advisory = state?.advisory as { storm_category?: number } | undefined;
+  const storm = advisory?.storm_category;
   function navigate(event: React.MouseEvent<HTMLAnchorElement>, destination: string) {
     event.preventDefault();
     window.location.assign(contextualHref(destination));
   }
   return <><nav className="workflow-nav" aria-label="SGW workflow navigation">
-    <Link className="workflow-brand" href="/" onClick={(event) => navigate(event, "/")} aria-label="SGW Risk Overview"><span>SGW</span><small>RI</small></Link>
+    <Link className="workflow-brand" href="/" onClick={(event) => navigate(event, "/")} aria-label="SGW Risk Overview"><i aria-hidden="true">SGW</i><span>Resilience command</span></Link>
     <div className="workflow-links">{destinations.map((item) => {
       const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-      return <a key={item.href} href={item.href} onClick={(event) => navigate(event, item.href)} className={active ? "active" : ""} aria-current={active ? "page" : undefined} title={`${item.phase}: ${item.label}`}><small>{item.short}</small><span>{item.label}</span><i>{item.phase}</i></a>;
+      return <a key={item.href} href={item.href} onClick={(event) => navigate(event, item.href)} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><span>{item.label}</span><i>{item.phase}</i></a>;
     })}</div>
-    <div className="workflow-flow">{refreshing ? <strong>Updating assessment…</strong> : error ? <strong>State refresh delayed</strong> : <><span>Updated {lastUpdated?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) ?? "—"}</span><small>Weather {dataFreshness?.weather ?? "—"}m · Field Ops {dataFreshness?.field_ops ?? "—"}m</small></>}<i>Assess → Respond → Inform</i></div>
-  </nav><style>{`.workflow-nav{position:fixed;z-index:10000;inset:0 auto 0 0;width:116px;display:flex;flex-direction:column;border-right:1px solid #27302f;background:#070b0b;color:#eef2f1;font-family:Arial,sans-serif}.workflow-brand{height:66px;display:flex;align-items:center;justify-content:center;gap:5px;border-bottom:1px solid #27302f;color:#eef2f1;text-decoration:none}.workflow-brand span{font:700 15px monospace;letter-spacing:.08em}.workflow-brand small{padding:2px 3px;border:1px solid #446c98;color:#69a9ff;font:600 6px monospace}.workflow-links{padding:14px 0}.workflow-links a{position:relative;display:grid;grid-template-columns:22px 1fr;gap:5px;align-items:center;min-height:57px;padding:9px 9px;border-left:2px solid transparent;color:#879391;text-decoration:none}.workflow-links a:hover{background:#0d1414;color:#f2f4f3}.workflow-links a.active{border-left-color:#69a9ff;background:#101818;color:#f2f4f3}.workflow-links small{color:#56605f;font:7px monospace}.workflow-links span{font-size:9px;font-weight:600;line-height:1.25}.workflow-links i{grid-column:2;color:#56605f;font:normal 7px monospace;text-transform:uppercase}.workflow-flow{margin-top:auto;padding:15px 12px 18px;border-top:1px solid #27302f;color:#56605f;text-align:center;font:7px monospace;text-transform:uppercase}.workflow-flow span,.workflow-flow b{display:block;margin:5px 0}.workflow-flow b{color:#3c628e}@media(max-width:760px){.workflow-nav{inset:auto 0 0 0;width:auto;height:58px;flex-direction:row;border-right:0;border-top:1px solid #27302f}.workflow-brand,.workflow-flow{display:none}.workflow-links{display:grid;grid-template-columns:repeat(4,1fr);width:100%;padding:0}.workflow-links a{display:flex;justify-content:center;min-height:57px;padding:7px;border-left:0;border-top:2px solid transparent}.workflow-links a.active{border-left:0;border-top-color:#69a9ff}.workflow-links small,.workflow-links i{display:none}.workflow-links span{font-size:8px}body{padding-bottom:58px!important}}`}</style></>;
+    <div className="workflow-state">
+      <span className="workflow-chip workflow-chip--event"><i aria-hidden="true" />
+        <b>{eventName(currentEvent) ?? "Hurricane Iris"}</b>
+        {storm ? ` · Category ${storm}` : ""} · {currentAdvisory}
+      </span>
+      {refreshing ? <span className="workflow-chip workflow-chip--busy">Updating assessment…</span>
+        : error ? <span className="workflow-chip workflow-chip--warn">State refresh delayed</span>
+        : <span className="workflow-chip">Updated {lastUpdated?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) ?? "—"}</span>}
+      <span className="workflow-chip workflow-chip--quiet" title="Data freshness">Data freshness · Weather {dataFreshness?.weather ?? "—"}m · Field Ops {dataFreshness?.field_ops ?? "—"}m · Maintenance {dataFreshness?.maintenance ?? "—"}m</span>
+    </div>
+  </nav><style>{`
+.workflow-nav{position:sticky;top:0;z-index:10000;display:flex;align-items:center;gap:28px;height:56px;padding:0 24px;
+  background:rgba(255,255,255,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid #d2d2d7;color:#1d1d1f;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+.workflow-brand{display:flex;align-items:center;gap:8px;color:#1d1d1f;text-decoration:none;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.workflow-brand i{width:24px;height:24px;display:grid;place-items:center;border-radius:6px;background:#1d1d1f;color:#fff;font-style:normal;font:700 9px/1 ui-monospace,monospace}
+.workflow-links{display:flex;align-items:center;gap:4px}
+.workflow-links a{position:relative;display:flex;flex-direction:column;gap:1px;padding:7px 12px;border-radius:8px;
+  color:#6e6e73;text-decoration:none;transition:background .2s cubic-bezier(.32,.72,0,1),color .2s}
+.workflow-links a:hover{background:rgba(120,120,128,.10);color:#1d1d1f}
+.workflow-links a:focus-visible{outline:2px solid #007aff;outline-offset:2px}
+.workflow-links a.active{color:#1d1d1f}
+.workflow-links a.active:after{content:"";position:absolute;left:12px;right:12px;bottom:-9px;height:2px;border-radius:2px;background:#007aff}
+.workflow-links span{font-size:14px;font-weight:500;line-height:1.2}
+.workflow-links a.active span{font-weight:590}
+.workflow-links i{color:#8e8e93;font-style:normal;font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.workflow-state{margin-left:auto;display:flex;align-items:center;gap:8px}
+.workflow-chip{padding:5px 12px;border-radius:999px;background:#f2f2f7;color:#6e6e73;font-size:13px;white-space:nowrap}
+.workflow-chip--quiet{background:transparent;color:#8e8e93}
+.workflow-chip--event{display:flex;align-items:center;gap:7px;color:#1d1d1f}
+.workflow-chip--event b{font-weight:590}
+.workflow-chip--event i{width:7px;height:7px;border-radius:50%;background:#ff3b30;box-shadow:0 0 0 3px rgba(255,59,48,.16)}
+.workflow-chip--busy{background:rgba(0,122,255,.12);color:#0071e3}
+.workflow-chip--warn{background:rgba(255,149,0,.14);color:#c76b00}
+@media(max-width:1080px){.workflow-chip--quiet{display:none}}
+@media(max-width:820px){
+  .workflow-nav{gap:12px;padding:0 12px;overflow-x:auto}
+  .workflow-links i{display:none}
+  .workflow-state{display:none}
+}
+`}</style></>;
 }

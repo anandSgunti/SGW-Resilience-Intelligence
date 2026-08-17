@@ -14,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${geistSans.variable} ${geistMono.variable}`}><IncidentProvider><WorkflowNav /><div className="workflow-content">{children}</div></IncidentProvider><style>{`.workflow-content{margin-left:116px;min-height:100vh}@media(max-width:760px){.workflow-content{margin-left:0}}`}</style></body></html>;
+  return <html lang="en"><body className={`${geistSans.variable} ${geistMono.variable}`}><IncidentProvider><WorkflowNav /><div className="workflow-content">{children}</div></IncidentProvider><style>{`.workflow-content{min-height:100vh}`}</style></body></html>;
 }

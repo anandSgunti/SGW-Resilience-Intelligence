@@ -51,21 +51,29 @@ test("revised 6A.1 map uses Leaflet with application-owned fallback layers", asy
   assert.match(map, /hazardAreas/);
 });
 
-test("6A.3 implements material-change strip and grounded drawers", async () => {
+test("6A.3 surfaces material change as a headlines wire, plus grounded drawers", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  for (const label of ["What changed since", "focus-section--changed", "All changes", "Top movers", "Grounded explanation", "Baseline advisory established"]) {
+  // The per-asset change strip became a wire covering every mover at once.
+  for (const label of ["What changed", "wire-belt", "headlines", "Top movers", "Grounded explanation"]) {
     assert.match(source, new RegExp(label));
   }
+  // Every headline is derived from backend change drivers, never recomputed.
+  assert.match(source, /topMovers\.map/);
+  assert.match(source, /item\.primary_change/);
+  assert.match(source, /No material change since/);
   assert.match(source, /\/api\/explain/);
   assert.match(source, /fact_pack_sha256/);
-  assert.match(source, /hasMaterialChange/);
 });
 
-test("6A.4 implements lean event header, backend KPIs and freshness", async () => {
+test("6A.4 keeps event identity in the nav and backend KPIs in the ribbon", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  for (const label of ["Southeastern Grid & Water", "Resilience command", "Residents exposed", "Open actions", "Data freshness", "Weather", "Field Ops", "Maintenance"]) {
-    assert.match(source, new RegExp(label));
+  const nav = await readFile(new URL("../app/WorkflowNav.tsx", import.meta.url), "utf8");
+  // Brand, event and freshness live in the shared top nav so every screen has them.
+  for (const label of ["Resilience command", "Hurricane Iris", "Data freshness", "Weather", "Field Ops", "Maintenance"]) {
+    assert.match(nav, new RegExp(label));
   }
+  // Advisory KPIs stay on Screen 1, read straight from the backend summary.
+  for (const label of ["Residents exposed", "Open actions"]) assert.match(source, new RegExp(label));
   assert.match(source, /state\?\.summary\.critical_assets/);
   assert.match(source, /state\?\.summary\.exposed_residents/);
 });
