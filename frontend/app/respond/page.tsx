@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useIncident } from "../IncidentContext";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 type Fact = { metric: string; value: string | number; unit: string | null };
 type HistoryEvent = { status: string; occurred_at: string; actor: string; owner: string | null; reason: string | null };
@@ -35,6 +36,37 @@ function impactTone(impact: VerificationImpact) {
   if (impact.direction === "increased" || impact.direction === "reassessed") return "worse";
   if (impact.direction === "decreased") return "better";
   return "neutral";
+}
+
+
+const priorityRing: Record<string, string> = {
+  critical: "text-critical border-critical/50 bg-critical/10",
+  high: "text-high border-high/50 bg-high/10",
+  medium: "text-medium border-medium/50 bg-medium/10",
+};
+const toneClass: Record<string, string> = {
+  worse: "text-critical", better: "text-verified", evidence: "text-medium", neutral: "text-muted-foreground",
+};
+const LIFECYCLE = ["recommended", "approved", "assigned", "in_progress", "completed"];
+
+function Kpi({ label, value, tone }: { label: string; value: number; tone?: string }) {
+  return (
+    <div className="glass-chip press min-w-24 rounded-2xl px-4 py-3">
+      <strong className={`block font-display text-2xl leading-none ${tone ?? "text-foreground"}`}>{value}</strong>
+      <small className="eyebrow-mono mt-1.5 block">{label}</small>
+    </div>
+  );
+}
+function SectionLabel({ children, note }: { children: string; note?: string | undefined }) {
+  return (
+    <div className="mb-3 flex items-baseline justify-between gap-3 border-b border-border pb-2">
+      <span className="eyebrow-mono">{children}</span>
+      {note ? <small className="text-xs text-muted-foreground">{note}</small> : null}
+    </div>
+  );
+}
+function stamp(value: string) {
+  return new Date(value).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
 }
 
 export default function RespondPage() {
@@ -120,60 +152,363 @@ export default function RespondPage() {
     finally { setSubmitting(false); }
   }
 
-  return <main className="response-shell">
-    <nav className="ribbon" aria-label="Response queue summary">
-      <div className="ribbon-track" role="group" aria-label="Advisory stage"><span className="ribbon-step ribbon-step--active">{state?.advisory.stage ?? stage}</span></div>
-      <div className="ribbon-title"><p className="ribbon-kicker">Assess → Respond → Verify</p>
-        <h1>{assetFocus ? `${compactId(assetFocus)} actions` : "All recommended actions"}</h1></div>
-      <div className="ribbon-summary">
-        <div className="ribbon-kpi ribbon-kpi--critical"><strong>{counts.recommended}</strong><small>Recommended</small></div>
-        <div className="ribbon-kpi"><strong>{counts.approved}</strong><small>Approved</small></div>
-        <div className="ribbon-kpi ribbon-kpi--high"><strong>{counts.active}</strong><small>Active</small></div>
-        <div className="ribbon-kpi"><strong>{counts.completed}</strong><small>Completed</small></div>
-        <div className="ribbon-kpi"><strong>{counts.verified}</strong><small>Field verified</small></div>
-      </div>
-    </nav>
-    <p className="asset-lede"><b>Response board</b> · Turn risk into accountable action. Playbooks recommend. People approve, reject, and own the operational response. Recorded field results feed straight back into the assessment.</p>
-    <section className="response-workspace">
-      <div className="response-queue"><div className="queue-toolbar"><div><p className="eyebrow">Operational queue</p><h2>{assetFocus ? `${compactId(assetFocus)} actions` : "All recommended actions"}</h2></div><div className="queue-filters" aria-label="Action priority filter">{(["all", "critical", "high"] as QueueFilter[]).map((item) => <button key={item} className={filter === item ? "queue-filter queue-filter--active" : "queue-filter"} onClick={() => setFilter(item)} aria-pressed={filter === item}>{title(item)}</button>)}</div></div>
-        {error && !state ? <div className="queue-empty"><strong>Unable to load response queue</strong><p>{error}</p></div> : <div className="action-list">{filtered.map((item) => <button key={item.recommendation_id} className={`action-card action-card--${item.priority}${selected?.recommendation_id === item.recommendation_id ? " action-card--selected" : ""}`} onClick={() => { setSelectedId(item.recommendation_id); resetForms(); setOwner(item.owner ?? item.default_owner); setMessage(null); setError(null); setLastVerification(null); setRuleOpen(false); setRationale(null); setRationaleError(null); }}><span className="action-rank">{item.rule_id}</span><span className="action-copy"><span><strong>{compactId(item.asset_id)}</strong>{item.target_asset_id && item.target_asset_id !== item.asset_id && <small>→ {compactId(item.target_asset_id)}</small>}{item.action_class === "field_verification" && <i className="action-class-tag">Field verification</i>}</span><b>{item.title}</b><small>{item.evidence?.trigger[0]?.summary ?? item.reason}</small><span className="action-facts">{item.evidence?.impact_summary && <i className="action-impact">{item.evidence.impact_summary}</i>}{item.rule && <i>{item.rule.rule_id} v{item.rule.version}</i>}</span></span><span className="action-meta"><i className={`action-status action-status--${item.status}`}>{title(item.status)}</i><small>{item.owner ?? item.default_owner}</small><b>{title(item.priority)}</b></span></button>)}{!filtered.length && <div className="queue-empty"><strong>No matching actions</strong><p>Change the priority filter or return to all SGW actions.</p></div>}</div>}
-        {verifications.length > 0 && <div className="verification-log"><div className="queue-toolbar"><div><p className="eyebrow">Closed evidence loop</p><h2>Field verification log</h2></div></div>{verifications.map((item) => <article key={item.verification_id} className="verification-entry"><header><strong>{compactId(item.verified_asset_id)}</strong><i className={`verification-outcome verification-outcome--${item.outcome}`}>{title(item.outcome)}</i><small>{new Date(item.recorded_at).toLocaleString()}</small></header><p className="verification-narrative">{item.narrative}</p><footer><span>Recorded by {item.verified_by}</span><span>Applied to {item.applied_to_advisories.length} advisor{item.applied_to_advisories.length === 1 ? "y" : "ies"}</span>{item.dependent_asset_ids.length > 0 && <span>Reassessed {item.dependent_asset_ids.map(compactId).join(", ")}</span>}</footer></article>)}</div>}
-      </div>
-      <aside className="response-detail">{selected ? <><div className="response-decide"><div className="response-detail-heading"><p className="eyebrow">Selected recommendation</p><h2>{selected.title}</h2><div><span className={`tier-pill tier-pill--${selected.priority}`}>{selected.priority}</span><span className={`action-status action-status--${selected.status}`}>{title(selected.status)}</span>{isVerification && <span className="action-class-tag">Field verification</span>}</div></div>
-        <div className="workflow-path" aria-label="Response lifecycle">{["recommended", "approved", "assigned", "in_progress", "completed"].map((item, index, path) => { const current = path.indexOf(selected.status); return <span key={item} className={`${item === selected.status ? "workflow-step workflow-step--current" : "workflow-step"}${current > index || selected.status === "completed" ? " workflow-step--done" : ""}`}>{title(item)}</span>; })}</div>
-        <section><span className="response-section-label">Accountability</span><div className="accountability-grid"><span>Suggested owner<strong>{selected.default_owner}</strong></span><span>Current owner<strong>{selected.owner ?? "Not assigned"}</strong></span><span>Source asset<a href={`/asset-risk?asset=${encodeURIComponent(selected.asset_id)}&t=${encodeURIComponent(stage)}`}><strong>{compactId(selected.asset_id)} →</strong></a></span><span>Target<strong>{compactId(selected.target_asset_id)}</strong></span></div></section>
-        {selected.status === "recommended" && <section className="human-decision"><span className="response-section-label">Human decision required</span><p>No operational work begins until an attributed decision is recorded.</p><div className="decision-buttons"><button className={decision === "approve" ? "decision-button decision-button--approve decision-button--active" : "decision-button decision-button--approve"} onClick={() => setDecision("approve")}>Approve</button><button className={decision === "reject" ? "decision-button decision-button--reject decision-button--active" : "decision-button decision-button--reject"} onClick={() => setDecision("reject")}>Reject</button></div></section>}
-        {selected.status === "approved" && <section className="human-decision"><span className="response-section-label">Assign approved work</span><p>Select the accountable operational team before work can begin.</p><button className="workflow-primary" onClick={() => { setDecision("assign"); setOwner(selected.owner ?? selected.default_owner); }}>Assign owner</button></section>}
-        {selected.status === "assigned" && <section className="human-decision"><span className="response-section-label">Ready to mobilize</span><p>{selected.owner} owns this action. Starting it records the responsible operator and time.</p><button className="workflow-primary" onClick={() => setDecision("start")}>Start work</button></section>}
-        {selected.status === "in_progress" && <section className="human-decision"><span className="response-section-label">Work in progress</span><p>{isVerification ? "Completion requires the observed field result. The backend recalculates risk and confidence from what the team recorded." : "Completion requires an attributed operational note."}</p><button className="workflow-primary" onClick={() => setDecision("complete")}>{isVerification ? "Record field result" : "Complete action"}</button></section>}
-        {selected.status === "completed" && <section className="workflow-terminal workflow-terminal--complete"><strong>Action completed</strong><p>This record is closed and preserved in the audit history.</p></section>}
-        {selected.status === "rejected" && <section className="workflow-terminal workflow-terminal--rejected"><strong>Recommendation rejected</strong><p>The decision and reason remain preserved in the audit history.</p></section>}
-        {decision && <section className="transition-panel"><span className="response-section-label">Record {decision}</span><div className="decision-form">
-          <label>Operator name<input value={actor} onChange={(event) => setActor(event.target.value)} placeholder="Required for audit" /></label>
-          {decision === "assign" && <label>Assigned owner<input value={owner} onChange={(event) => setOwner(event.target.value)} placeholder="Operational team or owner" /></label>}
-          {needsFieldResult && <fieldset className="field-result"><legend>Observed field result</legend><div className="field-outcomes">{FIELD_OUTCOMES.map((item) => <button type="button" key={item.value} className={fieldOutcome === item.value ? "field-outcome field-outcome--active" : "field-outcome"} onClick={() => setFieldOutcome(item.value)} aria-pressed={fieldOutcome === item.value}>{item.label}</button>)}</div>{fieldOutcome && <p className="field-outcome-hint">{FIELD_OUTCOMES.find((item) => item.value === fieldOutcome)?.hint}</p>}{backupIsCollected && <label>Verified backup endurance (hours)<input type="number" min={0} max={720} step="0.5" value={confirmedBackup} onChange={(event) => setConfirmedBackup(event.target.value)} placeholder="Leave blank to keep the reported value" /></label>}</fieldset>}
-          {(decision === "reject" || decision === "complete") && <label>{decision === "reject" ? "Decision reason" : needsFieldResult ? "Field result note" : "Completion note"}<textarea value={reason} onChange={(event) => setReason(event.target.value)} placeholder={decision === "reject" ? "Required for rejection" : needsFieldResult ? "For example: Generator operational, verified endurance 6h" : "Describe the completed work"} rows={3} /></label>}
-          <div className="transition-actions"><button className="transition-cancel" onClick={resetForms}>Cancel</button><button onClick={() => void submitDecision()} disabled={submitting || !canSubmit}>{submitting ? "Recording…" : needsFieldResult ? "Record field result" : `Record ${decision}`}</button></div>
-        </div></section>}
-        {message && <div className="decision-message">{message}</div>}
-        {error && state && <div className="decision-error">{error}</div>}
-        </div>
-        <div className="response-record">
-        <section className="evidence-block"><span className="response-section-label">Why this exists</span>
-          <div className="evidence-layers">
-            <div className="evidence-layer"><span>Trigger</span><div>{(selected.evidence?.trigger ?? []).map((condition) => <b key={condition.summary}>{condition.summary}</b>)}{!selected.evidence?.trigger.length && <b>{selected.reason}</b>}</div></div>
-            <div className="evidence-layer"><span>Impact</span><div><b>{selected.evidence?.impact_summary ?? "Not modelled"}</b></div></div>
-            <div className="evidence-layer"><span>Rule</span><div><b>{selected.rule ? `Playbook ${selected.rule.rule_id} · ${selected.rule.name}` : `Playbook ${selected.rule_id}`}</b>{selected.rule && <button type="button" className="rule-toggle" onClick={() => setRuleOpen((current) => !current)} aria-expanded={ruleOpen}>{ruleOpen ? "Hide rule" : "View rule"}</button>}</div></div>
+  return (
+    <main className="ds-screen mx-auto w-full max-w-[1600px] px-5 pb-16 pt-6 md:px-8">
+      <section className="panel rise flex flex-wrap items-center justify-between gap-5 p-6">
+        <div className="flex items-start gap-3">
+          <span className="mt-1 h-11 w-1 rounded-full bg-[image:var(--gradient-ember)]" />
+          <div>
+            <p className="eyebrow-mono">Assess → Respond → Verify</p>
+            <h1 className="mt-1 font-display text-2xl font-semibold">{assetFocus ? `${compactId(assetFocus)} actions` : "All recommended actions"}</h1>
+            <small className="text-xs text-muted-foreground">Response board · Turn risk into accountable action. Playbooks recommend. People approve, own and close. Recorded field results feed straight back into the assessment.</small>
           </div>
-          <div className="provenance-row"><span>Rule version<strong>{selected.rule ? `${selected.rule.rule_id} v${selected.rule.version}` : "unversioned"}</strong></span><span>Assessment source<strong>{selected.evidence?.assessment_source ?? "—"}</strong></span></div>
-          {ruleOpen && selected.rule && <div className="rule-detail"><p>{selected.rule.summary}</p><dl>{selected.rule.thresholds.map((threshold) => <div key={threshold.label}><dt>{threshold.label}</dt><dd>{threshold.value}</dd></div>)}</dl><small>Published rule text. The matching logic itself stays in the backend playbook engine.</small></div>}
-          <div className="decision-facts">{selected.facts.map((fact) => <div key={fact.metric}><span>{factLabel(fact.metric)}</span><strong>{factValue(fact)}</strong></div>)}</div>
-          <div className="rationale-block"><button type="button" className="rationale-button" onClick={() => void requestRationale()} disabled={rationaleLoading}>{rationaleLoading ? "Rewriting…" : "Explain in plain language"}</button>{rationaleError && <p className="rationale-error">{rationaleError}</p>}{rationale && <><p className="rationale-text">{rationale.rationale}</p><small className="rationale-note">{rationale.model} · {rationale.advisory_note} Action still {title(rationale.status)}.</small></>}</div>
-        </section>
-        {impactPanel && <section className="reassessment-panel"><span className="response-section-label">Reassessment after field result</span><p className="verification-narrative">{impactPanel.narrative}</p>{impactPanel.impacts.length > 0 ? <div className="impact-list">{impactPanel.impacts.map((impact, index) => <div key={`${impact.sgw_id}-${impact.metric}-${index}`} className={`impact-row impact-row--${impactTone(impact)}`}><span className="impact-asset">{compactId(impact.sgw_id)}</span><span className="impact-metric">{factLabel(impact.metric)}</span><strong>{String(impact.previous)} → {String(impact.current)}{impact.unit && impact.unit !== "points" ? impact.unit : ""}</strong></div>)}</div> : <p>The recorded result did not move any assessment.</p>}<small className="impact-footnote">Every value above was recalculated by the backend from the recorded observation. Nothing on this screen computes risk.</small></section>}
-        {selected.history.length > 0 && <section><span className="response-section-label">Audit trail</span><div className="audit-list">{selected.history.map((event, index) => <div key={`${event.occurred_at}-${index}`}><i /><span><strong>{title(event.status)}</strong><small>{event.actor}{event.owner ? ` → ${event.owner}` : ""} · {new Date(event.occurred_at).toLocaleString()}</small>{event.reason && <p>{event.reason}</p>}</span></div>)}</div></section>}
         </div>
-      </> : <div className="queue-empty"><strong>Select an action</strong><p>Choose a recommendation to review its evidence and accountability.</p></div>}</aside>
-    </section>
-  </main>;
+        <div className="flex flex-wrap gap-2.5">
+          <Kpi label="Recommended" value={counts.recommended} tone="text-critical" />
+          <Kpi label="Approved" value={counts.approved} />
+          <Kpi label="Active" value={counts.active} tone="text-high" />
+          <Kpi label="Completed" value={counts.completed} />
+          <Kpi label="Field verified" value={counts.verified} tone="text-verified" />
+        </div>
+      </section>
+
+      <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+        <div className="flex flex-col gap-5">
+          <div className="panel rise p-5">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+              <div><p className="eyebrow-mono">Operational queue</p><h2 className="mt-1 text-lg font-semibold">Recommended actions</h2></div>
+              <div className="flex gap-1.5" aria-label="Action priority filter">
+                {(["all", "critical", "high"] as QueueFilter[]).map((item) => (
+                  <button key={item} aria-pressed={filter === item} onClick={() => setFilter(item)}
+                    className={`press rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${filter === item ? "border-primary/50 bg-primary/12 text-primary" : "border-border bg-surface/60 text-muted-foreground hover:text-foreground"}`}>
+                    {title(item)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {error && !state ? (
+              <div className="rounded-2xl border border-dashed border-border p-6 text-center">
+                <strong className="text-sm">Unable to load response queue</strong>
+                <p className="mt-1 text-xs text-muted-foreground">{error}</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                {filtered.map((item) => {
+                  const active = selected?.recommendation_id === item.recommendation_id;
+                  return (
+                    <button key={item.recommendation_id}
+                      onClick={() => { setSelectedId(item.recommendation_id); resetForms(); setOwner(item.owner ?? item.default_owner); setMessage(null); setLastVerification(null); setRuleOpen(false); setRationale(null); }}
+                      className={`glass-chip press w-full rounded-2xl border p-4 text-left transition-all hover:-translate-y-0.5 ${active ? "border-primary/45 shadow-[0_0_0_1px_var(--primary)]" : "border-border"}`}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-mono text-[11px] text-muted-foreground">{item.rule_id}</span>
+                            <strong className="text-sm">{compactId(item.asset_id)}</strong>
+                            {item.target_asset_id && item.target_asset_id !== item.asset_id ? <small className="text-xs text-muted-foreground">→ {compactId(item.target_asset_id)}</small> : null}
+                            {item.action_class === "field_verification" ? <em className="rounded-full border border-medium/40 bg-medium/10 px-2 py-0.5 text-[10px] not-italic uppercase tracking-wider text-medium">Field verification</em> : null}
+                          </div>
+                          <b className="mt-1.5 block text-sm font-semibold">{item.title}</b>
+                          <small className="mt-1 block text-xs text-muted-foreground">{item.evidence?.trigger[0]?.summary ?? item.reason}</small>
+                          {item.evidence?.impact_summary ? <em className="mt-1.5 block text-[11px] not-italic text-high">{item.evidence.impact_summary}</em> : null}
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                          <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest ${priorityRing[item.priority] ?? priorityRing.medium}`}>{item.priority}</span>
+                          <small className="text-[11px] text-muted-foreground">{title(item.status)}</small>
+                          <small className="text-[11px] text-muted-foreground">{item.owner ?? item.default_owner}</small>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+                {!filtered.length ? (
+                  <div className="rounded-2xl border border-dashed border-border p-6 text-center">
+                    <strong className="text-sm">No matching actions</strong>
+                    <p className="mt-1 text-xs text-muted-foreground">Change the priority filter to see all SGW actions.</p>
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
+
+          {verifications.length ? (
+            <div className="panel rise p-5">
+              <SectionLabel note={`${verifications.length} recorded`}>Field verification log</SectionLabel>
+              <div className="flex flex-col gap-2.5">
+                {verifications.map((item) => (
+                  <article key={item.verification_id} className="glass-chip rounded-2xl px-4 py-3.5">
+                    <header className="flex flex-wrap items-center gap-2">
+                      <strong className="text-sm">{compactId(item.verified_asset_id)}</strong>
+                      <em className={`rounded-full border px-2 py-0.5 text-[10px] not-italic uppercase tracking-wider ${item.outcome === "unavailable" ? priorityRing.critical : item.outcome === "verified_degraded" ? priorityRing.high : "border-verified/50 bg-verified/10 text-verified"}`}>{title(item.outcome)}</em>
+                      <small className="ml-auto text-[11px] text-muted-foreground">{stamp(item.recorded_at)}</small>
+                    </header>
+                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.narrative}</p>
+                    <footer className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+                      <span>Recorded by {item.verified_by}</span>
+                      <span>Applied to {item.applied_to_advisories.length} advisor{item.applied_to_advisories.length === 1 ? "y" : "ies"}</span>
+                      {item.dependent_asset_ids.length ? <span>Reassessed {item.dependent_asset_ids.map((id) => compactId(id)).join(", ")}</span> : null}
+                    </footer>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        <aside className="flex flex-col gap-5">
+          {selected ? (
+            <>
+              <div className="panel rise p-6">
+                <p className="eyebrow-mono">Selected recommendation</p>
+                <h2 className="mt-1.5 font-display text-xl font-semibold">{selected.title}</h2>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest ${priorityRing[selected.priority] ?? priorityRing.medium}`}>{selected.priority}</span>
+                  <span className="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-[11px] text-muted-foreground">{title(selected.status)}</span>
+                  {isVerification ? <span className="rounded-full border border-medium/40 bg-medium/10 px-2.5 py-0.5 text-[11px] text-medium">Field verification</span> : null}
+                </div>
+
+                <div className="workflow-path mt-4 flex flex-wrap gap-1.5" aria-label="Response lifecycle">
+                  {LIFECYCLE.map((item, index) => {
+                    const current = LIFECYCLE.indexOf(selected.status);
+                    const done = current > index || selected.status === "completed";
+                    return <span key={item} className={`rounded-full border px-2.5 py-1 text-[11px] ${item === selected.status ? "border-primary/50 bg-primary/12 text-primary" : done ? "border-verified/40 bg-verified/10 text-verified" : "border-border text-muted-foreground"}`}>{title(item)}</span>;
+                  })}
+                </div>
+
+                <section className="mt-5">
+                  <SectionLabel>Accountability</SectionLabel>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {([["Suggested owner", selected.default_owner], ["Current owner", selected.owner ?? "Not assigned"], ["Source asset", compactId(selected.asset_id)], ["Target", compactId(selected.target_asset_id)]] as Array<[string, string]>).map(([label, value]) => (
+                      <div key={label} className="glass-chip rounded-2xl px-3.5 py-2.5">
+                        <span className="block text-[11px] text-muted-foreground">{label}</span>
+                        <strong className="text-sm">{value}</strong>
+                      </div>
+                    ))}
+                  </div>
+                  <Link href={`/asset-risk?asset=${encodeURIComponent(selected.asset_id)}&t=${encodeURIComponent(stage)}`}
+                    className="mt-3 inline-block text-[11px] font-medium text-primary underline-offset-4 hover:underline">
+                    Inspect {compactId(selected.asset_id)} dependency evidence →
+                  </Link>
+                </section>
+
+                {selected.status === "recommended" ? (
+                  <section className="mt-5">
+                    <SectionLabel>Human decision required</SectionLabel>
+                    <p className="text-xs text-muted-foreground">No operational work begins until an attributed decision is recorded.</p>
+                    <div className="mt-3 flex gap-2">
+                      <button onClick={() => setDecision("approve")} className={`press rounded-full border px-4 py-2 text-sm font-medium ${decision === "approve" ? "border-verified/60 bg-verified/15 text-verified" : "border-border bg-surface/70 hover:border-verified/40"}`}>Approve</button>
+                      <button onClick={() => setDecision("reject")} className={`press rounded-full border px-4 py-2 text-sm font-medium ${decision === "reject" ? "border-critical/60 bg-critical/15 text-critical" : "border-border bg-surface/70 hover:border-critical/40"}`}>Reject</button>
+                    </div>
+                  </section>
+                ) : null}
+
+                {selected.status === "approved" ? (
+                  <section className="mt-5">
+                    <SectionLabel>Assign approved work</SectionLabel>
+                    <p className="text-xs text-muted-foreground">Select the accountable operational team before work can begin.</p>
+                    <button onClick={() => { setDecision("assign"); setOwner(selected.owner ?? selected.default_owner); }} className="press mt-3 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Assign owner</button>
+                  </section>
+                ) : null}
+
+                {selected.status === "assigned" ? (
+                  <section className="mt-5">
+                    <SectionLabel>Ready to mobilize</SectionLabel>
+                    <p className="text-xs text-muted-foreground">{selected.owner} owns this action. Starting it records the responsible operator and time.</p>
+                    <button onClick={() => setDecision("start")} className="press mt-3 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Start work</button>
+                  </section>
+                ) : null}
+
+                {selected.status === "in_progress" ? (
+                  <section className="mt-5">
+                    <SectionLabel>Work in progress</SectionLabel>
+                    <p className="text-xs text-muted-foreground">{isVerification ? "Completion requires the observed field result. Risk and confidence are recalculated from what the team recorded." : "Completion requires an attributed operational note."}</p>
+                    <button onClick={() => setDecision("complete")} className="press mt-3 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">{isVerification ? "Record field result" : "Complete action"}</button>
+                  </section>
+                ) : null}
+
+                {selected.status === "completed" ? (
+                  <section className="mt-5 rounded-2xl border border-verified/40 bg-verified/10 p-4">
+                    <strong className="text-sm text-verified">Action completed</strong>
+                    <p className="mt-1 text-xs text-muted-foreground">This record is closed and preserved in the audit history.</p>
+                  </section>
+                ) : null}
+
+                {selected.status === "rejected" ? (
+                  <section className="mt-5 rounded-2xl border border-critical/40 bg-critical/10 p-4">
+                    <strong className="text-sm text-critical">Recommendation rejected</strong>
+                    <p className="mt-1 text-xs text-muted-foreground">The decision and reason remain preserved in the audit history.</p>
+                  </section>
+                ) : null}
+
+                {decision ? (
+                  <section className="mt-5 rounded-2xl border border-primary/25 bg-primary/5 p-4">
+                    <SectionLabel>{`Record ${decision}`}</SectionLabel>
+                    <div className="flex flex-col gap-3">
+                      <label className="block text-[11px] text-muted-foreground">Operator name
+                        <input value={actor} onChange={(event) => setActor(event.target.value)} placeholder="Required for audit"
+                          className="mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none focus:border-primary/60" />
+                      </label>
+
+                      {decision === "assign" ? (
+                        <label className="block text-[11px] text-muted-foreground">Assigned owner
+                          <input value={owner} onChange={(event) => setOwner(event.target.value)} placeholder="Operational team or owner"
+                            className="mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none focus:border-primary/60" />
+                        </label>
+                      ) : null}
+
+                      {needsFieldResult ? (
+                        <fieldset className="rounded-2xl border border-border p-3">
+                          <legend className="px-1 text-[11px] text-muted-foreground">Observed field result</legend>
+                          <div className="flex flex-wrap gap-2">
+                            {FIELD_OUTCOMES.map((item) => (
+                              <button type="button" key={item.value} aria-pressed={fieldOutcome === item.value} onClick={() => setFieldOutcome(item.value)}
+                                className={`press rounded-full border px-3 py-1.5 text-xs ${fieldOutcome === item.value ? "border-primary/60 bg-primary/12 text-primary" : "border-border bg-surface/70 text-muted-foreground"}`}>{item.label}</button>
+                            ))}
+                          </div>
+                          {fieldOutcome ? <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">{FIELD_OUTCOMES.find((item) => item.value === fieldOutcome)?.hint}</p> : null}
+                          {backupIsCollected ? (
+                            <label className="mt-3 block text-[11px] text-muted-foreground">Verified backup endurance (hours)
+                              <input type="number" min={0} max={720} step="0.5" value={confirmedBackup} onChange={(event) => setConfirmedBackup(event.target.value)} placeholder="Leave blank to keep the reported value"
+                                className="mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none focus:border-primary/60" />
+                            </label>
+                          ) : null}
+                        </fieldset>
+                      ) : null}
+
+                      {decision === "reject" || decision === "complete" ? (
+                        <label className="block text-[11px] text-muted-foreground">
+                          {decision === "reject" ? "Decision reason" : needsFieldResult ? "Field result note" : "Completion note"}
+                          <textarea rows={3} value={reason} onChange={(event) => setReason(event.target.value)}
+                            placeholder={decision === "reject" ? "Required for rejection" : needsFieldResult ? "For example: Generator operational, verified endurance 6h" : "Describe the completed work"}
+                            className="mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none focus:border-primary/60" />
+                        </label>
+                      ) : null}
+
+                      <div className="flex justify-end gap-2">
+                        <button onClick={resetForms} className="press rounded-full border border-border bg-surface/70 px-4 py-2 text-sm">Cancel</button>
+                        <button onClick={() => void submitDecision()} disabled={submitting || !canSubmit}
+                          className="press rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40">
+                          {submitting ? "Recording…" : needsFieldResult ? "Record field result" : `Record ${decision}`}
+                        </button>
+                      </div>
+                    </div>
+                  </section>
+                ) : null}
+
+                {message ? <div className="mt-4 rounded-2xl border border-verified/40 bg-verified/10 px-4 py-3 text-xs text-verified">{message}</div> : null}
+                {error && state ? <div className="mt-4 rounded-2xl border border-critical/40 bg-critical/10 px-4 py-3 text-xs text-critical">{error}</div> : null}
+              </div>
+
+              <div className="panel rise p-6">
+                <SectionLabel note={selected.evidence?.assessment_source}>Why this exists</SectionLabel>
+                <div className="grid gap-2.5 md:grid-cols-3">
+                  <div className="glass-chip rounded-2xl px-3.5 py-3">
+                    <span className="eyebrow-mono">Trigger</span>
+                    {(selected.evidence?.trigger ?? []).map((condition) => <b key={condition.summary} className="mt-1 block text-xs font-medium">{condition.summary}</b>)}
+                    {!selected.evidence?.trigger.length ? <b className="mt-1 block text-xs font-medium">{selected.reason}</b> : null}
+                  </div>
+                  <div className="glass-chip rounded-2xl px-3.5 py-3">
+                    <span className="eyebrow-mono">Impact</span>
+                    <b className="mt-1 block text-xs font-medium">{selected.evidence?.impact_summary ?? "Not modelled"}</b>
+                  </div>
+                  <div className="glass-chip rounded-2xl px-3.5 py-3">
+                    <span className="eyebrow-mono">Rule</span>
+                    <b className="mt-1 block text-xs font-medium">{selected.rule ? `Playbook ${selected.rule.rule_id} · ${selected.rule.name}` : `Playbook ${selected.rule_id}`}</b>
+                    {selected.rule ? <button type="button" aria-expanded={ruleOpen} onClick={() => setRuleOpen((current) => !current)} className="mt-2 text-[11px] font-medium text-primary underline-offset-4 hover:underline">{ruleOpen ? "Hide rule" : "View rule"}</button> : null}
+                  </div>
+                </div>
+
+                {ruleOpen && selected.rule ? (
+                  <div className="mt-3 rounded-2xl border border-border bg-surface-2 p-4">
+                    <p className="text-xs leading-relaxed text-muted-foreground">{selected.rule.summary}</p>
+                    <dl className="mt-3 grid gap-2 sm:grid-cols-3">
+                      {selected.rule.thresholds.map((threshold) => (
+                        <div key={threshold.label} className="glass-chip rounded-xl px-3 py-2">
+                          <dt className="text-[11px] text-muted-foreground">{threshold.label}</dt>
+                          <dd className="text-xs font-medium">{threshold.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <small className="mt-2 block text-[11px] text-muted-foreground">Published rule text. The matching logic stays in the playbook engine.</small>
+                  </div>
+                ) : null}
+
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <span className="text-[11px] text-muted-foreground">Rule version <strong className="text-foreground">{selected.rule ? `${selected.rule.rule_id} v${selected.rule.version}` : "unversioned"}</strong></span>
+                  <span className="text-[11px] text-muted-foreground">Assessment source <strong className="text-foreground">{selected.evidence?.assessment_source ?? "—"}</strong></span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                  {selected.facts.map((fact) => (
+                    <div key={fact.metric} className="glass-chip rounded-2xl px-3.5 py-2.5">
+                      <span className="block text-[11px] text-muted-foreground">{factLabel(fact.metric)}</span>
+                      <strong className="text-sm">{factValue(fact)}</strong>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4">
+                  <button type="button" onClick={() => void requestRationale()} disabled={rationaleLoading}
+                    className="press rounded-full border border-border bg-surface/70 px-4 py-2 text-xs disabled:opacity-50">
+                    {rationaleLoading ? "Rewriting…" : "Explain in plain language"}
+                  </button>
+                  {rationaleError ? <p className="mt-2 text-[11px] text-critical">{rationaleError}</p> : null}
+                  <small className="mt-2 block text-[11px] text-muted-foreground">The narrator may reword the authored rationale. It is display-only and cannot create, modify or approve a playbook action.</small>
+                  {rationale ? (
+                    <div className="mt-3 rounded-2xl border border-border bg-surface-2 p-4">
+                      <p className="text-xs leading-relaxed">{rationale.rationale}</p>
+                      <small className="mt-2 block text-[11px] text-muted-foreground">{rationale.advisory_note} · {rationale.model} · {rationale.rule_id} v{rationale.rule_version}</small>
+                      <small className="mt-1 block text-[11px] font-medium text-verified">Action still {title(rationale.status)} · narration changed nothing.</small>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              {impactPanel ? (
+                <div className="panel rise p-6">
+                  <SectionLabel note={stamp(impactPanel.recorded_at)}>Reassessment after field result</SectionLabel>
+                  <p className="text-xs leading-relaxed text-muted-foreground">{impactPanel.narrative}</p>
+                  {impactPanel.impacts.length ? (
+                    <div className="mt-3 flex flex-col gap-2">
+                      {impactPanel.impacts.map((impact, index) => (
+                        <div key={`${impact.sgw_id}-${impact.metric}-${index}`} className="glass-chip flex items-center justify-between gap-3 rounded-2xl px-3.5 py-2.5">
+                          <span className="font-mono text-[11px] text-muted-foreground">{compactId(impact.sgw_id)}</span>
+                          <span className="flex-1 text-xs">{factLabel(impact.metric)}</span>
+                          <strong className={`text-xs ${toneClass[impactTone(impact)] ?? toneClass.neutral}`}>{String(impact.previous)} → {String(impact.current)}{impact.unit && impact.unit !== "points" ? impact.unit : ""}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  ) : <p className="mt-3 text-xs text-muted-foreground">The recorded result did not move any assessment.</p>}
+                </div>
+              ) : null}
+
+              {selected.history.length ? (
+                <div className="panel rise p-6">
+                  <SectionLabel note={`${selected.history.length} events`}>Audit trail</SectionLabel>
+                  <div className="flex flex-col gap-3">
+                    {selected.history.map((event, index) => (
+                      <div key={`${event.occurred_at}-${index}`} className="flex gap-3">
+                        <i className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary/70" />
+                        <div>
+                          <strong className="block text-xs font-semibold">{title(event.status)}</strong>
+                          <small className="text-[11px] text-muted-foreground">{event.actor}{event.owner ? ` → ${event.owner}` : ""} · {stamp(event.occurred_at)}</small>
+                          {event.reason ? <p className="mt-1 text-xs text-muted-foreground">{event.reason}</p> : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <div className="panel rise p-10 text-center">
+              <strong className="text-sm">Select an action</strong>
+              <p className="mt-1 text-xs text-muted-foreground">Choose a recommendation to review its evidence and accountability.</p>
+            </div>
+          )}
+        </aside>
+      </section>
+      <p className="mt-6 text-center text-[11px] text-muted-foreground">Nothing on this screen computes risk. Every score, trigger and reassessment is read from the backend.</p>
+    </main>
+  );
 }

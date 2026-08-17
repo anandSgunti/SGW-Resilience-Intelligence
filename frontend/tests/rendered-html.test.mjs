@@ -121,7 +121,11 @@ test("6B.2 provides a complete generic selected-node detail panel", async () => 
 
 test("6B.3 adds grounded asset questions without moving risk logic into the client", async () => {
   const source = await readFile(new URL("../app/asset-risk/page.tsx", import.meta.url), "utf8");
-  for (const label of ["Ask about this asset", "Facts only", "Why is S17 above S31", "What changed since the previous advisory", "What is uncertain", "Fact pack"]) {
+  // Ask is now a docked chat, and its heading names the focused asset
+  // ("Ask about S17") rather than using a generic phrase.
+  assert.match(source, /Ask about \{id\}|Ask about \$\{compactId\(focusedId\)\}/);
+  assert.match(source, /chatOpen/);
+  for (const label of ["Facts only", "Why is S17 above S31", "What changed since the previous advisory", "What is uncertain", "Fact pack"]) {
     assert.match(source, new RegExp(label));
   }
   assert.match(source, /\/api\/explain/);
@@ -152,6 +156,8 @@ test("6C.2 completes the attributed assignment and execution lifecycle", async (
   for (const action of ["assign", "start", "complete"]) assert.match(source, new RegExp(`decision === "${action}"|setDecision\\("${action}"\\)`));
   assert.match(source, /owner: decision === "assign"/);
   assert.match(source, /decision === "complete"/);
+  // Lifecycle is now a pill strip driven by the LIFECYCLE constant.
+  assert.match(source, /LIFECYCLE\.map/);
   assert.match(source, /workflow-path/);
   assert.match(source, /event\.owner/);
 });

@@ -181,7 +181,7 @@ function NodeDetail({ context, edges, actions, stage, view }: { context: NodeCon
   );
 }
 
-function AssetAsk({ context, stage }: { context: NodeContext; stage: string }) {
+function AssetAsk({ context, stage, onClose }: { context: NodeContext; stage: string; onClose: () => void }) {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<ExplainPayload | null>(null);
   const [asking, setAsking] = useState(false);
@@ -204,10 +204,13 @@ function AssetAsk({ context, stage }: { context: NodeContext; stage: string }) {
     finally { setAsking(false); }
   }
   return (
-    <div className="panel rise flex h-full flex-col gap-4 p-6 hover:-translate-y-0.5 hover:border-primary/25">
+    <div className="panel flex h-[min(560px,70vh)] w-[min(400px,calc(100vw-2rem))] flex-col gap-4 p-5 animate-in fade-in slide-in-from-bottom-4 duration-300">
       <div className="flex items-start justify-between gap-3">
-        <div><p className="eyebrow-mono">Grounded intelligence</p><h3 className="mt-1 text-lg font-semibold">Ask about this asset</h3></div>
-        <span className="rounded-full border border-verified/40 bg-verified/10 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-verified">Facts only</span>
+        <div><p className="eyebrow-mono">Grounded intelligence</p><h3 className="mt-1 text-lg font-semibold">Ask about {id}</h3></div>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full border border-verified/40 bg-verified/10 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-verified">Facts only</span>
+          <button type="button" onClick={onClose} aria-label="Close chat" className="press grid h-7 w-7 place-items-center rounded-full border border-border text-muted-foreground hover:text-foreground">✕</button>
+        </div>
       </div>
       <div className="flex flex-wrap gap-2">
         {prompts.map((prompt) => (
@@ -219,7 +222,7 @@ function AssetAsk({ context, stage }: { context: NodeContext; stage: string }) {
           className="glass-chip flex-1 rounded-full px-4 py-2.5 text-sm outline-none transition-shadow duration-300 focus:shadow-[0_0_0_4px_oklch(0.68_0.17_45/0.18)]" />
         <button type="submit" disabled={!question.trim() || asking} className="press rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50">{asking ? "Asking…" : "Ask"}</button>
       </form>
-      <div aria-live="polite" className="glass-chip min-h-24 rounded-2xl p-4">
+      <div aria-live="polite" className="glass-chip min-h-24 flex-1 overflow-y-auto rounded-2xl p-4">
         {asking ? <p className="text-sm text-muted-foreground">Building an answer from the locked fact pack…</p>
           : askError ? <p className="text-sm text-critical">{askError}</p>
           : answer ? (
@@ -251,6 +254,7 @@ export default function AssetRiskPage() {
   const [focusedId, setFocusedId] = useState(() => searchParams?.get("asset") ?? "SGW-S17");
   const [lens, setLens] = useState<Lens>("infrastructure");
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -271,6 +275,13 @@ export default function AssetRiskPage() {
       .finally(() => setLoading(false));
     return () => controller.abort();
   }, [assetId, stage]);
+
+  useEffect(() => {
+    if (!chatOpen) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") setChatOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [chatOpen]);
 
   const positions = useMemo(() => graphLayout(detail?.dependency_subgraph.nodes ?? [], detail?.dependency_subgraph.edges ?? []), [detail]);
   const focused = detail?.node_context[focusedId] ?? (detail ? { asset: detail.asset, state: detail.state, assessment: detail.assessment } : null);
@@ -379,14 +390,27 @@ export default function AssetRiskPage() {
         </div>
       </section>
 
-      <section className="mt-6 grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {focused ? <>
           <NodeDetail key={`ctx-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="context" />
           <NodeDetail key={`imp-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="impact" />
           <NodeDetail key={`ev-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="evidence" />
-          <AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} />
         </> : <div className="panel p-6 text-sm text-muted-foreground">Choose a node in the dependency map to inspect its evidence.</div>}
       </section>
+
+      {/* Grounded intelligence is a docked chat rather than a fourth column, so
+          the evidence panes keep the full width. */}
+      {focused ? (
+        <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+          {chatOpen ? <AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} onClose={() => setChatOpen(false)} /> : null}
+          <button type="button" onClick={() => setChatOpen((open) => !open)} aria-expanded={chatOpen}
+            aria-label={chatOpen ? "Close grounded intelligence" : `Ask about ${compactId(focusedId)}`}
+            className="press flex items-center gap-2.5 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_18px_40px_-18px_oklch(0.62_0.19_42)] hover:opacity-95">
+            <span aria-hidden="true" className="text-base leading-none">{chatOpen ? "✕" : "✦"}</span>
+            {chatOpen ? "Close" : `Ask about ${compactId(focusedId)}`}
+          </button>
+        </div>
+      ) : null}
     </main>
   );
 }
