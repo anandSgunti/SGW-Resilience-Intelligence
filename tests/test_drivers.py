@@ -28,7 +28,7 @@ def test_s17_t24_change_pack_explains_the_priority_move(tmp_path):
     changes = {change.metric: change for change in s17.change_drivers}
     assert (changes["restoration_hours"].previous, changes["restoration_hours"].current) == (4, 14)
     assert (changes["uncovered_hours"].previous, changes["uncovered_hours"].current) == (0, 8)
-    assert changes["consequence_score"].current == 96
+    assert changes["consequence_score"].current == 85.2
     assert (changes["risk_tier"].previous, changes["risk_tier"].current) == ("high", "critical")
     assert (changes["rank"].previous, changes["rank"].current) == (5, 1)
     assert s17.primary_change == "Expected restoration now exceeds SGW-P4's 6h backup endurance."

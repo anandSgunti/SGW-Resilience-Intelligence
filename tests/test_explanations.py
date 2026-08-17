@@ -40,7 +40,7 @@ class FakeResponses:
 def test_fact_pack_contains_deterministic_outputs_not_source_records(tmp_path):
     asset, advisory, assessment = _assessment(tmp_path)
     fact_pack = FactPackBuilder.build(asset, advisory, assessment)
-    assert fact_pack["assessment"]["systemic_risk_score"] == 68.4
+    assert fact_pack["assessment"]["systemic_risk_score"] == 60.7
     assert fact_pack["assessment"]["uncovered_hours"] == 8
     assert fact_pack["primary_change"].startswith("Expected restoration")
     assert "source_ids" not in fact_pack["asset"]
@@ -48,7 +48,7 @@ def test_fact_pack_contains_deterministic_outputs_not_source_records(tmp_path):
 
 def test_openai_adapter_uses_responses_api_without_storage(tmp_path):
     asset, advisory, assessment = _assessment(tmp_path)
-    responses = FakeResponses("S17 is critical at 68.4, driven by an 8-hour uncovered window. Confidence is medium.")
+    responses = FakeResponses("S17 is critical at 60.7, driven by an 8-hour uncovered window. Confidence is medium.")
     client = SimpleNamespace(responses=responses)
     narrator = OpenAIResponsesNarrator(model="gpt-5.6-luna", client=client)
     result = ExplanationService(narrator).explain(asset, advisory, assessment)
@@ -73,4 +73,4 @@ def test_fact_pack_hash_and_offline_explanation_are_repeatable(tmp_path):
     second = service.explain(asset, advisory, assessment)
     assert first == second
     assert len(first.fact_pack_sha256) == 64
-    assert "68.4" in first.text
+    assert "60.7" in first.text

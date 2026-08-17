@@ -24,6 +24,29 @@ CRITICAL_TYPES = {
 class ConsequenceEngine:
     """Derives service consequence from topology, duration, and resilience."""
 
+    # Consequence is capped so a single enormous path cannot dominate the
+    # ranking, but the ceiling sits above the largest score the model can
+    # produce, so no asset is pinned at the cap and stops responding to change.
+    SCORE_CEILING = 100.0
+
+    def __init__(self, population_reference: float | None = None):
+        """`population_reference` scales the population term to 50 points.
+
+        Left unset it is derived from the network: the largest single service
+        zone. Previously this was a literal equal to one demo asset's effective
+        population, which guaranteed that asset maxed the term.
+        """
+        self._population_reference = population_reference
+        self._derived_reference: float | None = None
+
+    def _reference(self, assets: dict[str, Asset]) -> float:
+        if self._population_reference:
+            return self._population_reference
+        if self._derived_reference is None:
+            largest = max((int(item.attributes.get("population", 0)) for item in assets.values()), default=0)
+            self._derived_reference = float(largest) or 1.0
+        return self._derived_reference
+
     BASE_CONSEQUENCE = {
         AssetType.SUBSTATION: 26.2,
         AssetType.PUMP_STATION: 20.0,
@@ -46,7 +69,7 @@ class ConsequenceEngine:
         base = self.BASE_CONSEQUENCE[asset.asset_type] + 16.0 * float(asset.attributes.get("intrinsic_criticality", 0.0))
         paths = tuple(self._service_paths(asset, assets, states, graph))
         raw_score = round(base + sum(path.adjusted_impact for path in paths), 1)
-        score = min(96.0, raw_score)
+        score = min(self.SCORE_CEILING, raw_score)
         facilities = tuple(sorted({facility for path in paths for facility in path.critical_facilities}))
         facility_ids = tuple(sorted({item for path in paths for item in path.critical_facility_ids}))
         zone_ids = tuple(sorted({path.zone_id for path in paths}))
@@ -111,7 +134,7 @@ class ConsequenceEngine:
                 backup = self._backup_hours(service_id, assets, states)
                 uncovered = round(max(restoration - backup, 0.0), 1)
                 severity, duration_factor = self._duration(uncovered)
-                population_points = min(50.0, effective_population / 58_800 * 50)
+                population_points = min(50.0, effective_population / self._reference(assets) * 50)
                 facility_points = min(24.0, len(facility_names) * 12.0)
                 exposure = round(population_points + facility_points, 1)
                 adjusted = round(exposure * duration_factor * resilience, 1)

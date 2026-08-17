@@ -17,12 +17,12 @@ def _fixture(tmp_path):
 
 
 def test_prototype_tier_thresholds_are_deterministic():
-    assert tier_for_score(19.9) is RiskTier.LOW
-    assert tier_for_score(20) is RiskTier.MEDIUM
-    assert tier_for_score(39.9) is RiskTier.MEDIUM
-    assert tier_for_score(40) is RiskTier.HIGH
-    assert tier_for_score(59.9) is RiskTier.HIGH
-    assert tier_for_score(60) is RiskTier.CRITICAL
+    assert tier_for_score(17.9) is RiskTier.LOW
+    assert tier_for_score(18) is RiskTier.MEDIUM
+    assert tier_for_score(33.9) is RiskTier.MEDIUM
+    assert tier_for_score(34) is RiskTier.HIGH
+    assert tier_for_score(55.9) is RiskTier.HIGH
+    assert tier_for_score(56) is RiskTier.CRITICAL
 
 
 def test_systemic_risk_is_likelihood_times_consequence(tmp_path):

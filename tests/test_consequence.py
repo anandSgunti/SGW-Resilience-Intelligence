@@ -28,7 +28,9 @@ def test_s17_consequence_jumps_when_backup_window_is_exceeded(tmp_path):
     assert t24.max_uncovered_hours == 8
     assert t24.effective_population == 58_800
     assert set(t24.critical_facilities) == {"Hospital H3", "Fire Station F2"}
-    assert t24.score == 96
+    # Nothing may sit on the ceiling, or it stops responding to new evidence.
+    assert t24.score == 85.2
+    assert t24.score < ConsequenceEngine.SCORE_CEILING
     assert t24.score > t48.score
 
 
@@ -71,4 +73,4 @@ def test_verification_changes_confidence_later_not_consequence(tmp_path):
     t12 = _assess(engine, "SGW-S17", "ADV-T12", assets, advisories, states, graph)
     assert states["ADV-T24"]["SGW-P4"].verification_status == "unverified"
     assert states["ADV-T12"]["SGW-P4"].verification_status == "verified"
-    assert t24.score == t12.score == 96
+    assert t24.score == t12.score == 85.2

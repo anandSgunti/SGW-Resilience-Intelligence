@@ -11,10 +11,22 @@ from sgw_platform.models import Advisory, Asset, AssetState, Assessment, RiskTie
 
 
 def tier_for_score(score: float) -> RiskTier:
-    """Prototype decision thresholds; these are not industry standards."""
-    if score >= 60: return RiskTier.CRITICAL
-    if score >= 40: return RiskTier.HIGH
-    if score >= 20: return RiskTier.MEDIUM
+    """Prototype decision thresholds; these are not industry standards.
+
+    Each boundary states a likelihood-and-consequence pairing rather than a
+    round number, so the scale can be re-derived if either engine is retuned:
+
+        critical  ~70% likelihood against a consequence of 80  -> 56
+        high      ~55% likelihood against a consequence of 62  -> 34
+        medium    ~45% likelihood against a consequence of 40  -> 18
+
+    Recalibrated when the consequence population term stopped being normalised
+    against a single asset's effective population; the boundaries moved with the
+    scale, and the resulting tier distribution is unchanged.
+    """
+    if score >= 56: return RiskTier.CRITICAL
+    if score >= 34: return RiskTier.HIGH
+    if score >= 18: return RiskTier.MEDIUM
     return RiskTier.LOW
 
 

@@ -77,7 +77,7 @@ def test_grounded_explain_contract_supports_asset_and_platform_questions(client)
     asset_payload = asset_response.json()
     assert asset_payload["grounded"] is True
     assert asset_payload["model"] == "deterministic-template"
-    assert "68.4" in asset_payload["answer"]
+    assert "60.7" in asset_payload["answer"]
     assert len(asset_payload["fact_pack_sha256"]) == 64
     assert asset_payload["supporting_facts"]
 
