@@ -92,6 +92,17 @@ function rankCaption(assessment: Assessment, previousStage: string | null) {
   return `${rank} · ${direction} ${Math.abs(assessment.rank_change)} since ${previousStage}`;
 }
 
+
+const TIER_TEXT: Record<Tier, string> = {
+  critical: "text-critical", high: "text-high", medium: "text-medium", low: "text-muted-foreground",
+};
+const TIER_BG: Record<Tier, string> = {
+  critical: "bg-critical", high: "bg-high", medium: "bg-medium", low: "bg-muted-foreground",
+};
+function chip(active: boolean) {
+  return `glass-chip press rounded-full px-3 py-1.5 text-xs font-medium transition-all ${active ? "border border-primary/50 bg-primary/10 text-primary" : "border border-border"}`;
+}
+
 export default function Home() {
   const { refreshIncident, setCurrentAdvisory, setSelectedAsset } = useIncident();
   const searchParams = useSearchParams();
@@ -218,220 +229,385 @@ export default function Home() {
   }, [selectedAssessment, stage]);
 
   return (
-    <main className="command-shell">
-      <nav className="ribbon" aria-label="Hurricane advisory timeline">
-        <div className="ribbon-track" role="group" aria-label="Select advisory">
+    <main className="ds-screen mx-auto w-full max-w-[1600px] px-5 pb-16 pt-6 md:px-8">
+      {/* Advisory ribbon */}
+      <section className="panel rise flex flex-wrap items-center justify-between gap-5 p-5">
+        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Select advisory">
           {TIMELINE.map((item, index) => {
-            const summary = trajectory[item.value];
+            const entry = trajectory[item.value];
             const active = stage === item.value;
-            // Per-advisory figures stay available on hover rather than crowding
-            // the control; the KPI row already carries the current advisory.
-            const detail = summary ? `${item.label}: ${summary.critical_assets} critical · ${compactPopulation(summary.exposed_residents)} residents exposed` : item.label;
             return (
-              <button key={item.value} className={`ribbon-step${active ? " ribbon-step--active" : ""}${index < timelineIndex ? " ribbon-step--past" : ""}`} onClick={() => setStage(item.value)} aria-pressed={active} title={detail} aria-label={detail}>
-                {item.label}
+              <button key={item.value} onClick={() => setStage(item.value)} aria-pressed={active}
+                title={entry ? `${item.label}: ${entry.critical_assets} critical · ${compactPopulation(entry.exposed_residents)} residents exposed` : item.label}
+                className={`press rounded-2xl px-3.5 py-2 text-left transition-all hover:-translate-y-0.5 ${active ? "border border-primary/50 bg-primary/10" : index < timelineIndex ? "glass-chip border border-border opacity-70" : "glass-chip border border-border"}`}>
+                <span className={`font-mono text-[11px] uppercase tracking-widest ${active ? "text-primary" : "text-muted-foreground"}`}>{item.label}</span>
+                <strong className="ml-2 font-display text-sm">{entry ? `${entry.critical_assets}C` : "—"}</strong>
               </button>
             );
           })}
         </div>
-        <div className="ribbon-summary">
-          <div className="ribbon-kpi ribbon-kpi--critical"><strong>{state?.summary.critical_assets ?? 0}</strong><small>Critical</small></div>
-          <div className="ribbon-kpi ribbon-kpi--high"><strong>{state?.summary.high_assets ?? 0}</strong><small>High</small></div>
-          <div className="ribbon-kpi" title="Residents exposed"><strong>{compactPopulation(state?.summary.exposed_residents ?? 0)}</strong><small>Residents exposed</small></div>
-          <Link className="ribbon-kpi ribbon-kpi--link" href={`/respond?t=${encodeURIComponent(stage)}`}><strong>{state?.summary.open_actions ?? 0}</strong><small>Open actions →</small></Link>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Kpi value={state?.summary.critical_assets ?? 0} text="Critical" tone="text-critical" />
+          <Kpi value={state?.summary.high_assets ?? 0} text="High" tone="text-high" />
+          <Kpi value={compactPopulation(state?.summary.exposed_residents ?? 0)} text="Residents exposed" />
+          <Link href={`/respond?t=${encodeURIComponent(stage)}`} className="press rounded-2xl border border-border bg-surface/70 px-4 py-3 hover:border-primary/40">
+            <strong className="block font-display text-xl">{state?.summary.open_actions ?? 0}</strong>
+            <small className="eyebrow-mono mt-1 block text-muted-foreground">Open actions →</small>
+          </Link>
         </div>
-      </nav>
+      </section>
 
-      {/* What changed, as a continuously scrolling wire across every mover. */}
-      <div className="wire" aria-label={`Changes since ${previousStage ?? "baseline"}`}>
-        <div className="wire-tag"><i aria-hidden="true" /><b>What changed</b><span>since {previousStage ?? "baseline"}</span></div>
-        <div className="wire-view">
+      {/* What changed wire */}
+      <section className="panel rise mt-4 flex items-center gap-3 overflow-hidden px-4 py-2.5">
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+          <b className="text-xs font-semibold">What changed</b>
+          <span className="text-[11px] text-muted-foreground">since {previousStage ?? "baseline"}</span>
+        </div>
+        <div className="relative flex-1 overflow-hidden">
           {headlines.length ? (
-            <div className="wire-belt">
+            <div className="wire-belt flex w-max gap-2">
               {[...headlines, ...headlines].map((item, index) => (
-                <button key={`${item.id}-${index}`} className={`hl${item.tier === "critical" ? " hl--critical" : ""}`} onClick={() => setSelectedId(item.id)}>
-                  <i aria-hidden="true" className={`hl-dot hl-dot--${item.tier}`} />
-                  <b>{compactId(item.id)}</b><span>{item.text}</span>
-                  <em className={item.improved ? "hl-delta hl-delta--up" : "hl-delta"}>{item.delta}</em>
+                <button key={`${item.id}-${index}`} onClick={() => setSelectedId(item.id)}
+                  className="glass-chip press flex shrink-0 items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs">
+                  <i className={`h-1.5 w-1.5 rounded-full ${TIER_BG[item.tier]}`} />
+                  <b>{compactId(item.id)}</b>
+                  <span className="max-w-[380px] truncate text-muted-foreground">{item.text}</span>
+                  <em className={`not-italic ${item.improved ? "text-verified" : "text-critical"}`}>{item.delta}</em>
                 </button>
               ))}
             </div>
-          ) : <p className="wire-empty">No material change since {previousStage ?? "the baseline advisory"}.</p>}
+          ) : <p className="text-xs text-muted-foreground">No material change since {previousStage ?? "the baseline advisory"}.</p>}
         </div>
-      </div>
+        <button onClick={() => setChangeDrawer("changes")} className="press shrink-0 text-xs font-medium text-primary hover:underline">See all →</button>
+      </section>
 
-      <section className="stage-body">
-        <div className="stage-map">
-          <div className="stage-tools">
-            <h2>Network exposure</h2>
-            <span className="stage-count">{totalAssets} assets</span>
-            <button className={layersOpen ? "index-chip index-chip--active" : "index-chip"} onClick={() => setLayersOpen((current) => !current)} aria-expanded={layersOpen}>Layers · {activeLayers}/8</button>
-            <button className={biggestChanges ? "change-toggle change-toggle--active" : "change-toggle"} onClick={() => setBiggestChanges((current) => !current)} aria-pressed={biggestChanges}><span aria-hidden="true">↗</span>Biggest changes</button>
-            {layersOpen && <div className="layer-popover" role="group" aria-label="Map layers">
-              {LAYER_GROUPS.map(([group, controls]) => <div className="layer-group" key={group}><span>{group}</span><div>{controls.map(([key, label]) => <button key={key} onClick={() => setLayers((current) => ({ ...current, [key]: !current[key] }))} className={layers[key] ? "layer-button layer-button--active" : "layer-button"} aria-pressed={layers[key]}>{label}</button>)}</div></div>)}
-            </div>}
-          </div>
-          <div className={`event-map${loading ? " event-map--loading" : ""}`}>
-            <OperationalMap assets={state?.map.assets ?? []} assessments={assessments} selectedId={selectedId} selectedNodes={detailNodes} selectedEdges={previewEdges} operatingZones={state?.map.operating_zones ?? []} hazardAreas={state?.map.hazard_areas ?? []} hurricane={state?.map.hurricane ?? null} layers={layers} biggestChanges={biggestChanges} majorChanges={majorChanges} onSelect={setSelectedId} />
-            {error && <div className="connection-error" role="alert"><span>Live state unavailable</span><p>{error}</p><button onClick={() => void loadState(stage)}>Retry connection</button></div>}
-            <div className="map-legend"><div><span><i className="legend-dot legend-dot--critical" />Critical</span><span><i className="legend-dot legend-dot--high" />High</span><span><i className="legend-dot legend-dot--medium" />Medium</span><span><i className="legend-dot legend-dot--low" />Low</span></div><div><span>S Substation</span><span>P Pump</span><span>+ Critical facility</span></div></div>
-          </div>
-        </div>
-
-        <aside className="asset-index" aria-label="Priority assets">
-          <div className="index-head">
-            <div className="index-title"><span>Priority assets</span><b>{railAssessments.length}</b></div>
-            <div className="index-filters" aria-label="Rail sort and filters">
-              {(["priority", "change"] as RailMode[]).map((mode) => <button key={mode} className={railMode === mode ? "index-chip index-chip--active" : "index-chip"} onClick={() => setRailMode(mode)} aria-pressed={railMode === mode}>{mode === "priority" ? "Priority" : "Change"}</button>)}
-              {RAIL_FILTERS.filter((item) => item.value !== "all").map((filter) => <button key={filter.value} className={railFilter === filter.value ? "index-chip index-chip--active" : "index-chip"} onClick={() => setRailFilter((current) => current === filter.value ? "all" : filter.value)} aria-pressed={railFilter === filter.value}>{filter.label}</button>)}
+      {/* Map + rail */}
+      <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="panel rise relative p-4">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <h2 className="font-display text-lg font-semibold">Network exposure</h2>
+            <span className="text-xs text-muted-foreground">{totalAssets} assets</span>
+            <div className="ml-auto flex items-center gap-2">
+              <button onClick={() => setLayersOpen((current) => !current)} aria-expanded={layersOpen} className={chip(layersOpen)}>Layers · {activeLayers}/8</button>
+              <button onClick={() => setBiggestChanges((current) => !current)} aria-pressed={biggestChanges} className={chip(biggestChanges)}>↗ Biggest changes</button>
             </div>
           </div>
-          <div className="index-scroll">
+
+          {layersOpen ? (
+            <div className="panel absolute right-4 top-16 z-[600] w-64 p-4">
+              {LAYER_GROUPS.map(([group, controls]) => (
+                <div key={group} className="mb-3 last:mb-0">
+                  <span className="eyebrow-mono">{group}</span>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {controls.map(([key, text]) => (
+                      <button key={key} onClick={() => setLayers((current) => ({ ...current, [key]: !current[key] }))} aria-pressed={layers[key]} className={chip(layers[key])}>{text}</button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          <div className={`h-[460px] overflow-hidden rounded-[18px] border border-border bg-surface-2 ${loading ? "opacity-70" : ""}`}>
+            <OperationalMap assets={state?.map.assets ?? []} assessments={assessments} selectedId={selectedId} selectedNodes={detailNodes} selectedEdges={previewEdges}
+              operatingZones={state?.map.operating_zones ?? []} hazardAreas={state?.map.hazard_areas ?? []} hurricane={state?.map.hurricane ?? null}
+              layers={layers} biggestChanges={biggestChanges} majorChanges={majorChanges} onSelect={setSelectedId} />
+          </div>
+          {error ? (
+            <div className="mt-3 rounded-2xl border border-critical/40 bg-critical/10 px-4 py-3 text-xs">
+              <strong className="text-critical">Live state unavailable</strong>
+              <p className="mt-1 text-muted-foreground">{error}</p>
+              <button onClick={() => void loadState(stage)} className="press mt-2 rounded-full border border-border bg-surface/70 px-3 py-1.5">Retry connection</button>
+            </div>
+          ) : null}
+
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-[11px] text-muted-foreground">
+            <div className="flex flex-wrap gap-3">
+              {(["critical", "high", "medium", "low"] as Tier[]).map((tier) => (
+                <span key={tier} className="flex items-center gap-1.5"><i className={`h-2 w-2 rounded-full ${TIER_BG[tier]}`} />{tier[0].toUpperCase() + tier.slice(1)}</span>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-3"><span>S Substation</span><span>P Pump</span><span>+ Critical facility</span></div>
+          </div>
+        </div>
+
+        <aside className="panel rise flex flex-col p-4" aria-label="Priority assets">
+          <div className="flex items-center justify-between">
+            <span className="eyebrow-mono">Priority assets</span>
+            <b className="font-display text-sm">{railAssessments.length}</b>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {(["priority", "change"] as RailMode[]).map((mode) => (
+              <button key={mode} onClick={() => setRailMode(mode)} aria-pressed={railMode === mode} className={chip(railMode === mode)}>{mode === "priority" ? "Priority" : "Change"}</button>
+            ))}
+            {RAIL_FILTERS.filter((item) => item.value !== "all").map((filter) => (
+              <button key={filter.value} onClick={() => setRailFilter((current) => current === filter.value ? "all" : filter.value)} aria-pressed={railFilter === filter.value} className={chip(railFilter === filter.value)}>{filter.label}</button>
+            ))}
+          </div>
+
+          <div className="mt-3 flex max-h-[420px] flex-col gap-1.5 overflow-y-auto pr-1">
             {railAssessments.map((assessment) => {
               const asset = assets.get(assessment.sgw_id);
               const selected = assessment.sgw_id === selectedId;
               return (
-                <button key={assessment.sgw_id} className={`index-item index-item--${assessment.tier}${selected ? " index-item--selected" : ""}`} onClick={() => setSelectedId(assessment.sgw_id)} aria-current={selected}>
-                  <span className="index-rank">{String(assessment.rank).padStart(2, "0")}</span>
-                  <span className="index-name"><strong>{compactId(assessment.sgw_id)}</strong><small>{asset?.name ?? (asset ? assetLabel(asset.asset_type) : "Asset")}</small></span>
-                  <span className="index-score">{Math.round(assessment.risk_score)}</span>
-                  <span className={assessment.rank_change && assessment.rank_change > 0 ? "index-move index-move--up" : "index-move"}>{movement(assessment.rank_change)}</span>
-                  <span className="index-spark" aria-hidden="true"><i style={{ width: `${Math.min(100, assessment.risk_score)}%` }} /></span>
+                <button key={assessment.sgw_id} onClick={() => setSelectedId(assessment.sgw_id)} aria-current={selected}
+                  className={`press rounded-2xl px-3 py-2.5 text-left transition-all hover:-translate-y-0.5 ${selected ? "border border-primary/50 bg-primary/10" : "glass-chip border border-border"}`}>
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-mono text-[11px] text-muted-foreground">{String(assessment.rank).padStart(2, "0")}</span>
+                    <span className="min-w-0 flex-1">
+                      <strong className="block truncate text-sm">{compactId(assessment.sgw_id)}</strong>
+                      <small className="block truncate text-[11px] text-muted-foreground">{asset?.name ?? (asset ? assetLabel(asset.asset_type) : "Asset")}</small>
+                    </span>
+                    <span className={`font-display text-sm ${TIER_TEXT[assessment.tier]}`}>{Math.round(assessment.risk_score)}</span>
+                    <span className={`w-8 text-right text-[11px] ${(assessment.rank_change ?? 0) > 0 ? "text-verified" : "text-muted-foreground"}`}>{movement(assessment.rank_change)}</span>
+                  </div>
+                  <span className="mt-2 block h-1 overflow-hidden rounded-full bg-surface-2">
+                    <i className={`block h-full rounded-full ${TIER_BG[assessment.tier]}`} style={{ width: `${Math.min(100, assessment.risk_score)}%` }} />
+                  </span>
                 </button>
               );
             })}
-            {!railAssessments.length && <p className="rail-empty">No assets match this filter.</p>}
+            {!railAssessments.length ? <p className="text-xs text-muted-foreground">No assets match this filter.</p> : null}
           </div>
-          <p className="index-note">{railMode === "priority" ? "Ranked by systemic risk: likelihood × dependency-aware consequence." : "Ranked by the largest movement since the previous advisory."}</p>
+
+          <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+            {railMode === "priority" ? "Ranked by systemic risk: likelihood × dependency-aware consequence." : "Ranked by the largest movement since the previous advisory."}
+          </p>
         </aside>
+      </section>
 
-        <div className="detail-split">
-          {selectedAsset && selectedAssessment ? (
-            <section className="focus-card" aria-label={`Evidence for ${selectedAsset.name}`}>
-              <div className="focus-head">
-                <div><h2>{compactId(selectedAsset.sgw_id)} · {selectedAsset.name}</h2><p className="eyebrow">{rankCaption(selectedAssessment, previousStage)}</p></div>
-                <span className={`tier-pill tier-pill--${selectedAssessment.tier}`}>{selectedAssessment.tier}</span>
+      {/* Focus + deck */}
+      <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        {selectedAsset && selectedAssessment ? (
+          <div className="panel rise p-6">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="font-display text-lg font-semibold">{compactId(selectedAsset.sgw_id)} · {selectedAsset.name}</h2>
+                <p className="eyebrow-mono mt-1">{rankCaption(selectedAssessment, previousStage)}</p>
               </div>
-              <div className="focus-nums">
-                <div><strong className={`tier-value tier-value--${selectedAssessment.tier}`}>{selectedAssessment.risk_score.toFixed(1)}</strong><small>Risk</small></div>
-                <div><strong>{Math.round(selectedAssessment.disruption_likelihood)}%</strong><small>Likelihood</small></div>
-                <div><strong>{Math.round(selectedAssessment.consequence_score)}</strong><small>Consequence</small></div>
-                <div><strong className={`confidence-value confidence-value--${selectedAssessment.confidence}`}>{selectedAssessment.confidence}</strong><small>Confidence</small></div>
-              </div>
-              <div className="focus-splits">
-                <span className="focus-split"><span>Likelihood <strong>{Math.round(selectedAssessment.disruption_likelihood)}%</strong></span><i><b className="split-bar--likelihood" style={{ width: `${Math.min(100, selectedAssessment.disruption_likelihood)}%` }} /></i></span>
-                <span className="focus-split"><span>Consequence <strong>{Math.round(selectedAssessment.consequence_score)}</strong></span><i><b className="split-bar--consequence" style={{ width: `${Math.min(100, selectedAssessment.consequence_score)}%` }} /></i></span>
-              </div>
-              <p className="focus-path">{servicePath(selectedAsset.sgw_id, detail?.dependency_subgraph.edges ?? []).map(compactId).join(" → ")}</p>
-              <p className="focus-reach">Reaches {selectedAssessment.affected_population.toLocaleString("en-US")} residents{selectedAssessment.critical_facilities.length ? `, ${selectedAssessment.critical_facilities.join(" and ")}` : ""}.</p>
-              <div className="focus-actions">
-                <button onClick={() => void openExplanation()}>Why {compactId(selectedAsset.sgw_id)}?</button>
-                <Link href={`/asset-risk?asset=${encodeURIComponent(selectedAsset.sgw_id)}&t=${encodeURIComponent(stage)}`}>Asset risk →</Link>
-              </div>
-            </section>
-          ) : <section className="focus-card focus-card--empty"><p>Select an asset to see its evidence.</p></section>}
+              <span className={`glass-chip rounded-full px-3 py-1 text-xs font-semibold uppercase ${TIER_TEXT[selectedAssessment.tier]}`}>{selectedAssessment.tier}</span>
+            </div>
 
-          <section className="deck" aria-label="Supporting detail">
-            <div className="deck-top"><h2>Supporting detail</h2><em>{deckIndex + 1} of {deckPanels.length}</em></div>
-            <div className="rail" ref={railRef} onScroll={(event) => { const node = event.currentTarget; setDeckIndex(Math.round(node.scrollLeft / Math.max(1, node.clientWidth))); }}>
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Stat value={selectedAssessment.risk_score.toFixed(0)} text="Risk" tone={TIER_TEXT[selectedAssessment.tier]} />
+              <Stat value={`${Math.round(selectedAssessment.disruption_likelihood)}%`} text="Likelihood" />
+              <Stat value={Math.round(selectedAssessment.consequence_score)} text="Consequence" />
+              <Stat value={selectedAssessment.confidence} text="Confidence" />
+            </div>
 
-              <article className="slide" aria-label="Risk distribution">
-                <h3>Risk distribution<em>{totalAssets} assets</em></h3>
-                <div className="donutwrap">
-                  <div className="donut">
-                    <svg viewBox="0 0 42 42" width="96" height="96" aria-hidden="true">
-                      <circle cx="21" cy="21" r="16" fill="none" stroke="var(--fill)" strokeWidth="6" />
-                      {(["critical", "high", "medium", "low"] as Tier[]).reduce<{ offset: number; nodes: React.ReactNode[] }>((memo, tier) => {
-                        const share = totalAssets ? (tierCounts[tier] / totalAssets) * 100 : 0;
-                        memo.nodes.push(<circle key={tier} cx="21" cy="21" r="16" fill="none" stroke={`var(--tier-${tier})`} strokeWidth="6" strokeDasharray={`${share} ${100 - share}`} strokeDashoffset={-memo.offset} strokeLinecap="round" />);
-                        return { offset: memo.offset + share, nodes: memo.nodes };
-                      }, { offset: 0, nodes: [] }).nodes}
-                    </svg>
-                    <div className="donut-mid"><b>{totalAssets}</b><span>assets</span></div>
-                  </div>
-                  <div className="legend">
-                    {(["critical", "high", "medium", "low"] as Tier[]).map((tier) => (
-                      <div key={tier}><i className={`legend-dot legend-dot--${tier}`} /><span>{tier[0].toUpperCase() + tier.slice(1)}</span><b>{tierCounts[tier]}</b></div>
-                    ))}
-                  </div>
-                </div>
-              </article>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <Bar text="Likelihood" value={selectedAssessment.disruption_likelihood} className="bg-high" />
+              <Bar text="Consequence" value={selectedAssessment.consequence_score} className="bg-medium" />
+            </div>
 
-              <article className="slide" aria-label="Recommended actions">
-                <h3>Recommended actions<em>{state?.responses.length ?? 0} open</em></h3>
-                {(state?.responses ?? []).slice(0, 4).map((item) => (
-                  <div className="act" key={item.recommendation_id}>
-                    <span className={`act-dot act-dot--${item.priority}`} />
-                    <div>
-                      <p>{item.title}</p>
-                      <p className="act-sub">{item.rule_id}{item.rule ? ` v${item.rule.version}` : ""} · {item.default_owner}</p>
-                      <div className="act-btns"><Link href={`/respond?t=${encodeURIComponent(stage)}&asset=${encodeURIComponent(item.asset_id)}`}>Review →</Link></div>
-                    </div>
+            <p className="mt-4 font-mono text-xs text-muted-foreground">{servicePath(selectedAsset.sgw_id, detail?.dependency_subgraph.edges ?? []).map(compactId).join(" → ")}</p>
+            <p className="mt-2 text-sm leading-relaxed">
+              Reaches {selectedAssessment.affected_population.toLocaleString("en-GB")} residents
+              {selectedAssessment.critical_facilities.length ? `, ${selectedAssessment.critical_facilities.join(" and ")}` : ""}.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button onClick={() => void openExplanation()} className="press rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Why {compactId(selectedAsset.sgw_id)}?</button>
+              <Link href={`/asset-risk?asset=${encodeURIComponent(selectedAsset.sgw_id)}&t=${encodeURIComponent(stage)}`} className="press rounded-full border border-border bg-surface/70 px-4 py-2 text-sm font-medium hover:border-primary/40">Asset risk →</Link>
+            </div>
+          </div>
+        ) : <div className="panel rise flex items-center justify-center p-6 text-sm text-muted-foreground">Select an asset to see its evidence.</div>}
+
+        <div className="panel rise flex flex-col p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-lg font-semibold">Supporting detail</h2>
+            <em className="text-xs not-italic text-muted-foreground">{deckIndex + 1} of {deckPanels.length}</em>
+          </div>
+
+          <div ref={railRef} onScroll={(event) => { const node = event.currentTarget; setDeckIndex(Math.round(node.scrollLeft / Math.max(1, node.clientWidth))); }}
+            className="mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth">
+            <Slide title="Risk distribution" note={`${totalAssets} assets`}>
+              <div className="flex flex-col gap-1.5">
+                {(["critical", "high", "medium", "low"] as Tier[]).map((tier) => (
+                  <div key={tier} className="flex items-center gap-2 text-xs">
+                    <i className={`h-2 w-2 rounded-full ${TIER_BG[tier]}`} />
+                    <span className="w-16 capitalize">{tier}</span>
+                    <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+                      <i className={`block h-full rounded-full ${TIER_BG[tier]}`} style={{ width: `${totalAssets ? (tierCounts[tier] / totalAssets) * 100 : 0}%` }} />
+                    </span>
+                    <b className="w-5 text-right">{tierCounts[tier]}</b>
                   </div>
                 ))}
-                {!state?.responses.length && <p className="slide-empty">No open actions at this advisory.</p>}
-              </article>
-
-              <article className="slide" aria-label="Evidence confidence">
-                <h3>Evidence confidence<em>{highConfidence} of {totalAssets} high</em></h3>
-                <div className="meters">
-                  <div className="meter"><div className="meter-top"><span>High confidence</span><b>{highConfidence} / {totalAssets}</b></div><div className="meter-trk"><i className="meter-good" style={{ width: `${totalAssets ? (highConfidence / totalAssets) * 100 : 0}%` }} /></div></div>
-                </div>
-              </article>
-
-              <article className="slide" aria-label="Top movers">
-                <h3>Top movers<em>since {previousStage ?? "baseline"}</em></h3>
-                <table className="slide-tbl"><tbody>
-                  {topMovers.slice(0, 6).map((item) => {
-                    const tier = findChange(item, "tier");
-                    return <tr key={item.sgw_id} onClick={() => setSelectedId(item.sgw_id)}>
-                      <td><b>{compactId(item.sgw_id)}</b><div className="slide-mut">{tier ? `${String(tier.previous)} → ${String(tier.current)}` : item.primary_change ?? "Material movement"}</div></td>
-                      <td className="slide-n">#{item.previous_rank ?? "—"} → #{item.rank}</td>
-                    </tr>;
-                  })}
-                </tbody></table>
-              </article>
-
-              <article className="slide" aria-label="Operating zones">
-                <h3>Operating zones<em>{totalAssets} assets</em></h3>
-                <div className="meters">
-                  {zoneCounts.map(([zone, count]) => (
-                    <div className="meter" key={zone}>
-                      <div className="meter-top"><span>{zone.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}</span><b>{count}</b></div>
-                      <div className="meter-trk"><i className="meter-neutral" style={{ width: `${totalAssets ? (count / totalAssets) * 100 : 0}%` }} /></div>
-                    </div>
-                  ))}
-                </div>
-                <p className="slide-note">Zones are backend-owned and derived from asset coordinates.</p>
-              </article>
-
-              <article className="slide" aria-label="Data sources">
-                <h3>Data sources<em>federated</em></h3>
-                <table className="slide-tbl"><tbody>
-                  <tr><td>Assets under assessment</td><td className="slide-n">{totalAssets}</td></tr>
-                  <tr><td>Dependency edges</td><td className="slide-n">{state?.map.assets.length ? previewEdges.length || "31" : "—"}</td></tr>
-                  <tr><td>Advisories modelled</td><td className="slide-n">{TIMELINE.length}</td></tr>
-                  <tr><td>Open recommendations</td><td className="slide-n">{state?.summary.open_actions ?? 0}</td></tr>
-                </tbody></table>
-                <p className="slide-note">Fragmented source identifiers reconcile to one canonical SGW identity at the adapter boundary.</p>
-              </article>
-
-            </div>
-            <div className="deck-foot">
-              <div className="dots" aria-hidden="true">{deckPanels.map((panel, index) => <i key={panel} className={index === deckIndex ? "on" : ""} />)}</div>
-              <div className="arrows">
-                <button className="arrow" onClick={() => slideDeck(-1)} aria-label="Previous panel">‹</button>
-                <button className="arrow" onClick={() => slideDeck(1)} aria-label="Next panel">›</button>
               </div>
+            </Slide>
+
+            <Slide title="Recommended actions" note={`${state?.responses.length ?? 0} raised`}>
+              <div className="flex flex-col gap-2">
+                {(state?.responses ?? []).slice(0, 4).map((item) => (
+                  <Link key={item.recommendation_id} href={`/respond?t=${encodeURIComponent(stage)}&asset=${encodeURIComponent(item.asset_id)}`}
+                    className="glass-chip press flex items-start gap-2 rounded-2xl border border-border px-3 py-2">
+                    <i className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${TIER_BG[item.priority]}`} />
+                    <span>
+                      <b className="block text-xs">{item.title}</b>
+                      <small className="text-[11px] text-muted-foreground">{item.rule_id}{item.rule ? ` v${item.rule.version}` : ""} · {item.default_owner}</small>
+                    </span>
+                  </Link>
+                ))}
+                {!state?.responses.length ? <p className="text-xs text-muted-foreground">No open actions at this advisory.</p> : null}
+              </div>
+            </Slide>
+
+            <Slide title="Evidence confidence" note={`${highConfidence} of ${totalAssets} high`}>
+              <Bar text="High confidence" value={totalAssets ? (highConfidence / totalAssets) * 100 : 0} className="bg-verified" />
+              <p className="mt-3 text-[11px] text-muted-foreground">Confidence is named per evidence type on the asset-risk graph; the path inherits its weakest link.</p>
+            </Slide>
+
+            <Slide title="Top movers" note={`since ${previousStage ?? "baseline"}`}>
+              <div className="flex flex-col gap-1.5">
+                {topMovers.slice(0, 6).map((item) => (
+                  <button key={item.sgw_id} onClick={() => setSelectedId(item.sgw_id)}
+                    className="glass-chip press flex items-center justify-between gap-3 rounded-2xl border border-border px-3 py-2 text-left">
+                    <span className="min-w-0">
+                      <b className="text-xs">{compactId(item.sgw_id)}</b>
+                      <small className="block truncate text-[11px] text-muted-foreground">{item.primary_change ?? "Material movement"}</small>
+                    </span>
+                    <span className="shrink-0 font-mono text-[11px] text-muted-foreground">#{item.previous_rank ?? "—"} → #{item.rank}</span>
+                  </button>
+                ))}
+              </div>
+            </Slide>
+
+            <Slide title="Operating zones" note={`${totalAssets} assets`}>
+              <div className="flex flex-col gap-2">
+                {zoneCounts.map(([zone, count]) => (
+                  <Bar key={zone} text={`${assetLabel(zone)} · ${count}`} value={totalAssets ? (count / totalAssets) * 100 : 0} className="bg-medium" />
+                ))}
+              </div>
+            </Slide>
+
+            <Slide title="Data sources" note="federated">
+              <dl className="flex flex-col gap-1.5 text-xs">
+                <Row label="Assets under assessment" value={totalAssets} />
+                <Row label="Advisories modelled" value={TIMELINE.length} />
+                <Row label="Open recommendations" value={state?.summary.open_actions ?? 0} />
+                <Row label="Critical facilities exposed" value={selectedAssessment?.critical_facilities.length ?? 0} />
+              </dl>
+              <p className="mt-3 text-[11px] text-muted-foreground">Fragmented source identifiers reconcile to one canonical SGW identity at the adapter boundary.</p>
+            </Slide>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between">
+            <div className="flex gap-1.5" aria-hidden="true">
+              {deckPanels.map((panel, index) => <i key={panel} className={`h-1.5 w-1.5 rounded-full ${index === deckIndex ? "bg-primary" : "bg-border"}`} />)}
             </div>
-          </section>
+            <div className="flex gap-2">
+              <button onClick={() => slideDeck(-1)} aria-label="Previous panel" className="press glass-chip h-8 w-8 rounded-full border border-border">‹</button>
+              <button onClick={() => slideDeck(1)} aria-label="Next panel" className="press glass-chip h-8 w-8 rounded-full border border-border">›</button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {changeDrawer && <><button className="drawer-backdrop" onClick={() => setChangeDrawer(null)} aria-label="Close change drawer" /><aside className="change-drawer" aria-label={changeDrawer === "changes" ? "All advisory changes" : "Grounded asset explanation"}>
-        <div className="drawer-heading"><div><p className="eyebrow">{changeDrawer === "changes" ? `Changes since ${previousStage}` : "Grounded explanation"}</p><h2>{changeDrawer === "changes" ? "Top movers" : compactId(selectedId)}</h2></div><button onClick={() => setChangeDrawer(null)} aria-label="Close drawer">×</button></div>
-        {changeDrawer === "changes" ? <div className="mover-list">{topMovers.map((item) => { const asset = assets.get(item.sgw_id); const tier = findChange(item, "tier"); return <button key={item.sgw_id} onClick={() => { setSelectedId(item.sgw_id); setChangeDrawer(null); }}><span className={`mover-signal mover-signal--${item.tier}`} /><span><strong>{compactId(item.sgw_id)}</strong><small>{asset?.name ?? "Asset"}</small></span><span className="mover-change"><strong>#{item.previous_rank ?? "—"} → #{item.rank}</strong><small>{tier ? `${String(tier.previous).toUpperCase()} → ${String(tier.current).toUpperCase()}` : item.primary_change ?? "Material movement"}</small></span></button>; })}{!topMovers.length && <p className="drawer-empty">No material movements in this advisory.</p>}</div> : <div className="explanation-body">{explanationLoading && <p className="explanation-loading">Building a response from the locked fact pack…</p>}{explanationError && <p className="explanation-error">{explanationError}</p>}{explanation && <><span className="grounded-badge">Grounded · {explanation.model}</span><h3>{explanation.headline}</h3><p>{explanation.answer}</p><div className="explanation-facts">{explanation.supporting_facts.slice(0, 3).map((fact) => <span key={fact.metric}><small>{fact.label}</small><strong>{formatValue(fact.value, fact.unit)}</strong></span>)}</div><small className="fact-pack-id">Fact pack {explanation.fact_pack_sha256.slice(0, 12)}</small></>}</div>}
-      </aside></>}
+      {changeDrawer ? (
+        <>
+          <button onClick={() => setChangeDrawer(null)} aria-label="Close drawer" className="fixed inset-0 z-[900] bg-foreground/20 backdrop-blur-[2px]" />
+          <aside className="panel fixed right-0 top-0 z-[1000] flex h-full w-full max-w-md flex-col gap-4 overflow-y-auto rounded-none rounded-l-[18px] p-6">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="eyebrow-mono">{changeDrawer === "changes" ? `Changes since ${previousStage}` : "Grounded explanation"}</p>
+                <h2 className="mt-1 font-display text-lg font-semibold">{changeDrawer === "changes" ? "Top movers" : compactId(selectedId)}</h2>
+              </div>
+              <button onClick={() => setChangeDrawer(null)} aria-label="Close drawer" className="press glass-chip h-8 w-8 rounded-full border border-border">×</button>
+            </div>
+
+            {changeDrawer === "changes" ? (
+              <div className="flex flex-col gap-2">
+                {topMovers.map((item) => (
+                  <button key={item.sgw_id} onClick={() => { setSelectedId(item.sgw_id); setChangeDrawer(null); }}
+                    className="glass-chip press flex items-start gap-3 rounded-2xl border border-border px-3 py-2.5 text-left">
+                    <i className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${TIER_BG[item.tier]}`} />
+                    <span className="min-w-0 flex-1">
+                      <b className="text-sm">{compactId(item.sgw_id)}</b>
+                      <small className="block text-[11px] text-muted-foreground">{assets.get(item.sgw_id)?.name}</small>
+                      <small className="mt-1 block text-[11px]">{item.primary_change ?? "Material movement"}</small>
+                    </span>
+                    <span className="shrink-0 font-mono text-[11px] text-muted-foreground">#{item.previous_rank ?? "—"} → #{item.rank}</span>
+                  </button>
+                ))}
+                {!topMovers.length ? <p className="text-xs text-muted-foreground">No material movements in this advisory.</p> : null}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {explanationLoading ? <p className="text-sm text-muted-foreground">Building a response from the locked fact pack…</p> : null}
+                {explanationError ? <p className="text-sm text-critical">{explanationError}</p> : null}
+                {explanation ? (
+                  <>
+                    <span className="glass-chip w-fit rounded-full border border-verified/40 px-3 py-1 text-[11px] text-verified">Grounded · {explanation.model}</span>
+                    <h3 className="font-display text-base font-semibold">{explanation.headline}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{explanation.answer}</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {explanation.supporting_facts.slice(0, 3).map((fact) => (
+                        <span key={fact.metric} className="glass-chip rounded-2xl border border-border px-3 py-2">
+                          <small className="block text-[10px] text-muted-foreground">{fact.label}</small>
+                          <strong className="text-sm">{formatValue(fact.value, fact.unit)}</strong>
+                        </span>
+                      ))}
+                    </div>
+                    <small className="font-mono text-[11px] text-muted-foreground">Fact pack {explanation.fact_pack_sha256.slice(0, 18)}</small>
+                  </>
+                ) : null}
+              </div>
+            )}
+          </aside>
+        </>
+      ) : null}
     </main>
+  );
+}
+
+function Kpi({ value, text, tone }: { value: string | number; text: string; tone?: string }) {
+  return (
+    <div className="glass-chip rounded-2xl border border-border px-4 py-3">
+      <strong className={`block font-display text-xl ${tone ?? ""}`}>{value}</strong>
+      <small className="eyebrow-mono mt-1 block text-muted-foreground">{text}</small>
+    </div>
+  );
+}
+
+function Stat({ value, text, tone }: { value: string | number; text: string; tone?: string }) {
+  return (
+    <div className="glass-chip rounded-2xl border border-border px-3 py-2.5">
+      <strong className={`block font-display text-lg capitalize ${tone ?? ""}`}>{value}</strong>
+      <small className="eyebrow-mono mt-0.5 block text-muted-foreground">{text}</small>
+    </div>
+  );
+}
+
+function Bar({ text, value, className }: { text: string; value: number; className: string }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+        <span>{text}</span><b className="text-foreground">{Math.round(value)}</b>
+      </div>
+      <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-surface-2">
+        <i className={`block h-full rounded-full transition-[width] duration-500 ${className}`} style={{ width: `${Math.min(100, value)}%` }} />
+      </span>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="flex items-center justify-between border-b border-border/60 pb-1.5">
+      <dt className="text-muted-foreground">{label}</dt><dd className="font-mono">{value}</dd>
+    </div>
+  );
+}
+
+function Slide({ title, note, children }: { title: string; note: string; children: React.ReactNode }) {
+  return (
+    <article className="w-full shrink-0 snap-start" aria-label={title}>
+      <div className="mb-3 flex items-baseline justify-between">
+        <h3 className="font-display text-sm font-semibold">{title}</h3>
+        <em className="text-[11px] not-italic text-muted-foreground">{note}</em>
+      </div>
+      {children}
+    </article>
   );
 }

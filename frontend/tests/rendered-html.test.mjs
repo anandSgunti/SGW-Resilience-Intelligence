@@ -33,8 +33,10 @@ test("priority rail implements the 6A.2 decision controls and evidence view", as
   for (const label of ["Priority", "Change", "Critical", "High", "Water", "Electric", "Likelihood", "Consequence", "topDriver", "Asset risk"]) {
     assert.match(source, new RegExp(label));
   }
-  assert.match(source, /focus-split/);
-  assert.match(source, /index-item/);
+  // Rail rows render rank, risk and movement, and select on click.
+  assert.match(source, /String\(assessment\.rank\)\.padStart/);
+  assert.match(source, /movement\(assessment\.rank_change\)/);
+  assert.match(source, /railAssessments\.map/);
   assert.match(source, /setSelectedId\(assessment\.sgw_id\)/);
 });
 
@@ -85,8 +87,11 @@ test("Screen 1 ribbon carries per-advisory trajectory, not just the current advi
   assert.match(source, /trajectory/);
   assert.match(source, /Promise\.allSettled\(TIMELINE\.map/);
   assert.match(source, /summary\.critical_assets/);
-  assert.match(source, /ribbon-step/);
-  assert.match(source, /focus-card/);
+  // Each advisory button reads that advisory's own count from the prefetch.
+  assert.match(source, /trajectory\[item\.value\]/);
+  assert.match(source, /entry\.critical_assets/);
+  // The selected asset keeps its own evidence panel with the service path.
+  assert.match(source, /servicePath\(selectedAsset\.sgw_id/);
   // Chrome collapsed: the standalone KPI strip and timeline nav are gone.
   assert.doesNotMatch(source, /status-strip/);
   assert.doesNotMatch(source, /className="timeline"/);
