@@ -40,7 +40,7 @@ function graphLayout(nodes: Asset[], edges: Edge[]) {
   return result;
 }
 
-function NodeDetail({ context, edges, actions, stage }: { context: NodeContext; edges: Edge[]; actions: RecommendedAction[]; stage: string }) {
+function NodeDetail({ context, edges, actions, stage, view }: { context: NodeContext; edges: Edge[]; actions: RecommendedAction[]; stage: string; view: "context" | "impact" | "evidence" }) {
   const [verificationPrepared, setVerificationPrepared] = useState(false);
   const { asset, state, assessment } = context; const incoming = edges.filter((edge) => edge.to_id === asset.sgw_id); const outgoing = edges.filter((edge) => edge.from_id === asset.sgw_id);
   const alternate = incoming.some((edge) => edge.relationship === "backup_feed");
@@ -53,12 +53,20 @@ function NodeDetail({ context, edges, actions, stage }: { context: NodeContext; 
   else if (asset.asset_type === "pump_station") facts = [["Backup", formatValue(state.backup_available_hours, "h")], ["Alternate supply", alternate ? "Available" : "None modeled"], ["Generator", title(state.generator_status)], ["Resilience gap", `${assessment.max_uncovered_hours}h`]];
   else if (asset.asset_type === "water_zone") facts = [["Population", Number(asset.attributes.population ?? 0).toLocaleString("en-US")], ["Modeled coverage", supply ? `${Math.round(supply * 100)}%` : "—"], ["Incoming supplies", String(incoming.length)], ["Consequence", String(Math.round(assessment.consequence_score))]];
   else facts = [["Facility type", title(asset.asset_type)], ["Criticality", "Critical community service"], ["Risk tier", title(assessment.tier)], ["Confidence", title(assessment.confidence)]];
-  return <div className="node-detail">
+  // One component, three views, so the sections can occupy separate columns
+  // beneath the dependency block instead of stacking down a single rail.
+  if (view === "context") return <div className="node-detail">
     <div className="node-detail-heading"><span className={`node-type-mark node-type-mark--${asset.asset_type}`} /><div><p className="eyebrow">Selected node</p><h2>{compactId(asset.sgw_id)} · {asset.name}</h2><small>{title(asset.asset_type)} · {title(state.operational_status ?? "operational")}</small></div></div>
     <div className="detail-tier"><span className={`tier-pill tier-pill--${assessment.tier}`}>{assessment.tier}</span><strong>{Math.round(assessment.risk_score)}</strong><small>systemic risk</small></div>
     <section className="detail-section"><div className="detail-section-title"><span>Operating context</span><small>{title(state.verification_status)}</small></div><div className="node-facts">{facts.map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div></section>
+  </div>;
+  if (view === "impact") return <div className="node-detail">
+    <div className="node-detail-band"><span>Impact</span></div>
     <section className="detail-section detail-driver"><div className="detail-section-title"><span>Why it matters</span></div><p>{assessment.primary_change ?? assessment.current_drivers[0]?.impact?.replaceAll("_", " ") ?? "No material advisory change recorded for this node."}</p></section>
     <section className="detail-section"><div className="detail-section-title"><span>Connected evidence</span><small>{incoming.length + outgoing.length} links</small></div><div className="connection-list">{[...incoming, ...outgoing].length ? [...incoming, ...outgoing].map((edge) => { const upstream = edge.to_id === asset.sgw_id; return <div key={`${edge.from_id}-${edge.to_id}-${edge.relationship}`}><span>{upstream ? "From" : "To"} {compactId(upstream ? edge.from_id : edge.to_id)}</span><strong>{title(edgeLabel(edge.relationship))}</strong><small className={edge.verified && edge.confidence >= .8 ? "evidence-verified" : "evidence-uncertain"}>{edge.verified && edge.confidence >= .8 ? "Verified" : "Needs validation"} · {Math.round(edge.confidence * 100)}%</small></div>; }) : <p className="empty-detail">No modeled links for this node.</p>}</div></section>
+  </div>;
+  return <div className="node-detail">
+    <div className="node-detail-band"><span>Evidence</span></div>
     <section className="detail-section confidence-block"><div className="detail-section-title"><span>Data confidence</span><strong className={`confidence-label confidence-label--${assessment.confidence}`}>{title(assessment.confidence)}</strong></div>{evidenceReasons.slice(0, 2).map((reason) => <p key={reason}>{reason}</p>)}{!evidenceReasons.length && <p>No material evidence exceptions recorded.</p>}{evidenceGaps.length > 0 && <button type="button" className="verification-action" onClick={() => setVerificationPrepared(true)} disabled={verificationPrepared}>{verificationPrepared ? "Verification handoff prepared" : "Create verification action"}</button>}{verificationPrepared && <small className="handoff-note">No field work is auto-approved. <a href={`/respond?t=${encodeURIComponent(stage)}&asset=${encodeURIComponent(asset.sgw_id)}`}>Open Respond queue →</a></small>}</section>
     {relatedActions.length > 0 && <section className="detail-section response-preview"><div className="detail-section-title"><span>Recommended response</span><small>{relatedActions.length} open</small></div>{relatedActions.slice(0, 2).map((action) => <div key={action.recommendation_id}><strong>{action.title}</strong><p>{action.reason}</p><small>{action.default_owner} · {title(action.status)}</small></div>)}</section>}
   </div>;
@@ -123,7 +131,7 @@ export default function AssetRiskPage() {
         </div>
       </nav>
       <p className="asset-lede">{detail?.assessment.primary_change ?? "Connecting to the current advisory state."}</p>
-      <section className="asset-risk-workspace">
+      <section className="dependency-block">
         <div className="graph-panel"><div className="graph-toolbar"><div><p className="eyebrow">Dependency intelligence</p><h2>Connected impact path</h2></div><div className="lens-switch" aria-label="Graph lens">{(["infrastructure", "consequence", "confidence"] as Lens[]).map((item) => <button key={item} className={lens === item ? "lens-button lens-button--active" : "lens-button"} onClick={() => setLens(item)} aria-pressed={lens === item}>{title(item)}</button>)}</div></div>
           <div className={`dependency-graph dependency-graph--${lens}${loading ? " dependency-graph--loading" : ""}`}>
             <div className="graph-guidance">{lens === "infrastructure" ? "Topology · redundancy · validated engineering relationships" : lens === "consequence" ? "Population · critical facilities · uncovered duration" : "Verified · stale · unknown · conflicting evidence"}</div>
@@ -132,10 +140,14 @@ export default function AssetRiskPage() {
             {hoveredNode && detail?.node_context[hoveredNode] && (() => { const context = detail.node_context[hoveredNode]; const point = positions.get(hoveredNode)!; return <div className="graph-tooltip" style={{ left: `${point.x}%`, top: `${point.y}%` }}><strong>{compactId(hoveredNode)} · {title(context.asset.asset_type)}</strong>{context.asset.asset_type === "pump_station" ? <><span>Backup: {formatValue(context.state.backup_available_hours, "h")}</span><span>Generator readiness: {title(context.state.verification_status)}</span></> : <><span>Risk: {Math.round(context.assessment.risk_score)} · {title(context.assessment.tier)}</span><span>{context.asset.asset_type === "water_zone" ? `Population: ${Number(context.asset.attributes.population ?? 0).toLocaleString("en-US")}` : `Condition: ${context.asset.condition_score}/100`}</span></>}<span>Confidence: {title(context.assessment.confidence)}</span></div>; })()}
             {hoveredEdge && (() => { const from = positions.get(hoveredEdge.from_id)!; const to = positions.get(hoveredEdge.to_id)!; const uncertain = !hoveredEdge.verified || hoveredEdge.confidence < .8; return <div className="edge-tooltip" style={{ left: `${(from.x + to.x) / 2}%`, top: `${(from.y + to.y) / 2}%` }}><strong>{compactId(hoveredEdge.from_id)} → {compactId(hoveredEdge.to_id)}</strong><span>{title(edgeLabel(hoveredEdge.relationship))}</span><span>{uncertain ? "Dependency inferred / awaiting validation" : "Verified engineering record"}</span><small>Last validated {hoveredEdge.last_validated}</small></div>; })()}
           </div><div className="graph-legend"><span><i className="legend-line legend-line--solid" />Validated dependency</span><span><i className="legend-line legend-line--dashed" />Service consequence</span><span><i className="legend-line legend-line--uncertain" />Unverified</span><span><i className="legend-line legend-line--gap" />Material resilience gap</span></div></div>
+              </section>
+      <section className="asset-split">
         {focused ? <>
-          <aside className="asset-detail-rail"><NodeDetail key={focusedId} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} /></aside>
-          <aside className="asset-ask-rail"><AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} /></aside>
-        </> : <aside className="asset-detail-rail"><p className="empty-detail">Choose a node to inspect its evidence.</p></aside>}
+          <aside className="asset-pane"><NodeDetail key={`ctx-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="context" /></aside>
+          <aside className="asset-pane"><NodeDetail key={`imp-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="impact" /></aside>
+          <aside className="asset-pane"><NodeDetail key={`ev-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="evidence" /></aside>
+          <aside className="asset-pane asset-pane--ask"><AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} /></aside>
+        </> : <aside className="asset-pane"><p className="empty-detail">Choose a node in the dependency map to inspect its evidence.</p></aside>}
       </section>
     </>}
   </main>;

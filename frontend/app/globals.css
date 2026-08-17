@@ -420,17 +420,38 @@ h1,h2,p { margin-top:0; } h1,h2 { margin-bottom:0;font-size:17px;font-weight:520
 .asset-lede{margin:0;padding:var(--s4) var(--s6) 0;max-width:110ch;color:var(--muted);font-size:14.5px}
 .asset-lede b{color:var(--ink);font-weight:590}
 
-/* --- Screen 2: graph | node detail | ask --- */
-.asset-risk-workspace{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:var(--s4);padding:var(--s4);align-items:start}
-.graph-panel,.asset-detail-rail,.asset-ask-rail{border-radius:var(--r);background:var(--raised);
-  box-shadow:var(--shadow);overflow:hidden;min-width:0}
-.graph-panel{display:flex;flex-direction:column;border-right:0}
-.graph-toolbar{display:flex;align-items:center;gap:var(--s3);min-height:52px;padding:0 var(--s5);
+/* --- Screen 2: dependency block, then a four-up detail split --- */
+.dependency-block{padding:var(--s4) var(--s4) 0}
+.graph-panel{display:flex;flex-direction:column;border:0;border-radius:var(--r);
+  background:var(--raised);box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.graph-toolbar{display:flex;align-items:center;gap:var(--s4);min-height:56px;padding:0 var(--s5);
   border-bottom:1px solid var(--line-soft)}
 .graph-toolbar>div:first-child{margin-right:auto}
-.graph-toolbar h2{font-size:15px;font-weight:590}
-.asset-detail-rail,.asset-ask-rail{display:flex;flex-direction:column;background:var(--raised)}
-.asset-detail-rail>*,.asset-ask-rail>*{min-width:0}
+.graph-toolbar h2{font-size:16px;font-weight:600}
+/* Lens picker reuses the ribbon's segmented-control language. */
+.lens-switch{display:inline-flex;gap:2px;padding:3px;border-radius:11px;background:var(--fill)}
+.lens-switch button{padding:6px 15px;border:0;border-radius:8px;background:transparent;color:var(--muted);
+  cursor:pointer;font:500 13.5px inherit;transition:background .22s var(--ease),color .22s var(--ease)}
+.lens-switch button:hover{color:var(--ink)}
+.lens-switch button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.lens-switch button[aria-pressed="true"]{background:var(--raised);color:var(--ink);font-weight:590;
+  box-shadow:0 0 0 .5px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.12)}
+.dependency-graph{position:relative;height:470px;background:var(--surface);overflow:hidden;
+  transition:opacity .3s var(--ease)}
+.dependency-graph--loading{opacity:.7}
+.graph-guidance{position:absolute;z-index:4;left:var(--s5);top:var(--s4);padding:6px 13px;border-radius:999px;
+  background:rgba(255,255,255,.86);backdrop-filter:blur(16px);box-shadow:0 1px 4px rgba(0,0,0,.10);
+  color:var(--muted);font-size:12.5px}
+.graph-legend{display:flex;flex-wrap:wrap;gap:var(--s5);padding:12px var(--s5);
+  border-top:1px solid var(--line-soft);color:var(--muted);font-size:12.5px}
+.graph-legend span{display:flex;align-items:center;gap:7px;white-space:nowrap}
+
+.asset-split{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s4);padding:var(--s4);align-items:stretch}
+.asset-pane{display:flex;flex-direction:column;border-radius:var(--r);background:var(--raised);
+  box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.asset-pane .node-detail{display:flex;flex-direction:column;height:100%}
+.node-detail-band{padding:13px var(--s5);border-bottom:1px solid var(--line-soft)}
+.node-detail-band span{font-size:14.5px;font-weight:590;letter-spacing:-.01em;color:var(--ink)}
 .empty-detail{margin:0;padding:var(--s5);color:var(--muted)}
 
 /* --- Screen 3: queue | decide | record --- */
@@ -449,13 +470,13 @@ h1,h2,p { margin-top:0; } h1,h2 { margin-bottom:0;font-size:17px;font-weight:520
 .response-detail-heading h2{font-size:16px;font-weight:600}
 
 @media (max-width:1500px){
-  .asset-risk-workspace{grid-template-columns:1.4fr 1fr}
-  .asset-ask-rail{grid-column:1/-1}
+  .asset-split{grid-template-columns:repeat(2,minmax(0,1fr))}
   .response-workspace{grid-template-columns:1fr 1fr}
   .response-record{grid-column:1/-1}
 }
 @media (max-width:900px){
-  .asset-risk-workspace,.response-workspace{grid-template-columns:1fr}
-  .asset-ask-rail,.response-record{grid-column:auto}
+  .asset-split,.response-workspace{grid-template-columns:1fr}
+  .response-record{grid-column:auto}
+  .dependency-graph{height:380px}
   .ribbon-title{flex-basis:100%;order:3}
 }
