@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, DM_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import WorkflowNav from "./WorkflowNav";
 import { IncidentProvider } from "./IncidentContext";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const display = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"] });
+const sans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
+const mono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata: Metadata = {
   title: "SGW Resilience Command",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${geistSans.variable} ${geistMono.variable}`}><IncidentProvider><WorkflowNav /><div className="workflow-content">{children}</div></IncidentProvider><style>{`.workflow-content{min-height:100vh}`}</style></body></html>;
+  return <html lang="en"><body className={`${display.variable} ${sans.variable} ${mono.variable}`}><IncidentProvider><WorkflowNav /><div className="workflow-content">{children}</div></IncidentProvider><style>{`.workflow-content{min-height:100vh}`}</style></body></html>;
 }

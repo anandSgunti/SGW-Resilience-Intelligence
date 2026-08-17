@@ -39,37 +39,146 @@ function graphLayout(nodes: Asset[], edges: Edge[]) {
   for (const [level, column] of columns) column.sort().forEach((id, index) => result.set(id, { x: 9 + (level / maxDepth) * 82, y: 15 + ((index + 1) / (column.length + 1)) * 70 }));
   return result;
 }
+const tierColor: Record<string, string> = {
+  critical: "text-critical border-critical/50 bg-critical/10",
+  high: "text-high border-high/50 bg-high/10",
+  medium: "text-medium border-medium/50 bg-medium/10",
+  low: "text-verified border-verified/50 bg-verified/10",
+};
+
+function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
+  return (
+    <div className="glass-chip press min-w-28 rounded-2xl px-5 py-4">
+      <strong className={`block font-display text-2xl leading-none ${tone ?? "text-foreground"}`}>{value}</strong>
+      <small className="eyebrow-mono mt-2 block">{label}</small>
+    </div>
+  );
+}
+
+function SectionTitle({ label, note }: { label: string; note?: string }) {
+  return (
+    <div className="mb-3 flex items-baseline justify-between gap-3 border-b border-border pb-2">
+      <span className="eyebrow-mono">{label}</span>
+      {note ? <small className="text-xs text-muted-foreground">{note}</small> : null}
+    </div>
+  );
+}
 
 function NodeDetail({ context, edges, actions, stage, view }: { context: NodeContext; edges: Edge[]; actions: RecommendedAction[]; stage: string; view: "context" | "impact" | "evidence" }) {
   const [verificationPrepared, setVerificationPrepared] = useState(false);
-  const { asset, state, assessment } = context; const incoming = edges.filter((edge) => edge.to_id === asset.sgw_id); const outgoing = edges.filter((edge) => edge.from_id === asset.sgw_id);
+  const { asset, state, assessment } = context;
+  const incoming = edges.filter((edge) => edge.to_id === asset.sgw_id);
+  const outgoing = edges.filter((edge) => edge.from_id === asset.sgw_id);
   const alternate = incoming.some((edge) => edge.relationship === "backup_feed");
   const supply = incoming.filter((edge) => edge.relationship === "serves").reduce((total, edge) => total + (edge.capacity_share ?? 0), 0);
   const relatedActions = actions.filter((action) => action.asset_id === asset.sgw_id || action.target_asset_id === asset.sgw_id);
-  const evidenceGaps = assessment.verification_actions ?? [];
   const evidenceReasons = assessment.confidence_reasons ?? [];
+
   let facts: Array<[string, string]>;
-  if (asset.asset_type === "substation") facts = [["Restoration", `${state.restoration_hours}h`], ["Likelihood", `${Math.round(assessment.disruption_likelihood)}%`], ["Condition", `${asset.condition_score}/100`], ["Top driver", assessment.current_drivers[0]?.label ?? "—"]];
-  else if (asset.asset_type === "pump_station") facts = [["Backup", formatValue(state.backup_available_hours, "h")], ["Alternate supply", alternate ? "Available" : "None modeled"], ["Generator", title(state.generator_status)], ["Resilience gap", `${assessment.max_uncovered_hours}h`]];
-  else if (asset.asset_type === "water_zone") facts = [["Population", Number(asset.attributes.population ?? 0).toLocaleString("en-US")], ["Modeled coverage", supply ? `${Math.round(supply * 100)}%` : "—"], ["Incoming supplies", String(incoming.length)], ["Consequence", String(Math.round(assessment.consequence_score))]];
-  else facts = [["Facility type", title(asset.asset_type)], ["Criticality", "Critical community service"], ["Risk tier", title(assessment.tier)], ["Confidence", title(assessment.confidence)]];
-  // One component, three views, so the sections can occupy separate columns
-  // beneath the dependency block instead of stacking down a single rail.
-  if (view === "context") return <div className="node-detail">
-    <div className="node-detail-heading"><span className={`node-type-mark node-type-mark--${asset.asset_type}`} /><div><p className="eyebrow">Selected node</p><h2>{compactId(asset.sgw_id)} · {asset.name}</h2><small>{title(asset.asset_type)} · {title(state.operational_status ?? "operational")}</small></div></div>
-    <div className="detail-tier"><span className={`tier-pill tier-pill--${assessment.tier}`}>{assessment.tier}</span><strong>{Math.round(assessment.risk_score)}</strong><small>systemic risk</small></div>
-    <section className="detail-section"><div className="detail-section-title"><span>Operating context</span><small>{title(state.verification_status)}</small></div><div className="node-facts">{facts.map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div></section>
-  </div>;
-  if (view === "impact") return <div className="node-detail">
-    <div className="node-detail-band"><span>Impact</span></div>
-    <section className="detail-section detail-driver"><div className="detail-section-title"><span>Why it matters</span></div><p>{assessment.primary_change ?? assessment.current_drivers[0]?.impact?.replaceAll("_", " ") ?? "No material advisory change recorded for this node."}</p></section>
-    <section className="detail-section"><div className="detail-section-title"><span>Connected evidence</span><small>{incoming.length + outgoing.length} links</small></div><div className="connection-list">{[...incoming, ...outgoing].length ? [...incoming, ...outgoing].map((edge) => { const upstream = edge.to_id === asset.sgw_id; return <div key={`${edge.from_id}-${edge.to_id}-${edge.relationship}`}><span>{upstream ? "From" : "To"} {compactId(upstream ? edge.from_id : edge.to_id)}</span><strong>{title(edgeLabel(edge.relationship))}</strong><small className={edge.verified && edge.confidence >= .8 ? "evidence-verified" : "evidence-uncertain"}>{edge.verified && edge.confidence >= .8 ? "Verified" : "Needs validation"} · {Math.round(edge.confidence * 100)}%</small></div>; }) : <p className="empty-detail">No modeled links for this node.</p>}</div></section>
-  </div>;
-  return <div className="node-detail">
-    <div className="node-detail-band"><span>Evidence</span></div>
-    <section className="detail-section confidence-block"><div className="detail-section-title"><span>Data confidence</span><strong className={`confidence-label confidence-label--${assessment.confidence}`}>{title(assessment.confidence)}</strong></div>{evidenceReasons.slice(0, 2).map((reason) => <p key={reason}>{reason}</p>)}{!evidenceReasons.length && <p>No material evidence exceptions recorded.</p>}{evidenceGaps.length > 0 && <button type="button" className="verification-action" onClick={() => setVerificationPrepared(true)} disabled={verificationPrepared}>{verificationPrepared ? "Verification handoff prepared" : "Create verification action"}</button>}{verificationPrepared && <small className="handoff-note">No field work is auto-approved. <a href={`/respond?t=${encodeURIComponent(stage)}&asset=${encodeURIComponent(asset.sgw_id)}`}>Open Respond queue →</a></small>}</section>
-    {relatedActions.length > 0 && <section className="detail-section response-preview"><div className="detail-section-title"><span>Recommended response</span><small>{relatedActions.length} open</small></div>{relatedActions.slice(0, 2).map((action) => <div key={action.recommendation_id}><strong>{action.title}</strong><p>{action.reason}</p><small>{action.default_owner} · {title(action.status)}</small></div>)}</section>}
-  </div>;
+  if (asset.asset_type === "substation")
+    facts = [["Restoration", `${state.restoration_hours}h`], ["Likelihood", `${Math.round(assessment.disruption_likelihood)}%`], ["Condition", `${asset.condition_score}/100`], ["Top driver", assessment.current_drivers[0]?.label ?? "—"]];
+  else if (asset.asset_type === "pump_station")
+    facts = [["Backup", formatValue(state.backup_available_hours, "h")], ["Alternate supply", alternate ? "Available" : "None modeled"], ["Generator", title(state.generator_status)], ["Resilience gap", `${assessment.max_uncovered_hours}h`]];
+  else if (asset.asset_type === "water_zone")
+    facts = [["Population", Number(asset.attributes.population ?? 0).toLocaleString("en-US")], ["Modeled coverage", supply ? `${Math.round(supply * 100)}%` : "—"], ["Incoming supplies", String(incoming.length)], ["Consequence", String(Math.round(assessment.consequence_score))]];
+  else
+    facts = [["Facility type", title(asset.asset_type)], ["Criticality", "Critical community service"], ["Risk tier", title(assessment.tier)], ["Confidence", title(assessment.confidence)]];
+
+  const shell = "panel rise flex h-full flex-col gap-5 p-6 hover:-translate-y-0.5 hover:border-primary/25";
+
+  if (view === "context") return (
+    <div className={shell}>
+      <div className="flex items-start gap-3">
+        <span className="mt-1 h-9 w-1 rounded-full bg-[image:var(--gradient-ember)]" />
+        <div>
+          <p className="eyebrow-mono">Selected node</p>
+          <h2 className="mt-1 text-lg font-semibold">{compactId(asset.sgw_id)} · {asset.name}</h2>
+          <small className="text-xs text-muted-foreground">{title(asset.asset_type)} · {title(state.operational_status)}</small>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <span className={`rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-widest ${tierColor[assessment.tier] ?? tierColor.medium}`}>{assessment.tier}</span>
+        <strong className="font-display text-3xl">{Math.round(assessment.risk_score)}</strong>
+        <small className="text-xs text-muted-foreground">systemic risk</small>
+      </div>
+      <section>
+        <SectionTitle label="Operating context" note={title(state.verification_status)} />
+        <div className="grid grid-cols-2 gap-3">
+          {facts.map(([label, value]) => (
+            <div key={label} className="glass-chip rounded-2xl px-3.5 py-2.5">
+              <span className="block text-[11px] text-muted-foreground">{label}</span>
+              <strong className="text-sm">{value}</strong>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+
+  if (view === "impact") return (
+    <div className={shell}>
+      <span className="eyebrow-mono">Impact</span>
+      <section>
+        <SectionTitle label="Why it matters" />
+        <p className="text-sm leading-relaxed text-muted-foreground">{assessment.primary_change ?? "No material advisory change recorded for this node."}</p>
+      </section>
+      <section>
+        <SectionTitle label="Connected evidence" note={`${incoming.length + outgoing.length} links`} />
+        <div className="flex flex-col gap-2">
+          {[...incoming, ...outgoing].map((edge) => {
+            const upstream = edge.to_id === asset.sgw_id;
+            const trusted = edge.verified && edge.confidence >= 0.8;
+            return (
+              <div key={`${edge.from_id}-${edge.to_id}-${edge.relationship}`} className="glass-chip press flex items-center justify-between gap-3 rounded-2xl px-3.5 py-2.5">
+                <div>
+                  <span className="block font-mono text-[11px] text-muted-foreground">{upstream ? "From" : "To"} {compactId(upstream ? edge.from_id : edge.to_id)}</span>
+                  <strong className="text-sm">{title(edgeLabel(edge.relationship))}</strong>
+                </div>
+                <small className={`text-[11px] ${trusted ? "text-verified" : "text-uncertain"}`}>{trusted ? "Verified" : "Needs validation"} · {Math.round(edge.confidence * 100)}%</small>
+              </div>
+            );
+          })}
+          {!incoming.length && !outgoing.length ? <p className="text-sm text-muted-foreground">No modeled links for this node.</p> : null}
+        </div>
+      </section>
+    </div>
+  );
+
+  return (
+    <div className={shell}>
+      <span className="eyebrow-mono">Evidence</span>
+      <section>
+        <SectionTitle label="Data confidence" note={title(assessment.confidence)} />
+        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+          {evidenceReasons.slice(0, 2).map((reason) => <p key={reason}>{reason}</p>)}
+          {!evidenceReasons.length ? <p>No material evidence exceptions recorded.</p> : null}
+        </div>
+        {assessment.verification_actions.length > 0 ? (
+          <button type="button" onClick={() => setVerificationPrepared(true)} disabled={verificationPrepared}
+            className="press mt-3 w-full rounded-full border border-primary/40 bg-primary/10 px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/20 disabled:opacity-60">
+            {verificationPrepared ? "Verification handoff prepared" : "Create verification action"}
+          </button>
+        ) : null}
+        {verificationPrepared ? (
+          <small className="mt-2 block text-[11px] text-muted-foreground">No field work is auto-approved. <Link className="text-primary" href={`/respond?t=${encodeURIComponent(stage)}&asset=${encodeURIComponent(asset.sgw_id)}`}>Open the response desk →</Link></small>
+        ) : null}
+      </section>
+      {relatedActions.length > 0 ? (
+        <section>
+          <SectionTitle label="Recommended response" note={`${relatedActions.length} open`} />
+          <div className="flex flex-col gap-3">
+            {relatedActions.slice(0, 2).map((action) => (
+              <div key={action.recommendation_id} className="glass-chip rounded-2xl border-l-2 border-l-primary px-3.5 py-2.5">
+                <strong className="text-sm">{action.title}</strong>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{action.reason}</p>
+                <small className="mt-1 block font-mono text-[11px] text-muted-foreground">{action.default_owner} · {title(action.status)}</small>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
 }
 
 function AssetAsk({ context, stage }: { context: NodeContext; stage: string }) {
@@ -94,61 +203,190 @@ function AssetAsk({ context, stage }: { context: NodeContext; stage: string }) {
     } catch { setAskError("The grounded answer is temporarily unavailable."); }
     finally { setAsking(false); }
   }
-  return <section className="asset-ask">
-    <div className="asset-ask-heading"><div><p className="eyebrow">Grounded intelligence</p><h3>Ask about this asset</h3></div><span>Facts only</span></div>
-    <div className="ask-prompts">{prompts.map((prompt) => <button type="button" key={prompt} onClick={() => void ask(prompt)}>{prompt}</button>)}</div>
-    <form className="ask-composer" onSubmit={(event) => { event.preventDefault(); void ask(question); }}><label htmlFor={`asset-question-${id}`}>Question about {id}</label><div><input id={`asset-question-${id}`} value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={`Ask about ${id}…`} maxLength={500} /><button type="submit" disabled={!question.trim() || asking}>{asking ? "Checking…" : "Ask"}</button></div></form>
-    <div className="ask-result" aria-live="polite">{asking && <p className="ask-status">Building an answer from the locked fact pack…</p>}{askError && <p className="ask-error">{askError}</p>}{answer && <><div className="ask-answer-meta"><span className="grounded-badge">Grounded · {answer.model}</span><small>Fact pack {answer.fact_pack_sha256.slice(0, 10)}</small></div><strong>{answer.headline}</strong><p>{answer.answer}</p>{answer.supporting_facts.length > 0 && <div className="ask-facts">{answer.supporting_facts.slice(0, 3).map((fact) => <span key={fact.metric}><small>{fact.label}</small><strong>{formatValue(fact.value, fact.unit ?? "")}</strong></span>)}</div>}</>}</div>
-  </section>;
+  return (
+    <div className="panel rise flex h-full flex-col gap-4 p-6 hover:-translate-y-0.5 hover:border-primary/25">
+      <div className="flex items-start justify-between gap-3">
+        <div><p className="eyebrow-mono">Grounded intelligence</p><h3 className="mt-1 text-lg font-semibold">Ask about this asset</h3></div>
+        <span className="rounded-full border border-verified/40 bg-verified/10 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-verified">Facts only</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {prompts.map((prompt) => (
+          <button key={prompt} type="button" onClick={() => void ask(prompt)} className="glass-chip press rounded-full px-3.5 py-2 text-xs text-muted-foreground hover:text-foreground">{prompt}</button>
+        ))}
+      </div>
+      <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); void ask(question); }}>
+        <input aria-label={`Question about ${id}`} value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={`Ask about ${id}…`} maxLength={500}
+          className="glass-chip flex-1 rounded-full px-4 py-2.5 text-sm outline-none transition-shadow duration-300 focus:shadow-[0_0_0_4px_oklch(0.68_0.17_45/0.18)]" />
+        <button type="submit" disabled={!question.trim() || asking} className="press rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50">{asking ? "Asking…" : "Ask"}</button>
+      </form>
+      <div aria-live="polite" className="glass-chip min-h-24 rounded-2xl p-4">
+        {asking ? <p className="text-sm text-muted-foreground">Building an answer from the locked fact pack…</p>
+          : askError ? <p className="text-sm text-critical">{askError}</p>
+          : answer ? (
+            <>
+              <strong className="block text-sm">{answer.headline}</strong>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{answer.answer}</p>
+              <div className="mt-3 flex flex-wrap gap-3">
+                {answer.supporting_facts.slice(0, 3).map((fact) => (
+                  <span key={fact.metric} className="glass-chip rounded-xl px-3 py-2">
+                    <small className="block text-[11px] text-muted-foreground">{fact.label}</small>
+                    <strong className="text-sm">{formatValue(fact.value, fact.unit ?? "")}</strong>
+                  </span>
+                ))}
+              </div>
+              <small className="mt-3 block font-mono text-[11px] text-muted-foreground">Grounded · {answer.model} · Fact pack {answer.fact_pack_sha256.slice(0, 12)}</small>
+            </>
+          ) : <p className="text-sm text-muted-foreground">Answers are composed only from the locked advisory fact pack.</p>}
+      </div>
+    </div>
+  );
 }
 
 export default function AssetRiskPage() {
   const { setCurrentAdvisory, setSelectedAsset } = useIncident();
   const searchParams = useSearchParams();
-  // Seeded from the URL during render so the server and client agree; no
-  // effect writes this state back on mount.
   const [assetId] = useState(() => searchParams?.get("asset") ?? "SGW-S17");
   const [stage] = useState(() => searchParams?.get("t") ?? "T-24");
-  const [detail, setDetail] = useState<DetailPayload | null>(null); const [focusedId, setFocusedId] = useState(() => searchParams?.get("asset") ?? "SGW-S17");
-  const [lens, setLens] = useState<Lens>("infrastructure"); const [hoveredNode, setHoveredNode] = useState<string | null>(null); const [hoveredEdge, setHoveredEdge] = useState<Edge | null>(null);
-  const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
-  useEffect(() => { const query = new URLSearchParams(window.location.search); query.set("t", stage); query.set("asset", focusedId); setCurrentAdvisory(stage); setSelectedAsset(focusedId); window.history.replaceState(null, "", `/asset-risk?${query.toString()}`); }, [focusedId, setCurrentAdvisory, setSelectedAsset, stage]);
-  useEffect(() => { const controller = new AbortController(); void Promise.resolve().then(() => { setLoading(true); setError(null); }); fetch(`${API_URL}/api/assets/${encodeURIComponent(assetId)}?t=${encodeURIComponent(stage)}`, { signal: controller.signal }).then((response) => { if (!response.ok) throw new Error("Asset detail unavailable"); return response.json() as Promise<DetailPayload>; }).then((payload) => { setDetail(payload); setFocusedId(payload.asset.sgw_id); }).catch((requestError: Error) => { if (requestError.name !== "AbortError") setError("The asset-risk state is unavailable."); }).finally(() => setLoading(false)); return () => controller.abort(); }, [assetId, stage]);
+  const [detail, setDetail] = useState<DetailPayload | null>(null);
+  const [focusedId, setFocusedId] = useState(() => searchParams?.get("asset") ?? "SGW-S17");
+  const [lens, setLens] = useState<Lens>("infrastructure");
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    query.set("t", stage); query.set("asset", focusedId);
+    setCurrentAdvisory(stage); setSelectedAsset(focusedId);
+    window.history.replaceState(null, "", `/asset-risk?${query.toString()}`);
+  }, [focusedId, setCurrentAdvisory, setSelectedAsset, stage]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void Promise.resolve().then(() => { setLoading(true); setError(null); });
+    fetch(`${API_URL}/api/assets/${encodeURIComponent(assetId)}?t=${encodeURIComponent(stage)}`, { signal: controller.signal })
+      .then((response) => { if (!response.ok) throw new Error("Asset detail unavailable"); return response.json() as Promise<DetailPayload>; })
+      .then((payload) => { setDetail(payload); setFocusedId(payload.asset.sgw_id); })
+      .catch((requestError: Error) => { if (requestError.name !== "AbortError") setError("The asset-risk state is unavailable."); })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, [assetId, stage]);
+
   const positions = useMemo(() => graphLayout(detail?.dependency_subgraph.nodes ?? [], detail?.dependency_subgraph.edges ?? []), [detail]);
   const focused = detail?.node_context[focusedId] ?? (detail ? { asset: detail.asset, state: detail.state, assessment: detail.assessment } : null);
 
-  return <main className="asset-risk-shell">
-    {error ? <div className="asset-risk-error"><strong>Unable to load asset risk</strong><p>{error}</p><Link href="/">Return to risk overview</Link></div> : <>
-      <nav className="ribbon" aria-label="Asset risk summary">
-        <div className="ribbon-track" role="group" aria-label="Advisory stage"><span className="ribbon-step ribbon-step--active">{detail?.advisory.stage ?? stage}</span></div>
-        <div className="ribbon-title"><p className="ribbon-kicker">Why does this asset matter right now?</p>
-          <h1>{detail ? `${compactId(detail.asset.sgw_id)} · ${detail.asset.name}` : "Loading asset context"}</h1></div>
-        <div className="ribbon-summary">
-          <div className="ribbon-kpi"><strong>{detail ? `${Math.round(detail.assessment.disruption_likelihood)}%` : "—"}</strong><small>Likelihood</small></div>
-          <div className="ribbon-kpi"><strong>{detail ? Math.round(detail.assessment.consequence_score) : "—"}</strong><small>Consequence</small></div>
-          <div className={`ribbon-kpi ribbon-kpi--${detail?.assessment.tier ?? "medium"}`}><strong>{detail ? Math.round(detail.assessment.risk_score) : "—"}</strong><small>{detail?.assessment.tier ?? "Risk"}</small></div>
-          <div className="ribbon-kpi"><strong>{detail ? title(detail.assessment.confidence) : "—"}</strong><small>Confidence</small></div>
+  if (error) return (
+    <main className="ds-screen mx-auto max-w-[1500px] px-6 py-8">
+      <div className="panel rise p-8"><h1 className="text-xl font-semibold">Unable to load asset risk</h1><p className="mt-2 text-sm text-muted-foreground">{error}</p><Link className="mt-4 inline-block text-primary" href="/">Return to risk overview</Link></div>
+    </main>
+  );
+
+  return (
+    <main className="ds-screen mx-auto max-w-[1500px] px-6 py-8">
+      <header className="panel rise flex flex-wrap items-end justify-between gap-6 p-8">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-primary/50 bg-primary/10 px-2.5 py-1 font-mono text-[11px] tracking-widest text-primary">{detail?.advisory.stage ?? stage}</span>
+            <p className="eyebrow-mono">Why does this asset matter right now?</p>
+          </div>
+          <h1 className="mt-3 text-3xl font-semibold">{detail ? `${compactId(detail.asset.sgw_id)} · ${detail.asset.name}` : "Loading asset context"}</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">{detail?.assessment.primary_change ?? "Connecting to the current advisory state."}</p>
         </div>
-      </nav>
-      <p className="asset-lede">{detail?.assessment.primary_change ?? "Connecting to the current advisory state."}</p>
-      <section className="dependency-block">
-        <div className="graph-panel"><div className="graph-toolbar"><div><p className="eyebrow">Dependency intelligence</p><h2>Connected impact path</h2></div><div className="lens-switch" aria-label="Graph lens">{(["infrastructure", "consequence", "confidence"] as Lens[]).map((item) => <button key={item} className={lens === item ? "lens-button lens-button--active" : "lens-button"} onClick={() => setLens(item)} aria-pressed={lens === item}>{title(item)}</button>)}</div></div>
-          <div className={`dependency-graph dependency-graph--${lens}${loading ? " dependency-graph--loading" : ""}`}>
-            <div className="graph-guidance">{lens === "infrastructure" ? "Topology · redundancy · validated engineering relationships" : lens === "consequence" ? "Population · critical facilities · uncovered duration" : "Verified · stale · unknown · conflicting evidence"}</div>
-            {detail?.dependency_subgraph.edges.map((edge) => { const from = positions.get(edge.from_id); const to = positions.get(edge.to_id); if (!from || !to) return null; const dx = to.x - from.x; const dy = to.y - from.y; const width = Math.sqrt(dx * dx + dy * dy); const gap = detail.assessment.max_uncovered_hours > 0 && edge.from_id === detail.asset.sgw_id; const uncertain = !edge.verified || edge.confidence < .8; return <button key={`${edge.from_id}-${edge.to_id}-${edge.relationship}`} className={`graph-edge graph-edge--${edge.relationship}${uncertain ? " graph-edge--uncertain" : " graph-edge--verified"}${gap ? " graph-edge--gap" : ""}`} style={{ left: `${from.x}%`, top: `${from.y}%`, width: `${width}%`, transform: `rotate(${Math.atan2(dy, dx) * 180 / Math.PI}deg)` }} onMouseEnter={() => setHoveredEdge(edge)} onMouseLeave={() => setHoveredEdge(null)} onFocus={() => setHoveredEdge(edge)} onBlur={() => setHoveredEdge(null)} aria-label={`${edge.from_id} ${edge.relationship} ${edge.to_id}`}><i /><span>{edgeLabel(edge.relationship)}</span></button>; })}
-            {detail?.dependency_subgraph.nodes.map((node) => { const point = positions.get(node.sgw_id); const context = detail.node_context[node.sgw_id]; if (!point || !context) return null; const consequenceNode = node.asset_type === "water_zone" || !["substation", "pump_station"].includes(node.asset_type); const muted = lens === "consequence" && !consequenceNode; return <button key={node.sgw_id} className={`graph-node graph-node--${node.asset_type} graph-node--${context.assessment.tier}${focusedId === node.sgw_id ? " graph-node--focused" : ""}${muted ? " graph-node--muted" : ""}${lens === "confidence" ? ` graph-node--confidence-${context.assessment.confidence}` : ""}`} style={{ left: `${point.x}%`, top: `${point.y}%` }} onClick={() => setFocusedId(node.sgw_id)} onMouseEnter={() => setHoveredNode(node.sgw_id)} onMouseLeave={() => setHoveredNode(null)} onFocus={() => setHoveredNode(node.sgw_id)} onBlur={() => setHoveredNode(null)}><span className="graph-node-id">{compactId(node.sgw_id)}</span><small>{title(node.asset_type)}</small>{lens === "consequence" && node.asset_type === "water_zone" && <b>{Number(node.attributes.population ?? 0).toLocaleString("en-US")} residents</b>}{lens === "confidence" && <b>{context.assessment.confidence} evidence</b>}</button>; })}
-            {hoveredNode && detail?.node_context[hoveredNode] && (() => { const context = detail.node_context[hoveredNode]; const point = positions.get(hoveredNode)!; return <div className="graph-tooltip" style={{ left: `${point.x}%`, top: `${point.y}%` }}><strong>{compactId(hoveredNode)} · {title(context.asset.asset_type)}</strong>{context.asset.asset_type === "pump_station" ? <><span>Backup: {formatValue(context.state.backup_available_hours, "h")}</span><span>Generator readiness: {title(context.state.verification_status)}</span></> : <><span>Risk: {Math.round(context.assessment.risk_score)} · {title(context.assessment.tier)}</span><span>{context.asset.asset_type === "water_zone" ? `Population: ${Number(context.asset.attributes.population ?? 0).toLocaleString("en-US")}` : `Condition: ${context.asset.condition_score}/100`}</span></>}<span>Confidence: {title(context.assessment.confidence)}</span></div>; })()}
-            {hoveredEdge && (() => { const from = positions.get(hoveredEdge.from_id)!; const to = positions.get(hoveredEdge.to_id)!; const uncertain = !hoveredEdge.verified || hoveredEdge.confidence < .8; return <div className="edge-tooltip" style={{ left: `${(from.x + to.x) / 2}%`, top: `${(from.y + to.y) / 2}%` }}><strong>{compactId(hoveredEdge.from_id)} → {compactId(hoveredEdge.to_id)}</strong><span>{title(edgeLabel(hoveredEdge.relationship))}</span><span>{uncertain ? "Dependency inferred / awaiting validation" : "Verified engineering record"}</span><small>Last validated {hoveredEdge.last_validated}</small></div>; })()}
-          </div><div className="graph-legend"><span><i className="legend-line legend-line--solid" />Validated dependency</span><span><i className="legend-line legend-line--dashed" />Service consequence</span><span><i className="legend-line legend-line--uncertain" />Unverified</span><span><i className="legend-line legend-line--gap" />Material resilience gap</span></div></div>
-              </section>
-      <section className="asset-split">
-        {focused ? <>
-          <aside className="asset-pane"><NodeDetail key={`ctx-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="context" /></aside>
-          <aside className="asset-pane"><NodeDetail key={`imp-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="impact" /></aside>
-          <aside className="asset-pane"><NodeDetail key={`ev-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="evidence" /></aside>
-          <aside className="asset-pane asset-pane--ask"><AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} /></aside>
-        </> : <aside className="asset-pane"><p className="empty-detail">Choose a node in the dependency map to inspect its evidence.</p></aside>}
+        <div className="flex flex-wrap gap-3">
+          <Stat label="Likelihood" value={detail ? `${Math.round(detail.assessment.disruption_likelihood)}%` : "—"} />
+          <Stat label="Consequence" value={detail ? String(Math.round(detail.assessment.consequence_score)) : "—"} />
+          <Stat label={detail?.assessment.tier ?? "Risk"} value={detail ? String(Math.round(detail.assessment.risk_score)) : "—"} tone="text-critical" />
+          <Stat label="Confidence" value={detail ? title(detail.assessment.confidence) : "—"} />
+        </div>
+      </header>
+
+      <section className="panel rise mt-6 p-6 sm:p-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div><p className="eyebrow-mono">Dependency intelligence</p><h2 className="mt-1 text-xl font-semibold">Connected impact path</h2></div>
+          <div className="glass-chip flex gap-1 rounded-full p-1">
+            {(["infrastructure", "consequence", "confidence"] as Lens[]).map((item) => (
+              <button key={item} type="button" aria-pressed={lens === item} onClick={() => setLens(item)}
+                className={`press rounded-full px-4 py-2 text-xs ${lens === item ? "bg-primary text-primary-foreground shadow-[0_8px_24px_-12px_oklch(0.68_0.17_45)]" : "text-muted-foreground hover:text-foreground"}`}>
+                {title(item)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+          {lens === "infrastructure" ? "Topology · redundancy · validated engineering relationships"
+            : lens === "consequence" ? "Population · critical facilities · uncovered duration"
+            : "Verified · stale · unknown · conflicting evidence"}
+        </p>
+
+        <div className={`grid-field relative mt-5 h-[460px] overflow-hidden rounded-[2rem] border border-border bg-surface-2/60 ${loading ? "opacity-70" : ""}`}>
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            {(detail?.dependency_subgraph.edges ?? []).map((edge) => {
+              const from = positions.get(edge.from_id); const to = positions.get(edge.to_id);
+              if (!from || !to) return null;
+              const uncertain = !edge.verified || edge.confidence < 0.8;
+              const service = edge.dependency_class === "service_consequence" || edge.relationship === "located_in";
+              const gap = (detail?.assessment.max_uncovered_hours ?? 0) > 0 && edge.from_id === detail?.asset.sgw_id;
+              return (
+                <line key={`${edge.from_id}-${edge.to_id}-${edge.relationship}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y}
+                  vectorEffect="non-scaling-stroke" strokeWidth={gap ? 2.5 : 1.5} strokeDasharray={uncertain ? "5 5" : service ? "2 6" : "10 10"}
+                  style={{ animation: "flow-dash 1.6s linear infinite" }}
+                  stroke={gap ? "var(--critical)" : uncertain ? "var(--uncertain)" : service ? "var(--accent)" : "var(--verified)"}
+                  opacity={lens === "confidence" && !uncertain ? 0.45 : 0.9} />
+              );
+            })}
+          </svg>
+
+          {(detail?.dependency_subgraph.nodes ?? []).map((node) => {
+            const point = positions.get(node.sgw_id); const context = detail?.node_context[node.sgw_id];
+            if (!point || !context) return null;
+            const consequenceNode = node.asset_type === "water_zone" || !["substation", "pump_station"].includes(node.asset_type);
+            const muted = lens === "consequence" && !consequenceNode;
+            const focusedNode = focusedId === node.sgw_id;
+            return (
+              <button key={node.sgw_id} type="button" style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                onClick={() => setFocusedId(node.sgw_id)} onMouseEnter={() => setHoveredNode(node.sgw_id)} onMouseLeave={() => setHoveredNode(null)}
+                onFocus={() => setHoveredNode(node.sgw_id)} onBlur={() => setHoveredNode(null)}
+                className={`glass-chip absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-2xl px-4 py-3 text-left leading-tight duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] [transition-property:transform,opacity,box-shadow,border-color] hover:scale-[1.04] active:scale-95 ${focusedNode ? "scale-105 border-primary/60 shadow-[0_0_0_4px_oklch(0.68_0.17_45/0.18),0_20px_50px_-24px_oklch(0.68_0.17_45)]" : "hover:border-primary/40"} ${muted ? "opacity-35 saturate-50" : ""}`}>
+                <span className="flex items-center gap-2">
+                  <i className={`h-2 w-2 rounded-full ${context.assessment.tier === "critical" ? "bg-critical" : context.assessment.tier === "high" ? "bg-high" : "bg-medium"}`} />
+                  <span className="font-display text-sm font-semibold">{compactId(node.sgw_id)}</span>
+                </span>
+                <small className="mt-1 block text-[11px] text-muted-foreground">{title(node.asset_type)}</small>
+                {lens === "consequence" && node.asset_type === "water_zone" ? <b className="mt-1 block text-[11px] text-accent">{Number(node.attributes.population ?? 0).toLocaleString("en-US")} residents</b> : null}
+                {lens === "confidence" ? <b className="mt-1 block text-[11px] text-uncertain">{context.assessment.confidence} evidence</b> : null}
+              </button>
+            );
+          })}
+
+          {hoveredNode && detail?.node_context[hoveredNode] ? (() => {
+            const context = detail.node_context[hoveredNode]; const point = positions.get(hoveredNode)!;
+            return (
+              <div style={{ left: `${point.x}%`, top: `${point.y}%` }} className="panel pointer-events-none absolute z-10 w-56 -translate-x-1/2 translate-y-10 rounded-2xl p-3.5 text-xs">
+                <strong className="block">{compactId(hoveredNode)} · {title(context.asset.asset_type)}</strong>
+                <span className="mt-1 block text-muted-foreground">Risk {Math.round(context.assessment.risk_score)} · {title(context.assessment.tier)}</span>
+                <span className="block text-muted-foreground">Confidence: {title(context.assessment.confidence)}</span>
+              </div>
+            );
+          })() : null}
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-5 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+          <span className="flex items-center gap-2"><i className="h-0.5 w-6 bg-verified" />Validated dependency</span>
+          <span className="flex items-center gap-2"><i className="h-0.5 w-6 bg-accent" />Service consequence</span>
+          <span className="flex items-center gap-2"><i className="h-0.5 w-6 bg-uncertain" />Unverified</span>
+          <span className="flex items-center gap-2"><i className="h-1 w-6 bg-critical" />Material resilience gap</span>
+        </div>
       </section>
-    </>}
-  </main>;
+
+      <section className="mt-6 grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
+        {focused ? <>
+          <NodeDetail key={`ctx-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="context" />
+          <NodeDetail key={`imp-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="impact" />
+          <NodeDetail key={`ev-${focusedId}`} context={focused} edges={detail?.dependency_subgraph.edges ?? []} actions={detail?.recommended_actions ?? []} stage={stage} view="evidence" />
+          <AssetAsk key={`ask-${focusedId}`} context={focused} stage={stage} />
+        </> : <div className="panel p-6 text-sm text-muted-foreground">Choose a node in the dependency map to inspect its evidence.</div>}
+      </section>
+    </main>
+  );
 }

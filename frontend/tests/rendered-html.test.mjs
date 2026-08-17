@@ -103,7 +103,10 @@ test("6B.1 renders an interactive dependency graph with three evidence lenses", 
   assert.match(source, /graphLayout/);
   assert.match(source, /setFocusedId/);
   assert.match(source, /node_context/);
-  assert.match(source, /graph-edge--uncertain/);
+  // Edge uncertainty is now encoded on the SVG stroke rather than a CSS class:
+  // unverified or low-confidence links render dashed in the uncertain colour.
+  assert.match(source, /!edge\.verified \|\| edge\.confidence < 0\.8/);
+  assert.match(source, /var\(--uncertain\)/);
 });
 
 test("6B.2 provides a complete generic selected-node detail panel", async () => {
