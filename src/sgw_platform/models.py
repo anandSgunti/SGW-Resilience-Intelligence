@@ -440,6 +440,7 @@ class FieldVerification:
     advisory_id: str
     verified_asset_id: str
     dependent_asset_ids: tuple[str, ...]
+    """Assets topologically downstream or upstream of the verified asset."""
     recommendation_id: str | None
     outcome: FieldOutcome
     detail: str
@@ -450,3 +451,9 @@ class FieldVerification:
     impacts: tuple[VerificationImpact, ...]
     narrative: str
     applied_to_advisories: tuple[str, ...] = ()
+    reranked_asset_ids: tuple[str, ...] = ()
+    """Assets that only moved position because the ranking was recomputed.
+
+    Kept separate from `dependent_asset_ids` so the audit record never implies
+    a cascade where none exists.
+    """

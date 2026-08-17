@@ -15,7 +15,10 @@ const API = process.env.NEXT_PUBLIC_SGW_API_URL ?? "http://127.0.0.1:8000";
 const STAGES = ["T-72", "T-48", "T-24", "T-12", "Landfall"];
 const compact = (value: number) => value >= 1000 ? `${Math.round(value / 1000)}k` : String(value);
 const label = (value: string) => value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-const isProgressed = (status: string) => ["approved", "assigned", "in_progress", "completed"].includes(status);
+// Owned means a named team is accountable. Approval is a decision, not an
+// assignment, so it deliberately does not count toward coverage.
+const isOwned = (status: string) => ["assigned", "in_progress", "completed"].includes(status);
+const isOpen = (status: string) => ["recommended", "approved"].includes(status);
 
 export default function LeadershipPage() {
   const { setCurrentAdvisory, refreshIncident } = useIncident();
@@ -47,9 +50,19 @@ export default function LeadershipPage() {
   const readiness = useMemo(() => {
     const criticalIds = new Set(critical.map((item) => item.sgw_id));
     const actions = (state?.responses ?? []).filter((item) => criticalIds.has(item.asset_id) || item.priority === "critical");
-    const assignedRisks = new Set(actions.filter((item) => isProgressed(item.status)).map((item) => item.asset_id)).size;
+    // A risk is only covered when every action raised against it has an owner,
+    // so coverage can never read 100% while actions are still unassigned.
+    const coveredRisks = [...criticalIds].filter((id) => {
+      const own = actions.filter((item) => item.asset_id === id);
+      return own.length > 0 && own.every((item) => isOwned(item.status));
+    }).length;
+    const unassigned = actions.filter((item) => isOpen(item.status)).length;
     const material = [...actions].sort((a, b) => Number(b.priority === "critical") - Number(a.priority === "critical") || a.asset_id.localeCompare(b.asset_id)).slice(0, 3);
-    return { assignedRisks, actions, material, active: actions.filter((item) => item.status === "in_progress").length, completed: actions.filter((item) => item.status === "completed").length, unassigned: actions.filter((item) => item.status === "recommended").length, coverage: critical.length ? Math.round((assignedRisks / critical.length) * 100) : 0 };
+    return { coveredRisks, actions, material, unassigned,
+      active: actions.filter((item) => item.status === "in_progress").length,
+      completed: actions.filter((item) => item.status === "completed").length,
+      ownedActions: actions.filter((item) => isOwned(item.status)).length,
+      coverage: actions.length ? Math.round((actions.filter((item) => isOwned(item.status)).length / actions.length) * 100) : 0 };
   }, [critical, state]);
   const compare = useMemo(() => ({ before: timeline[left], after: timeline[right] }), [left, right, timeline]);
   const largestMover = useMemo(() => compare.after?.assessments.find((item) => item.primary_change) ?? null, [compare.after]);
@@ -69,8 +82,8 @@ export default function LeadershipPage() {
     <section className="kpis"><Metric value={state?.summary.critical_assets} text="Critical risks" /><Metric value={state?.summary.high_assets} text="High risks" /><Metric value={state ? compact(state.summary.exposed_residents) : undefined} text="Residents exposed" /><Metric value={`${readiness.coverage}%`} text="Mitigation coverage" /></section>
     <section className="content"><div className="main">
       <SectionHead eyebrow="6D.2 · Response readiness" title="Are the biggest risks being managed?" href={`/respond?t=${stage}`} />
-      <div className="readiness"><Metric value={`${readiness.assignedRisks} / ${critical.length}`} text="Critical risks with mitigation assigned" /><Metric value={readiness.active} text="Critical actions in progress" /><Metric value={readiness.completed} text="Critical actions completed" /><Metric value={readiness.unassigned} text="Unassigned critical actions" warning={readiness.unassigned > 0} /></div>
-      <div className="coverage"><span>Mitigation coverage</span><strong>{readiness.coverage}%</strong><i><em style={{ width: `${readiness.coverage}%` }} /></i><a href={`/respond?t=${stage}`}>Open Response Board →</a></div>
+      <div className="readiness"><Metric value={`${readiness.ownedActions} / ${readiness.actions.length}`} text="Critical actions with an owner" /><Metric value={readiness.active} text="Critical actions in progress" /><Metric value={readiness.completed} text="Critical actions completed" /><Metric value={readiness.unassigned} text="Critical actions awaiting an owner" warning={readiness.unassigned > 0} /></div>
+      <div className="coverage"><span>Mitigation coverage</span><strong>{readiness.coverage}%</strong><small style={{ color: "#8c9795", fontSize: 9 }}>{readiness.coveredRisks} / {critical.length} critical risks fully owned</small><i><em style={{ width: `${readiness.coverage}%` }} /></i><a href={`/respond?t=${stage}`}>Open Response Board →</a></div>
       <div className="actions">{readiness.material.map((item) => <a key={item.recommendation_id} href={`/respond?t=${stage}&asset=${item.asset_id}`}><b>{item.asset_id.replace("SGW-", "")} · {item.title}</b><span className={item.status === "recommended" ? "warn" : ""}>{item.status === "recommended" ? "UNASSIGNED ⚠" : `${label(item.status)} · ${item.owner ?? "Operations"}`}</span></a>)}</div>
       <SectionHead eyebrow="6D.4 · Event trajectory" title="Is the situation getting better or worse?" />
       <div className="trajectory">{STAGES.map((item) => <button onClick={() => selectStage(item)} className={stage === item ? "active" : ""} key={item}><b>{item}</b><strong>{timeline[item]?.summary.critical_assets ?? "—"}</strong><span>Critical</span><small>{timeline[item] ? compact(timeline[item].summary.exposed_residents) : "…"} residents</small></button>)}</div>

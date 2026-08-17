@@ -75,17 +75,25 @@ def test_overview_timeline_stages_all_resolve(client):
 
 
 def test_every_client_stage_token_matches_a_published_stage(client):
-    """No screen may hard-code an advisory label the API does not publish."""
+    """No screen may send an advisory token the API does not publish.
+
+    Display labels are exempt: a screen may render the final advisory as `T-0`
+    as long as the value it sends is `Landfall`. Only literals in a request
+    position are checked -- bare array entries and `value:` fields.
+    """
     published = {client.get("/api/state").json()["advisory"]["stage"]}
     for stage in ["T-72", "T-48", "T-24", "T-12", "Landfall"]:
         published.add(client.get("/api/state", params={"t": stage}).json()["advisory"]["stage"])
 
-    quoted = set()
+    sent = set()
     for name in SCREENS:
-        # Advisory-shaped literals only: T-<digits>, or a bare Landfall token.
-        quoted.update(re.findall(r'"(T-\d+|Landfall)"', _source(name)))
-    unknown = sorted(quoted - published)
-    assert not unknown, f"screens reference advisory stages the backend does not publish: {unknown}"
+        source = _source(name)
+        # Strip `label: "..."` pairs so operator shorthand is not mistaken for a
+        # request token. Everything left that looks advisory-shaped is sent.
+        request_side = re.sub(r'label:\s*"[^"]*"', "", source)
+        sent.update(re.findall(r'"(T-\d+|Landfall)"', request_side))
+    unknown = sorted(sent - published)
+    assert not unknown, f"screens send advisory stages the backend does not publish: {unknown}"
 
 
 def test_client_api_paths_exist_on_the_backend(client):

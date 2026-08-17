@@ -201,7 +201,12 @@ class PlatformApplication:
         after_by_id = {item.sgw_id: item for item in after}
         impacts = self.verification_engine.impacts(before, after)
         moved_ids = {impact.sgw_id for impact in impacts} | {asset_id}
-        dependent_ids = tuple(sorted(moved_ids - {asset_id}))
+        # Only assets with a real topological relationship are "dependents". An
+        # asset can move purely because the ranking was recomputed around it;
+        # recording that as a dependency would be a false causal claim.
+        related = self.graph.related(asset_id)
+        dependent_ids = tuple(sorted((moved_ids & related) - {asset_id}))
+        reranked_ids = tuple(sorted(moved_ids - related - {asset_id}))
         narrative = self.verification_engine.narrative(
             advisory.stage, recorded_at, verified_by.strip(), field_outcome, detail,
             before_by_id[asset_id], after_by_id[asset_id],
@@ -211,6 +216,7 @@ class PlatformApplication:
             advisory_id=advisory.advisory_id,
             verified_asset_id=asset_id,
             dependent_asset_ids=dependent_ids,
+            reranked_asset_ids=reranked_ids,
             recommendation_id=recommendation_id,
             outcome=field_outcome,
             detail=detail.strip(),

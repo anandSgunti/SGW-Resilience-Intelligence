@@ -25,6 +25,26 @@ class DependencyGraph:
                     queue.append(edge.to_id)
         return visited
 
+    def ancestors(self, node_id: str) -> set[str]:
+        """Every asset whose service path runs through `node_id`."""
+        visited: set[str] = set()
+        queue = deque([node_id])
+        while queue:
+            node = queue.popleft()
+            for edge in self.inbound[node]:
+                if edge.from_id not in visited:
+                    visited.add(edge.from_id)
+                    queue.append(edge.from_id)
+        return visited
+
+    def related(self, node_id: str) -> set[str]:
+        """Assets with a real topological relationship to `node_id`.
+
+        Used to separate genuine cascade effects from assets that merely
+        changed rank because the ordering was recomputed.
+        """
+        return (self.ancestors(node_id) | self.descendants(node_id)) - {node_id}
+
     def has_alternate_power(self, asset_id: str, failed_source_id: str) -> bool:
         """True when another power edge reaches an asset in the same feed group."""
         power_edges = [e for e in self.inbound[asset_id] if e.relationship in {RelationshipType.POWERS, RelationshipType.BACKUP_FEED}]

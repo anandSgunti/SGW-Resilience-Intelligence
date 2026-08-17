@@ -30,10 +30,11 @@ test("priority rail implements the 6A.2 decision controls and evidence view", as
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(source, /railMode/);
   assert.match(source, /railFilter/);
-  for (const label of ["Priority", "Change", "All", "Critical", "High", "Water", "Electric", "Likelihood", "Consequence", "Top driver", "View asset risk"]) {
+  for (const label of ["Priority", "Change", "Critical", "High", "Water", "Electric", "Likelihood", "Consequence", "topDriver", "Asset risk"]) {
     assert.match(source, new RegExp(label));
   }
-  assert.match(source, /split-metrics/);
+  assert.match(source, /focus-split/);
+  assert.match(source, /index-item/);
   assert.match(source, /setSelectedId\(assessment\.sgw_id\)/);
 });
 
@@ -52,7 +53,7 @@ test("revised 6A.1 map uses Leaflet with application-owned fallback layers", asy
 
 test("6A.3 implements material-change strip and grounded drawers", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  for (const label of ["What changed since", "Primary insight:", "Show all changes", "Top movers", "Grounded explanation", "Baseline advisory established"]) {
+  for (const label of ["What changed since", "focus-section--changed", "All changes", "Top movers", "Grounded explanation", "Baseline advisory established"]) {
     assert.match(source, new RegExp(label));
   }
   assert.match(source, /\/api\/explain/);
@@ -67,6 +68,20 @@ test("6A.4 implements lean event header, backend KPIs and freshness", async () =
   }
   assert.match(source, /state\?\.summary\.critical_assets/);
   assert.match(source, /state\?\.summary\.exposed_residents/);
+});
+
+test("Screen 1 ribbon carries per-advisory trajectory, not just the current advisory", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  // The ribbon replaces the old KPI strip and timeline: each stop shows that
+  // advisory's own Critical count, so trajectory is legible without navigating.
+  assert.match(source, /trajectory/);
+  assert.match(source, /Promise\.allSettled\(TIMELINE\.map/);
+  assert.match(source, /summary\.critical_assets/);
+  assert.match(source, /ribbon-step/);
+  assert.match(source, /focus-card/);
+  // Chrome collapsed: the standalone KPI strip and timeline nav are gone.
+  assert.doesNotMatch(source, /status-strip/);
+  assert.doesNotMatch(source, /className="timeline"/);
 });
 
 test("6B.1 renders an interactive dependency graph with three evidence lenses", async () => {
