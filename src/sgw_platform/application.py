@@ -280,7 +280,6 @@ class PlatformApplication:
                 "high_assets": sum(item.tier.value == "high" for item in assessments),
                 "exposed_residents": exposed_residents,
                 "open_actions": sum(item.status.value not in {"completed", "rejected"} for item in responses),
-                "data_freshness_minutes": dict(advisory.data_freshness_minutes),
             },
             "assessments": [asdict(item) for item in assessments],
             "map": {

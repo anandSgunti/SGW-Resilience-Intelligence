@@ -126,7 +126,6 @@ def build_synthetic_payload(seed: int = SEED) -> dict:
                    "wind_severity": severity, "rainfall_severity": round(severity * .9, 2), "flood_severity": round(severity * 1.05, 2),
                    "storm_center_latitude": storm_track[index]["latitude"], "storm_center_longitude": storm_track[index]["longitude"],
                    "impact_radius_km": round(28 + severity * 24, 1), "storm_track": storm_track,
-                   "data_freshness_minutes": {"weather": 8, "field_ops": 12, "maintenance": 120},
                    "changes": []} for index, (aid, label, severity) in enumerate(ADVISORIES)]
     for advisory in advisories:
         if advisory["advisory_id"] == "ADV-T72":

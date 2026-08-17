@@ -69,9 +69,9 @@ test("6A.4 keeps event identity in the nav and backend KPIs in the ribbon", asyn
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const nav = await readFile(new URL("../app/WorkflowNav.tsx", import.meta.url), "utf8");
   // Brand, event and freshness live in the shared top nav so every screen has them.
-  for (const label of ["Resilience command", "Hurricane Iris", "Data freshness", "Weather", "Field Ops", "Maintenance"]) {
-    assert.match(nav, new RegExp(label));
-  }
+  for (const label of ["Resilience command", "Hurricane Iris"]) assert.match(nav, new RegExp(label));
+  // Data freshness was a hardcoded constant dressed as live telemetry; it is gone.
+  assert.doesNotMatch(nav, /data_freshness|dataFreshness/);
   // Advisory KPIs stay on Screen 1, read straight from the backend summary.
   for (const label of ["Residents exposed", "Open actions"]) assert.match(source, new RegExp(label));
   assert.match(source, /state\?\.summary\.critical_assets/);
@@ -257,12 +257,11 @@ test("6E.2 centralizes advisory refresh and keeps analytics in the backend", asy
   const context = await readFile(new URL("../app/IncidentContext.tsx", import.meta.url), "utf8");
   const response = await readFile(new URL("../app/respond/page.tsx", import.meta.url), "utf8");
   const nav = await readFile(new URL("../app/WorkflowNav.tsx", import.meta.url), "utf8");
-  for (const field of ["currentAdvisory", "currentEvent", "selectedAsset", "lastUpdated", "dataFreshness", "activeResponseState"]) assert.match(context, new RegExp(field));
+  for (const field of ["currentAdvisory", "currentEvent", "selectedAsset", "lastUpdated", "activeResponseState"]) assert.match(context, new RegExp(field));
   for (const reason of ["advisory_change", "human_action", "field_evidence"]) assert.match(context + response, new RegExp(reason));
   assert.match(context, /inFlight\.current\?\.advisory === advisory/);
   assert.match(context, /\/api\/state\?t=/);
   assert.match(nav, /Updating assessment/);
-  assert.match(nav, /Weather/);
   assert.doesNotMatch(context, /calculateRisk|deriveConsequence|recomputeConfidence/);
 });
 

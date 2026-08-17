@@ -40,11 +40,6 @@
         "longitude": -80.18
       }
     ],
-    "data_freshness_minutes": {
-      "weather": 8,
-      "field_ops": 12,
-      "maintenance": 120
-    },
     "changes": [
       {
         "type": "weather_watch",
@@ -94,11 +89,6 @@
         "longitude": -80.18
       }
     ],
-    "data_freshness_minutes": {
-      "weather": 8,
-      "field_ops": 12,
-      "maintenance": 120
-    },
     "changes": [
       {
         "type": "weather_update",
@@ -155,11 +145,6 @@
         "longitude": -80.18
       }
     ],
-    "data_freshness_minutes": {
-      "weather": 8,
-      "field_ops": 12,
-      "maintenance": 120
-    },
     "changes": [
       {
         "type": "field_update",
@@ -217,11 +202,6 @@
         "longitude": -80.18
       }
     ],
-    "data_freshness_minutes": {
-      "weather": 8,
-      "field_ops": 12,
-      "maintenance": 120
-    },
     "changes": [
       {
         "type": "weather_update",
@@ -278,11 +258,6 @@
         "longitude": -80.18
       }
     ],
-    "data_freshness_minutes": {
-      "weather": 8,
-      "field_ops": 12,
-      "maintenance": 120
-    },
     "changes": [
       {
         "type": "response_update",

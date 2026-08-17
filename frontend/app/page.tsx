@@ -17,7 +17,7 @@ type Assessment = {
 };
 type MapAsset = { sgw_id: string; name: string; asset_type: string; latitude: number; longitude: number; operating_zone: string; hazard: { flood_depth_m: number; wind_gust_kph: number } };
 type TrackPoint = { stage: string; latitude: number; longitude: number };
-type Summary = { critical_assets: number; high_assets: number; exposed_residents: number; open_actions: number; data_freshness_minutes: { weather: number; field_ops: number; maintenance: number } };
+type Summary = { critical_assets: number; high_assets: number; exposed_residents: number; open_actions: number };
 type StatePayload = {
   advisory: { advisory_id: string; stage: string; issued_at: string; event_id: string; storm_category: number; storm_severity: number };
   summary: Summary;
@@ -91,7 +91,6 @@ function rankCaption(assessment: Assessment, previousStage: string | null) {
   const direction = assessment.rank_change > 0 ? "up" : "down";
   return `${rank} · ${direction} ${Math.abs(assessment.rank_change)} since ${previousStage}`;
 }
-function freshness(value: number | undefined) { if (value === undefined) return "—"; return value >= 60 && value % 60 === 0 ? `${value / 60}h` : `${value}m`; }
 
 export default function Home() {
   const { refreshIncident, setCurrentAdvisory, setSelectedAsset } = useIncident();
@@ -201,7 +200,7 @@ export default function Home() {
       improved: (item.rank_change ?? 0) > 0,
     };
   }), [topMovers]);
-  const deckPanels = ["Risk distribution", "Recommended actions", "Evidence & freshness", "Top movers", "Operating zones", "Data sources"];
+  const deckPanels = ["Risk distribution", "Recommended actions", "Evidence", "Top movers", "Operating zones", "Data sources"];
   const railRef = useRef<HTMLDivElement | null>(null);
   const slideDeck = useCallback((direction: number) => {
     const node = railRef.current;
@@ -372,13 +371,10 @@ export default function Home() {
                 {!state?.responses.length && <p className="slide-empty">No open actions at this advisory.</p>}
               </article>
 
-              <article className="slide" aria-label="Evidence and freshness">
-                <h3>Evidence &amp; freshness</h3>
+              <article className="slide" aria-label="Evidence confidence">
+                <h3>Evidence confidence<em>{highConfidence} of {totalAssets} high</em></h3>
                 <div className="meters">
                   <div className="meter"><div className="meter-top"><span>High confidence</span><b>{highConfidence} / {totalAssets}</b></div><div className="meter-trk"><i className="meter-good" style={{ width: `${totalAssets ? (highConfidence / totalAssets) * 100 : 0}%` }} /></div></div>
-                  <div className="meter"><div className="meter-top"><span>Weather feed</span><b>{freshness(state?.summary.data_freshness_minutes.weather)} ago</b></div><div className="meter-trk"><i className="meter-good" style={{ width: "88%" }} /></div></div>
-                  <div className="meter"><div className="meter-top"><span>Field operations</span><b>{freshness(state?.summary.data_freshness_minutes.field_ops)} ago</b></div><div className="meter-trk"><i className="meter-good" style={{ width: "80%" }} /></div></div>
-                  <div className="meter"><div className="meter-top"><span>Maintenance</span><b>{freshness(state?.summary.data_freshness_minutes.maintenance)} ago</b></div><div className="meter-trk"><i className="meter-warn" style={{ width: "34%" }} /></div></div>
                 </div>
               </article>
 

@@ -328,7 +328,6 @@ class Advisory:
     storm_center_longitude: float = 0.0
     impact_radius_km: float = 0.0
     storm_track: tuple[dict[str, Any], ...] = ()
-    data_freshness_minutes: dict[str, int] = field(default_factory=dict)
     changes: tuple[dict[str, Any], ...] = ()
 
 

@@ -31,7 +31,7 @@ def test_current_state_is_one_ranked_backend_contract(client):
     assert payload["summary"]["high_assets"] == sum(item["tier"] == "high" for item in payload["assessments"])
     assert payload["summary"]["exposed_residents"] > 0
     assert payload["summary"]["open_actions"] == len(payload["responses"])
-    assert payload["summary"]["data_freshness_minutes"] == {"weather": 8, "field_ops": 12, "maintenance": 120}
+    assert "data_freshness_minutes" not in payload["summary"]
     assert {item["rule_id"] for item in payload["responses"]} == {"R1", "R2", "R3", "R5"}
 
 

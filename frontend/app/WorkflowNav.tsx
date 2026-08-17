@@ -32,7 +32,7 @@ function contextualHref(destination: string) {
 
 export default function WorkflowNav() {
   const pathname = usePathname();
-  const { lastUpdated, dataFreshness, refreshing, error, currentEvent, currentAdvisory, state } = useIncident();
+  const { lastUpdated, refreshing, error, currentEvent, currentAdvisory, state } = useIncident();
   const advisory = state?.advisory as { storm_category?: number } | undefined;
   const storm = advisory?.storm_category;
   function navigate(event: React.MouseEvent<HTMLAnchorElement>, destination: string) {
@@ -53,7 +53,6 @@ export default function WorkflowNav() {
       {refreshing ? <span className="workflow-chip workflow-chip--busy">Updating assessment…</span>
         : error ? <span className="workflow-chip workflow-chip--warn">State refresh delayed</span>
         : <span className="workflow-chip">Updated {lastUpdated?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) ?? "—"}</span>}
-      <span className="workflow-chip workflow-chip--quiet" title="Data freshness">Data freshness · Weather {dataFreshness?.weather ?? "—"}m · Field Ops {dataFreshness?.field_ops ?? "—"}m · Maintenance {dataFreshness?.maintenance ?? "—"}m</span>
     </div>
   </nav><style>{`
 .workflow-nav{position:sticky;top:0;z-index:10000;display:flex;align-items:center;gap:28px;height:56px;padding:0 24px;
@@ -74,13 +73,11 @@ export default function WorkflowNav() {
 .workflow-links i{color:#8e8e93;font-style:normal;font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
 .workflow-state{margin-left:auto;display:flex;align-items:center;gap:8px}
 .workflow-chip{padding:5px 12px;border-radius:999px;background:#f2f2f7;color:#6e6e73;font-size:13px;white-space:nowrap}
-.workflow-chip--quiet{background:transparent;color:#8e8e93}
 .workflow-chip--event{display:flex;align-items:center;gap:7px;color:#1d1d1f}
 .workflow-chip--event b{font-weight:590}
 .workflow-chip--event i{width:7px;height:7px;border-radius:50%;background:#ff3b30;box-shadow:0 0 0 3px rgba(255,59,48,.16)}
 .workflow-chip--busy{background:rgba(0,122,255,.12);color:#0071e3}
 .workflow-chip--warn{background:rgba(255,149,0,.14);color:#c76b00}
-@media(max-width:1080px){.workflow-chip--quiet{display:none}}
 @media(max-width:820px){
   .workflow-nav{gap:12px;padding:0 12px;overflow-x:auto}
   .workflow-links i{display:none}

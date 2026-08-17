@@ -7,7 +7,7 @@ import Link from "next/link";
 
 type Assessment = { sgw_id: string; tier: string; rank: number; risk_score: number; affected_population: number; primary_change: string | null; confidence?: { level: string; reasons: string[] } };
 type Response = { recommendation_id: string; asset_id: string; title: string; priority: string; status: string; owner: string | null };
-type State = { advisory: { stage: string; advisory_id: string; issued_at: string; storm_category: number; data_freshness_minutes: { weather: number; field_ops: number; maintenance: number } }; summary: { critical_assets: number; high_assets: number; exposed_residents: number; open_actions: number }; assessments: Assessment[]; responses: Response[] };
+type State = { advisory: { stage: string; advisory_id: string; issued_at: string; storm_category: number }; summary: { critical_assets: number; high_assets: number; exposed_residents: number; open_actions: number }; assessments: Assessment[]; responses: Response[] };
 type Briefing = { briefing_id: string; advisory_id: string; version: number; text: string; fact_pack_sha256: string; model: string; status: string; created_at: string | null; approved_by: string | null; approved_at: string | null; final_text: string | null };
 const API = process.env.NEXT_PUBLIC_SGW_API_URL ?? "http://127.0.0.1:8000";
 // These are backend advisory stages, not display aliases. The final event
